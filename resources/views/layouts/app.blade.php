@@ -26,6 +26,8 @@
     </style>
         <script src="{{ url('../node_modules/vue/dist/vue.js') }}"></script>
         <script src="{{ url('../node_modules/vue-resource/dist/vue-resource.js') }}"></script>
+        <script src="{{ url('../node_modules/vuefire/dist/vuefire.js') }}"></script>
+        <script src="{{ url('../node_modules/firebase/firebase.js') }}"></script>
 
 </head>
 <body id="app-layout">
