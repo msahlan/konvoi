@@ -162,6 +162,9 @@ return [
         //Creitive\Breadcrumbs\BreadcrumbsServiceProvider::class,
         Former\FormerServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+        Milon\Barcode\BarcodeServiceProvider::class,
+        Barryvdh\Snappy\ServiceProvider::class,
     ],
 
     /*
@@ -217,6 +220,12 @@ return [
         'Fupload' => App\Helpers\Fupload::class,
         'Mongomodel' => Jenssegers\Mongodb\Eloquent\Model::class,
         'Image' => Intervention\Image\Facades\Image::class,
+        'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
+        'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+        'QRCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+
+        'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
+        'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
 
     ],
 

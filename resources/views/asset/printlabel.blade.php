@@ -73,7 +73,7 @@
 
     img.barcode{
         max-width: 98%;
-        width: 60%;
+        width: 98%;
         height:auto;
         margin: 0px;
 
@@ -99,7 +99,7 @@
 
     #container{
         width: {{ $container }}px;
-        max-width: {{ $container; }}px;
+        max-width: {{ $container }}px;
         display: block;
     }
 
@@ -109,32 +109,31 @@
 <div id="container">
 
 @foreach( $labels as $l )
-    <?php $pd = $products[ $l['_id'] ]; ?>
+    <?php $pd = $products[ $l['delivery_id'] ]; ?>
 
-    @for($b = 0; $b < $pd['number_of_package'];$b++)
+    @for($b = 0; $b < $pd['box_count'];$b++)
 
         <div class="label">
             <table>
                 <tr>
-                    <td style="text-align:center;">
+                    <td style="text-align:center">
                         @if($code_type == 'qr')
 
                             <?php
 
-                                $qrstring = $l['delivery_id'].'|'.$l['no_sales_order'].'|'.$l['consignee_olshop_orderid'].'|box:'.($b + 1);
+                                $qrstring = $l['delivery_id'].'|'.$l['merchant_trans_id'].'|'.$l['fulfillment_code'].'|box:'.($b + 1);
 
                             ?>
 
-                            <img src="{{ URL::to('qr/'.urlencode(base64_encode($qrstring)) ) }}" class="barcode" alt="{{ $l['_id'] }}" />
+                            <img src="{{ URL::to('qr/'.urlencode(base64_encode($qrstring)) ) }}" class="barcode" alt="{{ $l['delivery_id'] }}" />
                         @else
-                            <img src="{{ URL::to('barcode/'.urlencode(base64_encode($l['consignee_olshop_orderid'].'-'.($b + 1))) ) }}" class="barcode" alt="{{ $l['_id'] }}" />
+                            <img src="{{ URL::to('pdf417/'.urlencode(base64_encode($l['delivery_id'])) ) }}" class="barcode" alt="{{ $l['delivery_id'] }}" />
                         @endif
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align:center">
-                        {{ $pd['no_sales_order'] }}<br />
-                        {{ $pd['consignee_olshop_orderid'].' '.($b + 1).'/'.$pd['number_of_package']}}
+                        {{ $pd['fulfillment_code'].' '.($b + 1).'/'.$pd['box_count']}}
                     </td>
                 </tr>
             </table>

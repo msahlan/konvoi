@@ -17,6 +17,7 @@ use Response;
 use Mongomodel;
 use \MongoRegex;
 use DB;
+use HTML;
 
 class AdminController extends Controller {
 

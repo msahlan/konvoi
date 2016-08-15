@@ -1,4 +1,27 @@
 <?php
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\BaseController;
+
+use App\Models\Shipment;
+use App\Models\Deliveryfee;
+use App\Models\Codsurcharge;
+use App\Models\Printsession;
+
+use App\Helpers\Prefs;
+
+use Config;
+
+use Auth;
+use Event;
+use View;
+use Input;
+use Request;
+use Response;
+use Mongomodel;
+use \MongoRegex;
+use DB;
+use HTML;
 
 class AjaxController extends BaseController {
 

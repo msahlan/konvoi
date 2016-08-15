@@ -3,6 +3,7 @@ namespace App\Helpers;
 
 use App\Models\Role;
 use App\Models\Shipment;
+use App\Models\Uploaded;
 use App\Models\Deliveryfee;
 use App\Models\Codsurcharge;
 
@@ -297,7 +298,7 @@ class Prefs {
 
 
         if($pic_count == 0 && $sign_count == 0){
-            $existingpic = glob(Config::get('jayon.picture_path').$delivery_id.'*.jpg');
+            $existingpic = glob(config('jayon.picture_path').$delivery_id.'*.jpg');
 
             foreach($existingpic as $pic){
                 if(preg_match('/_sign.jpg$/', $pic)){
@@ -315,14 +316,14 @@ class Prefs {
 
     public static function getThumbnailStat($delivery_id, $class = 'thumb'){
 
-        $existingpic = glob(Config::get('jayon.picture_path').$delivery_id.'*.jpg');
+        $existingpic = glob(config('jayon.picture_path').$delivery_id.'*.jpg');
 
         //print_r($existingpic);
 
         $pidx = count($existingpic);
 
         foreach($existingpic as $epic){
-            if(!file_exists(Config::get('jayon.thumbnail_path').'th_'.$epic )){
+            if(!file_exists(config('jayon.thumbnail_path').'th_'.$epic )){
                 //generate_thumbnail( str_replace('.jpg', '', $epic ) );
             }
         }
@@ -330,10 +331,10 @@ class Prefs {
         if($pidx > 1){
             $ths = '';
             foreach($existingpic as $epic){
-                $epic2 = str_replace(Config::get('jayon.picture_path'), '', $epic);
+                $epic2 = str_replace(config('jayon.picture_path'), '', $epic);
 
 
-                //if(!file_exists(Config::get('jayon.thumbnail_path').'th_'.$epic )){
+                //if(!file_exists(config('jayon.thumbnail_path').'th_'.$epic )){
                     $thumb = URL::to('/').'/public/receiver/'.$epic2;
                     $ths .= sprintf('<img style="width:45px;35px;float:left;" alt="'.$epic2.'" src="%s?'.time().'" />',$thumb);
                 //}
@@ -347,8 +348,8 @@ class Prefs {
 
             $thumbnail = '<div style="width:100px;height:75px;clear:both;display:block;cursor:pointer;position:relative;border:thin solid brown;overflow-y:hidden;">'.$ths.'</div>';
         }else{
-            if(file_exists(Config::get('jayon.picture_path').$delivery_id.'.jpg')){
-                if(file_exists(Config::get('jayon.thumbnail_path').'th_'.$delivery_id.'.jpg')){
+            if(file_exists(config('jayon.picture_path').$delivery_id.'.jpg')){
+                if(file_exists(config('jayon.thumbnail_path').'th_'.$delivery_id.'.jpg')){
                     $thumbnail = URL::to('/').'/public/receiver_thumb/th_'.$delivery_id.'.jpg';
                     $thumbnail = sprintf('<img style="cursor:pointer;" class="'.$class.'" alt="'.$delivery_id.'" src="%s?'.time().'" /><br /><span class="rotate" id="r_'.$delivery_id.'" style="cursor:pointer;"  >rotate CW</span>',$thumbnail);
                 }else{
@@ -361,7 +362,7 @@ class Prefs {
                     }
                 }
             }else{
-                if(file_exists(Config::get('jayon.thumbnail_path').'th_'.$delivery_id.'.jpg')){
+                if(file_exists(config('jayon.thumbnail_path').'th_'.$delivery_id.'.jpg')){
                     if($pidx > 0){
                         $class = 'thumb_multi';
                     }
@@ -376,8 +377,8 @@ class Prefs {
 
         $has_sign = false;
 
-        if(file_exists(Config::get('jayon.picture_path').$delivery_id.'_sign.jpg')){
-            //if(file_exists(Config::get('jayon.thumbnail_path').'th_'.$delivery_id.'_sign.jpg')){
+        if(file_exists(config('jayon.picture_path').$delivery_id.'_sign.jpg')){
+            //if(file_exists(config('jayon.thumbnail_path').'th_'.$delivery_id.'_sign.jpg')){
                 $sthumbnail = URL::to('/').'/public/receiver/'.$delivery_id.'_sign.jpg';
                 $thumbnail .= sprintf('<img style="cursor:pointer;width:100px;height:auto;" class="sign '.$class.'" alt="'.$delivery_id.'" src="%s?'.time().'" />',$sthumbnail);
             //}
@@ -392,7 +393,7 @@ class Prefs {
 
         if($pidx > 0){
             for($g = 0; $g < $pidx; $g++){
-                $img = str_replace(Config::get('jayon.picture_path'), '', $existingpic[$g]);
+                $img = str_replace(config('jayon.picture_path'), '', $existingpic[$g]);
                 $gal .= '<input type="hidden" class="gal_'.$delivery_id.'" value="'.$img.'" >';
             }
         }
@@ -448,7 +449,7 @@ class Prefs {
 
     public static function getTypeselect()
     {
-        return Config::get('jex.logistic_type_select');
+        return config('jex.logistic_type_select');
     }
 
     public static function getDeliveryId()
@@ -469,8 +470,8 @@ class Prefs {
     public static function get_delivery_id($sequence,$merchant_id,$delivery_id = null){
 
         if(is_null($delivery_id) || $delivery_id == ''){
-            $year_count = str_pad($sequence, Config::get('jayon.year_sequence_pad'), '0', STR_PAD_LEFT);
-            $merchant_id = str_pad($merchant_id, Config::get('jayon.merchant_id_pad'), '0', STR_PAD_LEFT);
+            $year_count = str_pad($sequence, config('jayon.year_sequence_pad'), '0', STR_PAD_LEFT);
+            $merchant_id = str_pad($merchant_id, config('jayon.merchant_id_pad'), '0', STR_PAD_LEFT);
             $delivery_id = $merchant_id.'-'.date('d-mY',time()).'-'.$year_count;
         }else{
             $dr = Generatedawb::where('merchant_id','=',$merchant_id)
@@ -489,8 +490,8 @@ class Prefs {
 
             }else{
 
-                $year_count = str_pad($sequence, Config::get('jayon.year_sequence_pad'), '0', STR_PAD_LEFT);
-                $merchant_id = str_pad($merchant_id, Config::get('jayon.merchant_id_pad'), '0', STR_PAD_LEFT);
+                $year_count = str_pad($sequence, config('jayon.year_sequence_pad'), '0', STR_PAD_LEFT);
+                $merchant_id = str_pad($merchant_id, config('jayon.merchant_id_pad'), '0', STR_PAD_LEFT);
                 $delivery_id = $merchant_id.'-'.date('d-mY',time()).'-'.$year_count;
             }
         }
@@ -501,8 +502,8 @@ class Prefs {
 
     public static function generate_delivery_id($sequence,$merchant_id,$date = null){
 
-        $year_count = str_pad($sequence, Config::get('jayon.year_sequence_pad'), '0', STR_PAD_LEFT);
-        $merchant_id = str_pad($merchant_id, Config::get('jayon.merchant_id_pad'), '0', STR_PAD_LEFT);
+        $year_count = str_pad($sequence, config('jayon.year_sequence_pad'), '0', STR_PAD_LEFT);
+        $merchant_id = str_pad($merchant_id, config('jayon.merchant_id_pad'), '0', STR_PAD_LEFT);
         if(is_null($date)){
             $delivery_id = $merchant_id.'-'.date('d-mY',time()).'-'.$year_count;
         }else{
@@ -841,7 +842,7 @@ class Prefs {
 
     public static function hashcheck($in , $pass){
 
-        $hash = hash("haval256,5", Config::get('kickstart.ci_key') . $in);
+        $hash = hash("haval256,5", config('kickstart.ci_key') . $in);
 
         if($hash == $pass){
             return true;
@@ -1341,7 +1342,7 @@ class Prefs {
 
     public static function getActiveTheme()
     {
-        return Config::get('kickstart.default_theme');
+        return config('kickstart.default_theme');
     }
 
     public static function getPrintDefault($type = 'asset'){
@@ -1367,7 +1368,7 @@ class Prefs {
 
     public static function colorizestatus($status, $prefix = '', $suffix = ''){
 
-        $colors = Config::get('jayon.status_colors');
+        $colors = config('jayon.status_colors');
         if($status == '' || !in_array($status, array_keys($colors))){
             $class = 'brown';
             $status = 'N/A';

@@ -19,6 +19,8 @@ use Request;
 use Response;
 use Mongomodel;
 use \MongoRegex;
+use DB;
+use HTML;
 
 class DeviceController extends AdminController {
 

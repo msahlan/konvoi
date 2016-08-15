@@ -18,7 +18,15 @@
 </div>
 
   <script type="text/javascript">
-    $(document).ready(function(){
+        $(document).ready(function(){
+
+        $.ajaxSetup({
+           'beforeSend': function(xhr) {
+                xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
+            }
+        });
+
+
 		var asInitVals = new Array();
         var oTable = $('.dataTable').DataTable(
 			{

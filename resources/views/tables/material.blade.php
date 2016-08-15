@@ -313,7 +313,15 @@
             return sOut;
         }
 
-        $(document).ready(function(){
+            $(document).ready(function(){
+
+        $.ajaxSetup({
+           'beforeSend': function(xhr) {
+                xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
+            }
+        });
+
+
 
             $.fn.dataTableExt.oApi.fnStandingRedraw = function(oSettings) {
                 if(oSettings.oFeatures.bServerSide === false){
@@ -737,7 +745,7 @@
                     }
                 }
 
-                {{ $js_table_event }}
+                {!! $js_table_event !!}
 
 
                 if ($(e.target).is('.thumbnail')) {
@@ -924,7 +932,7 @@
       </div>
     </div>
 
-    {{ $modal_sets }}
+    {!! $modal_sets !!}
 
 
 @endsection

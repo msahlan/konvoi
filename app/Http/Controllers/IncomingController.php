@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Models\Shipment;
 use App\Models\Deliveryfee;
 use App\Models\Codsurcharge;
+use App\Models\Printsession;
 
 use App\Helpers\Prefs;
 
@@ -1182,7 +1183,7 @@ class IncomingController extends AdminController {
             $plist[$product['delivery_id']] = $product;
         }
 
-        return View::make('asset.printlabel')
+        return view('asset.printlabel')
             ->with('columns',$columns)
             ->with('resolution',$resolution)
             ->with('cell_width',$cell_width)

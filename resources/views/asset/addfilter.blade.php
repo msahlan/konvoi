@@ -1,17 +1,4 @@
-<div class="row">
-    {{ Former::open_vertical($report_action)->method('get') }}
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-        {{ Former::text('date_filter','Date Range')->id('date_filter')->class('search_init form-control input-sm filterdaterangepicker')->placeholder('pick date range')->value(Input::get('date_filter')) }}
-
-        {{ Former::text('merchantName','Merchant')->class('form-control auto_merchant')->help('autocomplete, use to get merchant ID') }}
-        {{ Former::hidden('merchantId','Merchant ID')->class('form-control auto_merchant')->id('merchant-id') }}
-
-        {{ Form::submit('Generate',array('name'=>'submit','class'=>'btn btn-raised btn-primary input-sm pull-right'))}}
-    </div>
-    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-    </div>
-    {{ Former::close()}}
-</div>
+<a class="btn btn-raised btn-info btn-sm" id="print_barcodes"><i class="fa fa-print"></i> Print Selected Barcodes</a>
 
 <div id="print-modal" class="modal fade large" tabindex="-1" role="dialog" aria-labelledby="myPrintModalLabel" aria-hidden="true">
     <div class="modal-header">
@@ -89,15 +76,7 @@ button#label_default{
 </style>
 
 <script type="text/javascript">
-        $(document).ready(function(){
-
-        $.ajaxSetup({
-           'beforeSend': function(xhr) {
-                xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
-            }
-        });
-
-
+    $(document).ready(function(){
 
         $('#label_refresh').on('click',function(){
 
@@ -163,13 +142,6 @@ button#label_default{
                 $('#print-modal').modal('hide');
             }
 
-        });
-
-        $('.auto_merchant').autocomplete({
-            source: base + 'ajax/merchant',
-            select: function(event, ui){
-                $('#merchant-id').val(ui.item.id);
-            }
         });
 
         $('#do-print').click(function(){

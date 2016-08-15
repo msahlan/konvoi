@@ -144,7 +144,15 @@
         return sOut;
     }
 
-    $(document).ready(function(){
+        $(document).ready(function(){
+
+        $.ajaxSetup({
+           'beforeSend': function(xhr) {
+                xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
+            }
+        });
+
+
 
         $.fn.dataTableExt.oApi.fnStandingRedraw = function(oSettings) {
             if(oSettings.oFeatures.bServerSide === false){

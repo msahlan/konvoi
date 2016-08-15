@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AdminController;
 
 use App\Models\Shipment;
+use App\Models\Uploaded;
 
 use App\Helpers\Prefs;
 
@@ -19,6 +20,9 @@ use Request;
 use Response;
 use Mongomodel;
 use \MongoRegex;
+use DB;
+use HTML;
+
 
 class DeliveredController extends AdminController {
 
