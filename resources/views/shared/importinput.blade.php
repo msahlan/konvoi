@@ -1,0 +1,42 @@
+@extends('layout.form')
+
+
+@section('left')
+
+<h5>Import {{ $title }}</h5>
+
+{{Former::open_for_files_vertical($submit,'POST',array('class'=>'custom addAttendeeForm'))}}
+
+        {{ $aux_form }}
+
+        {{ Former::file('inputfile','Select file ( .xls, .xlsx )') }}
+
+        {{ Former::hidden( 'controller',$back ) }}
+        {{ Former::hidden( 'importkey',$importkey ) }}
+        <div class="row">
+            <div class="col-md-4">
+                {{ Former::text('headindex','Row containing header')->value(Config::get('import.header_row')) }}
+                {{ Former::text('firstdata','Data starting at row')->value(Config::get('import.data_row')) }}
+                {{ Former::text('limitdata','Data Row Limit')->value(Config::get('import.data_limit')) }}
+            </div>
+        </div>
+
+        {{ Form::submit('Save',array('class'=>'btn btn-raised btn-primary'))}}&nbsp;&nbsp;
+        {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
+
+{{Former::close()}}
+
+@stop
+
+@section('aux')
+
+<script type="text/javascript">
+
+
+$(document).ready(function() {
+
+});
+
+</script>
+
+@stop

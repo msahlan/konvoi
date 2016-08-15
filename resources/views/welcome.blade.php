@@ -22,7 +22,7 @@
                                 <td>@{{ order.recipient }}</td>
                                 <td>@{{ order.address }}</td>
                                 <td>@{{ order.phone }}</td>
-                            </tr>                            
+                            </tr>
                         </tbody>
                     </table>
 
@@ -54,7 +54,7 @@
         },
         firebase:{
             items: firebase.database().ref('cities'),
-            orders: firebase.database().ref('orders').orderByChild('reverseCreated')
+            orders: firebase.database().ref('orders').orderByChild('reverseCreated').limitToLast(10)
         }
         /*
         ready:function(){
@@ -67,7 +67,7 @@
                 this.items.push(dataSnapshot.val());
             });
         }*/
-    });    
+    });
 
 
 </script>
