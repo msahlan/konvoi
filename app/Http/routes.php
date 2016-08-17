@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->middleware('auth');
+Route::get('/', 'IncomingController@getIndex');
 
 Route::auth();
 
@@ -23,6 +21,8 @@ Route::post('/user', 'UserController@postIndex');
 Route::get('/incoming', 'IncomingController@getIndex');
 Route::post('/incoming', 'IncomingController@postIndex');
 Route::get('/incoming/printlabel/{sessionname}/{printparam}/{format?}', 'IncomingController@getPrintlabel');
+Route::get('/incoming/import', 'IncomingController@getImport');
+
 
 Route::get('/zoning', 'ZoningController@getIndex');
 Route::post('/zoning', 'ZoningController@postIndex');

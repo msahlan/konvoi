@@ -1,32 +1,30 @@
-@extends('layout.form')
+@extends('layouts.form')
 
 
 @section('left')
 
 <h5>Import {{ $title }}</h5>
 
-{{Former::open_for_files_vertical($submit,'POST',array('class'=>'custom addAttendeeForm'))}}
 
-        {{ $aux_form }}
+        {!! $aux_form !!}
 
-        {{ Former::file('inputfile','Select file ( .xls, .xlsx )') }}
+        {!! Former::file('inputfile','Select file ( .xls, .xlsx )')  !!}
 
-        {{ Former::hidden( 'controller',$back ) }}
-        {{ Former::hidden( 'importkey',$importkey ) }}
+        {!! Former::hidden( 'controller',$back )  !!}
+        {!! Former::hidden( 'importkey',$importkey )  !!}
         <div class="row">
             <div class="col-md-4">
-                {{ Former::text('headindex','Row containing header')->value(Config::get('import.header_row')) }}
-                {{ Former::text('firstdata','Data starting at row')->value(Config::get('import.data_row')) }}
-                {{ Former::text('limitdata','Data Row Limit')->value(Config::get('import.data_limit')) }}
+                {!! Former::text('headindex','Row containing header')->value(config('import.header_row'))  !!}
+                {!! Former::text('firstdata','Data starting at row')->value(config('import.data_row'))  !!}
+                {!! Former::text('limitdata','Data Row Limit')->value(config('import.data_limit'))  !!}
             </div>
         </div>
 
-        {{ Form::submit('Save',array('class'=>'btn btn-raised btn-primary'))}}&nbsp;&nbsp;
+        {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary')) !!}&nbsp;&nbsp;
         {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
 
-{{Former::close()}}
 
-@stop
+@endsection
 
 @section('aux')
 
@@ -39,4 +37,4 @@ $(document).ready(function() {
 
 </script>
 
-@stop
+@endsection
