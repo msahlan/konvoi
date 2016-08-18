@@ -22,6 +22,12 @@ Route::get('/incoming', 'IncomingController@getIndex');
 Route::post('/incoming', 'IncomingController@postIndex');
 Route::get('/incoming/printlabel/{sessionname}/{printparam}/{format?}', 'IncomingController@getPrintlabel');
 Route::get('/incoming/import', 'IncomingController@getImport');
+Route::post('/incoming/uploadimport', 'IncomingController@postUploadimport');
+Route::get('/incoming/commit/{sessid}', 'IncomingController@getCommit');
+Route::post('/incoming/commit/{sessid}', 'IncomingController@postCommit');
+Route::post('/incoming/dlxl', 'IncomingController@postDlxl');
+Route::get('/incoming/dl/{filename}', 'IncomingController@getDl');
+Route::get('/incoming/csv/{filename}', 'IncomingController@getCsv');
 
 
 Route::get('/zoning', 'ZoningController@getIndex');
@@ -53,6 +59,8 @@ Route::post('/parsedevice', 'ParsedeviceController@postIndex');
 Route::post('/parsedevice/syncparse', 'ParsedeviceController@postSyncparse');
 
 Route::post('/ajax/sessionsave', 'AjaxController@postSessionsave');
+Route::get('/ajax/merchant', 'AjaxController@getMerchant');
+Route::post('/ajax/merchantapp', 'AjaxController@postMerchantapp');
 
 Route::get('/profile', 'ProfileController@getIndex');
 

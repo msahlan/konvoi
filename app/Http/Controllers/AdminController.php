@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 
 use Former\Facades\Former;
 use App\Helpers\Logger;
+use App\Models\Importsession;
+
 
 use Creitive\Breadcrumbs\Breadcrumbs;
 
@@ -16,8 +18,10 @@ use Request;
 use Response;
 use Mongomodel;
 use \MongoRegex;
+use \MongoDate;
 use DB;
 use HTML;
+use Excel;
 
 class AdminController extends Controller {
 
@@ -389,7 +393,7 @@ class AdminController extends Controller {
 
 	public function pageGenerator(){
 
-		//$action_selection = Former::select( Config::get('kickstart.actionselection'))->name('action');
+		//$action_selection = Former::select( config('kickstart.actionselection'))->name('action');
 
 		$heads = $this->heads;
         $fields = $this->fields;
@@ -503,7 +507,7 @@ class AdminController extends Controller {
 
     public function reportPageGenerator(){
 
-        //$action_selection = Former::select( Config::get('kickstart.actionselection'))->name('action');
+        //$action_selection = Former::select( config('kickstart.actionselection'))->name('action');
 
         $heads = $this->heads;
         $fields = $this->fields;
@@ -4255,7 +4259,7 @@ class AdminController extends Controller {
 
         date_default_timezone_set('Asia/Jakarta');
 
-        $file = Input::file('inputfile');
+        $file = Request::file('inputfile');
 
         $headindex = Request::input('headindex');
 
@@ -4280,7 +4284,7 @@ class AdminController extends Controller {
         $filesize = $file->getSize();
         $extension =$file->getClientOriginalExtension(); //if you need extension of the file
 
-        $filename = str_replace(Config::get('kickstart.invalidchars'), '-', $filename);
+        $filename = str_replace(config('kickstart.invalidchars'), '-', $filename);
 
         $uploadSuccess = $file->move($destinationPath, $filename);
 
@@ -4300,16 +4304,20 @@ class AdminController extends Controller {
                 //$reader->formatDates(true, 'Y-m-d H:i:s');
                 $reader->noHeading();
                 $reader->formatDates(true);
-                $imp = $reader->skip(Config::get('import.header_row'))->toArray();
-                $ihead = $reader->skip(Config::get('import.header_row'))->take(1)->toArray();
-                $idata = $reader->skip(Config::get('import.data_row'))->take($datalimit)->toArray();
+                $imp = $reader->skip(config('import.header_row'))->toArray();
+                $ihead = $reader->skip(config('import.header_row'))->take(1)->toArray();
+                $idata = $reader->skip(config('import.data_row'))->take($datalimit)->toArray();
 
             })->get();
 
             $headrow = $imp[0];
 
+            print_r($headrow);
+
             for($h=0;$h < count($headrow);$h++){
-                $headrow[$h] = strtolower($headrow[$h]);
+                if(isset($headrow[$h])){
+                    $headrow[$h] = strtolower($headrow[$h]);
+                }
             }
 
             if(count($aux_form_data) > 0){
@@ -4380,7 +4388,7 @@ class AdminController extends Controller {
 
         $commit_url = $this->backlink.'/commit/'.$rstring;
 
-        return Redirect::to($commit_url);
+        return redirect($commit_url);
 
     }
 
@@ -4427,6 +4435,7 @@ class AdminController extends Controller {
         $this->crumb->addCrumb('Preview',url($controller_name.'/import'));
 
         return View::make('shared.commitselect')
+            ->with('crumb',$this->crumb)
             ->with('title',$title)
             ->with('submit',$submit)
             ->with('headselect',$headselect)
@@ -4520,7 +4529,7 @@ class AdminController extends Controller {
 
         $this->backlink = strtolower($this->controller_name);
 
-        return Redirect::to($this->backlink);
+        return redirect($this->backlink);
 
     }
 

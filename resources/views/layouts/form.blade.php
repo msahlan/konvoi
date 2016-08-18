@@ -8,51 +8,60 @@
 
     <!-- Global stylesheets -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
-    <link href="{{ URL::to('limitless')}}/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
-    <link href="{{ URL::to('limitless')}}/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="{{ URL::to('limitless')}}/assets/css/core.css" rel="stylesheet" type="text/css">
-    <link href="{{ URL::to('limitless')}}/assets/css/components.css" rel="stylesheet" type="text/css">
-    <link href="{{ URL::to('limitless')}}/assets/css/colors.css" rel="stylesheet" type="text/css">
+    <link href="{{ url('limitless')}}/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+    <link href="{{ url('limitless')}}/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="{{ url('limitless')}}/assets/css/core.css" rel="stylesheet" type="text/css">
+    <link href="{{ url('limitless')}}/assets/css/components.css" rel="stylesheet" type="text/css">
+    <link href="{{ url('limitless')}}/assets/css/colors.css" rel="stylesheet" type="text/css">
     <!-- /global stylesheets -->
 
     {{ HTML::style('css/blueimp-gallery.min.css') }}
 
     <!-- Core JS files -->
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/loaders/pace.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/core/libraries/jquery.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/core/libraries/bootstrap.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/loaders/blockui.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/ui/nicescroll.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/ui/drilldown.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/ui/fab.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/loaders/pace.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/core/libraries/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/core/libraries/bootstrap.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/loaders/blockui.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/ui/nicescroll.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/ui/drilldown.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/ui/fab.min.js"></script>
     <!-- /core JS files -->
 
 
-    <script src="{{ URL::to('makeadmin')}}/assets/global/plugins/jquery-ui/jquery-ui-1.11.2.min.js"></script>
+    <script src="{{ url('makeadmin')}}/assets/global/plugins/jquery-ui/jquery-ui-1.11.2.min.js"></script>
 
     <!-- moment.js (date library) -->
-    <script src="{{ URL::to('/')}}/js/moment-with-langs.min.js"></script>
+    <script src="{{ url('/')}}/js/moment-with-langs.min.js"></script>
 
     {{ HTML::script('js/spectrum.js')}}
 
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/forms/selects/select2.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/selects/select2.min.js"></script>
 
     <!-- /core JS files -->
 
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/forms/inputs/typeahead/typeahead.bundle.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/forms/tags/tagsinput.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/forms/tags/tokenfield.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/ui/prism.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/inputs/typeahead/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/tags/tagsinput.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/tags/tokenfield.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/ui/prism.min.js"></script>
 
 
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/tables/datatables/datatables.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/forms/selects/select2.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/pickers/daterangepicker.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/tables/datatables/datatables.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/selects/select2.min.js"></script>
+
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/notifications/jgrowl.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/pickers/daterangepicker.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/pickers/anytime.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/pickers/pickadate/picker.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/pickers/pickadate/picker.date.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/pickers/pickadate/picker.time.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/pickers/pickadate/legacy.js"></script>
+
+
 
     @yield('page_js')
 
     <script type="text/javascript">
-      var base = '{{ URL::to('/') }}/';
+      var base = '{{ url('/') }}/';
     </script>
 
     @include('layouts.modaljs')
@@ -101,7 +110,7 @@
         <!-- Main navbar -->
         <div class="navbar navbar-inverse navbar-transparent">
             <div class="navbar-header">
-                <a class="navbar-brand" href="{{ URL::to('/')}}" style="text-transform:uppercase">{{ Config::get('site.name')}}</a>
+                <a class="navbar-brand" href="{{ url('/')}}" style="text-transform:uppercase">{{ Config::get('site.name')}}</a>
 
                 <ul class="nav navbar-nav pull-right visible-xs-block">
                     <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-grid3"></i></a></li>
@@ -224,7 +233,7 @@
                                 <ul class="media-list dropdown-content-body">
                                     <li class="media">
                                         <div class="media-left">
-                                            <img src="{{ URL::to('limitless')}}/assets/images/placeholder.jpg" class="img-circle img-sm" alt="">
+                                            <img src="{{ url('limitless')}}/assets/images/placeholder.jpg" class="img-circle img-sm" alt="">
                                             <span class="badge bg-danger-400 media-badge">5</span>
                                         </div>
 
@@ -240,7 +249,7 @@
 
                                     <li class="media">
                                         <div class="media-left">
-                                            <img src="{{ URL::to('limitless')}}/assets/images/placeholder.jpg" class="img-circle img-sm" alt="">
+                                            <img src="{{ url('limitless')}}/assets/images/placeholder.jpg" class="img-circle img-sm" alt="">
                                             <span class="badge bg-danger-400 media-badge">4</span>
                                         </div>
 
@@ -255,7 +264,7 @@
                                     </li>
 
                                     <li class="media">
-                                        <div class="media-left"><img src="{{ URL::to('limitless')}}/assets/images/placeholder.jpg" class="img-circle img-sm" alt=""></div>
+                                        <div class="media-left"><img src="{{ url('limitless')}}/assets/images/placeholder.jpg" class="img-circle img-sm" alt=""></div>
                                         <div class="media-body">
                                             <a href="#" class="media-heading">
                                                 <span class="text-semibold">Jeremy Victorino</span>
@@ -267,7 +276,7 @@
                                     </li>
 
                                     <li class="media">
-                                        <div class="media-left"><img src="{{ URL::to('limitless')}}/assets/images/placeholder.jpg" class="img-circle img-sm" alt=""></div>
+                                        <div class="media-left"><img src="{{ url('limitless')}}/assets/images/placeholder.jpg" class="img-circle img-sm" alt=""></div>
                                         <div class="media-body">
                                             <a href="#" class="media-heading">
                                                 <span class="text-semibold">Beatrix Diaz</span>
@@ -279,7 +288,7 @@
                                     </li>
 
                                     <li class="media">
-                                        <div class="media-left"><img src="{{ URL::to('limitless')}}/assets/images/placeholder.jpg" class="img-circle img-sm" alt=""></div>
+                                        <div class="media-left"><img src="{{ url('limitless')}}/assets/images/placeholder.jpg" class="img-circle img-sm" alt=""></div>
                                         <div class="media-body">
                                             <a href="#" class="media-heading">
                                                 <span class="text-semibold">Richard Vango</span>
@@ -304,10 +313,10 @@
                             </a>
 
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a href="{{ URL::to('profile')}}"><i class="icon-user-plus"></i> My profile</a></li>
+                                <li><a href="{{ url('profile')}}"><i class="icon-user-plus"></i> My profile</a></li>
                                 <li class="divider"></li>
-                                <li><a href="{{ URL::to('profile')}}"><i class="icon-cog5"></i> Account settings</a></li>
-                                <li><a href="{{ URL::to('logout')}}"><i class="icon-switch2"></i> Logout</a></li>
+                                <li><a href="{{ url('profile')}}"><i class="icon-cog5"></i> Account settings</a></li>
+                                <li><a href="{{ url('logout')}}"><i class="icon-switch2"></i> Logout</a></li>
                             </ul>
 
                         </li>
@@ -365,7 +374,7 @@
                     <li>
                         <div data-fab-label="Chat with Jack">
                             <a href="#" class="btn bg-pink-400 btn-rounded btn-icon btn-float">
-                                <img src="{{ URL::to('limitless')}}/assets/images/placeholder.jpg" class="img-responsive" alt="">
+                                <img src="{{ url('limitless')}}/assets/images/placeholder.jpg" class="img-responsive" alt="">
                             </a>
                             <span class="status-mark border-pink-400"></span>
                         </div>

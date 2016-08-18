@@ -6,6 +6,8 @@ use App\Models\Shipment;
 use App\Models\Uploaded;
 use App\Models\Deliveryfee;
 use App\Models\Codsurcharge;
+use App\Models\Box;
+use App\Models\Boxstatus;
 
 class Prefs {
 

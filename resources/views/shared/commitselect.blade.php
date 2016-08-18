@@ -1,4 +1,4 @@
-@extends('layout.limitless')
+@extends('layouts.limitless')
 
 @section('page_js')
 
@@ -101,18 +101,18 @@
 
                 <div class="panel panel-flat  command-bar table-wrapper">
 
-                    {{Former::open_for_files_vertical($submit,'POST',array('class'=>'custom addAttendeeForm'))}}
+                    {!! Former::open_for_files_vertical($submit,'POST',array('class'=>'custom addAttendeeForm'))!!}
 
                     <div class="row">
                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                             <div class="row">
                                 <div class="col-md-4">
                                     <h5>Import {{ $title }} Preview</h5>
-                                    {{ Former::select('force_all')->label('Commit All Records')->options(array(0=>'No', 1=>'Yes'))->id('importkey')->class('form-control importkey input-sm')->help('Disregard selection checkbox and commit all rows to import. Including all data not shown in current preview page.') }}
-                                    {{ Former::select('edit_key')->label('Edit Key')->options($headselect)->id('importkey')->class('form-control importkey input-sm')->help('select to set which field used for update key') }}
+                                    {!! Former::select('force_all')->label('Commit All Records')->options(array(0=>'No', 1=>'Yes'))->id('importkey')->class('form-control importkey input-sm')->help('Disregard selection checkbox and commit all rows to import. Including all data not shown in current preview page.') !!}
+                                    {!! Former::select('edit_key')->label('Edit Key')->options($headselect)->id('importkey')->class('form-control importkey input-sm')->help('select to set which field used for update key') !!}
                                 </div>
                                 <div class="col-md-5" style="padding-top:25px;">
-                                    {{ Former::submit('Commit Import')->id('execute')->class('btn btn-raised btn-primary input-sm') }}&nbsp;&nbsp;
+                                    {!! Former::submit('Commit Import')->id('execute')->class('btn btn-raised btn-primary input-sm') !!}&nbsp;&nbsp;
                                     {{ HTML::link($back,'Cancel',array('class'=>'btn btn-raised input-sm'))}}
                                 </div>
                             </div>                            
@@ -141,7 +141,7 @@
                                         <?php $head_id = 0; ?>
                                         @foreach($heads as $head)
                                             <th>
-                                                {{ Former::select()->name('headers[]')->label('')->options($headselect)->id($head)->class('heads form-control input-sm')->value($head) }}
+                                                {!! Former::select()->name('headers[]')->label('')->options($headselect)->id($head)->class('heads form-control input-sm')->value($head) !!}
                                                 <?php $head_id++; ?>
                                             </th>
                                         @endforeach
@@ -183,7 +183,7 @@
                         </div>
 
                     </div>
-                    {{ Former::close() }}
+                    {!! Former::close() !!}
 
                 </div>
 
