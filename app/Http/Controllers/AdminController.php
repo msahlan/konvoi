@@ -87,6 +87,8 @@ class AdminController extends Controller {
 
     public $can_export = true;
 
+    public $can_download = true;
+
     public $is_report = false;
 
     public $report_action = '';
@@ -476,6 +478,7 @@ class AdminController extends Controller {
             ->with('can_add', $this->can_add )
             ->with('can_import', $this->can_import )
             ->with('can_export', $this->can_export )
+            ->with('can_download', $this->can_download )
             ->with('is_report',$this->is_report)
             ->with('report_action',$this->report_action)
             ->with('is_additional_action',$this->is_additional_action)

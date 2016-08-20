@@ -1,138 +1,126 @@
-@extends('layout.form')
+@extends('layouts.formtwo')
 
 @section('left')
         <h5>Account Information</h5>
 
-        {{ Former::text('username','Username') }}
-        {{ Former::text('email','Email') }}
+        {!! Former::text('username','Username') !!}
+        {!! Former::text('email','Email') !!}
 
-        {{ Former::password('pass','Password') }}
-        {{ Former::password('repass','Repeat Password') }}
+        {!! Former::password('pass','Password') !!}
+        {!! Former::password('repass','Repeat Password') !!}
 
         <h5>Owner / Personal Info</h5>
 
-        {{ Former::text('fullname','Full Name') }}
+        {!! Former::text('fullname','Full Name') !!}
 
         <div class="row">
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('phone','Phone') }}
+                {!! Former::text('phone','Phone') !!}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mobile','Mobile 1') }}
+                {!! Former::text('mobile','Mobile 1') !!}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mobile1','Mobile 2') }}
+                {!! Former::text('mobile1','Mobile 2') !!}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mobile2','Mobile 3') }}
+                {!! Former::text('mobile2','Mobile 3') !!}
             </div>
         </div>
 
 
-        {{ Former::text('street','Address') }}
+        {!! Former::text('street','Address') !!}
 
         <div class="row">
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('district','Kecamatan') }}
+                {!! Former::text('district','Kecamatan') !!}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('city','City') }}
+                {!! Former::text('city','City') !!}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('zip','ZIP / Kode Pos') }}
+                {!! Former::text('zip','ZIP / Kode Pos') !!}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('province','Province') }}
+                {!! Former::text('province','Province') !!}
             </div>
         </div>
 
-        {{ Former::select('country')->id('country')->options(Config::get('country.countries'))->label('Country of Origin') }}
+        {!! Former::select('country')->id('country')->options(config('country.countries'))->label('Country of Origin') !!}
 
-        {{ Former::select('status')->options(array('inactive'=>'Inactive','active'=>'Active'))->label('Status') }}
+        {!! Former::select('status')->options(array('inactive'=>'Inactive','active'=>'Active'))->label('Status') !!}
 
-        {{ Form::submit('Save',array('class'=>'btn btn-raised btn-primary'))}}&nbsp;&nbsp;
-        {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
+        {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary'))!!}&nbsp;&nbsp;
+        {!! HTML::link($back,'Cancel',array('class'=>'btn'))!!}
 
 @stop
 
 @section('right')
         <h5>Shop Information</h5>
-        {{ Former::text('merchantname','Shop Name')->class('form-control') }}
+        {!! Former::text('merchantname','Shop Name')->class('form-control') !!}
 
-        {{ Former::text('mc_url','Website URL')->class('form-control') }}
+        {!! Former::text('mc_url','Website URL')->class('form-control') !!}
 
         <div class="row">
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                {{ Former::text('bank','Bank')->class('form-control') }}
+                {!! Former::text('bank','Bank')->class('form-control') !!}
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                {{ Former::text('account_number','Account Number')->class('form-control') }}
+                {!! Former::text('account_number','Account Number')->class('form-control') !!}
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                {{ Former::text('account_name','Account Name')->class('form-control') }}
+                {!! Former::text('account_name','Account Name')->class('form-control') !!}
             </div>
         </div>
 
-        {{ Former::text('mc_street','Address')->class('form-control') }}
+        {!! Former::text('mc_street','Address')->class('form-control') !!}
 
         <div class="row">
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_district','Kecamatan') }}
+                {!! Former::text('mc_district','Kecamatan') !!}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_city','City') }}
+                {!! Former::text('mc_city','City') !!}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_zip','ZIP / Kode Pos') }}
+                {!! Former::text('mc_zip','ZIP / Kode Pos') !!}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_province','Province') }}
+                {!! Former::text('mc_province','Province') !!}
             </div>
         </div>
 
-        {{ Former::select('mc_country')->id('mc_country')->options(Config::get('country.countries'))->label('Country of Origin') }}
+        {!! Former::select('mc_country')->id('mc_country')->options(config('country.countries'))->label('Country of Origin') !!}
 
         <div class="row">
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_phone','Phone') }}
+                {!! Former::text('mc_phone','Phone') !!}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('mc_mobile','Mobile 1') }}
+                {!! Former::text('mc_mobile','Mobile 1') !!}
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {{ Former::text('mc_email','Shop Email')->class('form-control') }}
+                {!! Former::text('mc_email','Shop Email')->class('form-control') !!}
             </div>
         </div>
 
-        {{ Former::text('tags','Tags / Keywords')->class('tag_keyword') }}
+        {!! Former::text('tags','Tags / Keywords')->class('tag_keyword') !!}
 
-        {{ Former::textarea('shopDescription','Shop Description or Promotion')->class('editor')->rows(10)->columns(20) }}
-
-
+        {!! Former::textarea('shopDescription','Shop Description or Promotion')->class('editor')->rows(10)->columns(20) !!}
 
 
-        <h6>Upload Cover Image</h6>
-        <?php
-            $fupload = new Fupload();
-        ?>
-        {{ $fupload->id('imageupload')->title('Select Picture')->label('Upload Picture')
-            ->url('upload/asset')
-            ->singlefile(true)
-            ->prefix('asset')
-            ->multi(false)->make() }}
 
-
-@stop
+@endsection
 
 @section('modals')
 
-@stop
+@endsection
 
 @section('aux')
-{{ HTML::style('css/summernote.css') }}
-{{ HTML::style('css/summernote-bs3.css') }}
+{!! HTML::style('css/summernote.css') !!}
+{!! HTML::style('css/summernote-bs3.css') !!}
 
-{{ HTML::script('js/summernote.min.js') }}
+{!! HTML::script('js/summernote.min.js') !!}
 
 <script type="text/javascript">
 
@@ -188,4 +176,4 @@ $(document).ready(function() {
 
 </script>
 
-@stop
+@endsection

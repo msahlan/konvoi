@@ -42,70 +42,6 @@ class ZoningController extends AdminController {
 
     }
 
-    public function getDetail($id)
-    {
-        $_id = new MongoId($id);
-        $history = History::where('historyObject._id',$_id)->where('historyObjectType','asset')
-                        ->orderBy('historyTimestamp','desc')
-                        ->orderBy('historySequence','desc')
-                        ->get();
-        $diffs = array();
-
-        foreach($history as $h){
-            $h->date = date( 'Y-m-d H:i:s', $h->historyTimestamp->sec );
-            $diffs[$h->date][$h->historySequence] = $h->historyObject;
-        }
-
-        $history = History::where('historyObject._id',$_id)->where('historyObjectType','asset')
-                        ->where('historySequence',0)
-                        ->orderBy('historyTimestamp','desc')
-                        ->get();
-
-        $tab_data = array();
-        foreach($history as $h){
-                $apv_status = Assets::getApprovalStatus($h->approvalTicket);
-                if($apv_status == 'pending'){
-                    $bt_apv = '<span class="btn btn-info change-approval '.$h->approvalTicket.'" data-id="'.$h->approvalTicket.'" >'.$apv_status.'</span>';
-                }else if($apv_status == 'verified'){
-                    $bt_apv = '<span class="btn btn-success" >'.$apv_status.'</span>';
-                }else{
-                    $bt_apv = '';
-                }
-
-                $d = date( 'Y-m-d H:i:s', $h->historyTimestamp->sec );
-                $tab_data[] = array(
-                    $d,
-                    $h->historyAction,
-                    $h->historyObject['itemDescription'],
-                    ($h->historyAction == 'new')?'NA':$this->objdiff( $diffs[$d] ),
-                    $bt_apv
-                );
-        }
-
-        $header = array(
-            'Modified',
-            'Event',
-            'Name',
-            'Diff',
-            'Approval'
-            );
-
-        $attr = array('class'=>'table', 'id'=>'transTab', 'style'=>'width:100%;', 'border'=>'0');
-        $t = new HtmlTable($tab_data, $attr, $header);
-        $itemtable = $t->build();
-
-        $asset = Asset::find($id);
-
-        $this->crumb->addCrumb('Ad Assets',url( strtolower($this->controller_name) ));
-        $this->crumb->addCrumb('Detail',url( strtolower($this->controller_name).'/detail/'.$asset->_id ));
-        $this->crumb->addCrumb($asset->SKU,url( strtolower($this->controller_name) ));
-
-        return View::make('history.table')
-                    ->with('a',$asset)
-                    ->with('title','Asset Detail '.$asset->itemDescription )
-                    ->with('table',$itemtable);
-    }
-
     public function getIndex()
     {
 
@@ -144,6 +80,10 @@ class ZoningController extends AdminController {
         $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 8 ] },
                     { "sClass": "column-amt", "aTargets": [ 9 ] },
                     { "sClass": "column-amt", "aTargets": [ 10 ] }';
+
+        $this->can_add = false;
+        $this->can_import = false;
+        $this->can_export = false;
 
         return parent::getIndex();
 

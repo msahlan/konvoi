@@ -113,8 +113,10 @@
                                 <a href="{{ url($importurl) }}" class="btn btn-raised btn-raised  btn-sm btn-transparent btn-primary"><i class="fa fa-upload "></i> Excel</a>
                             @endif
 
-                            <a class="btn btn-raised btn-raised  btn-sm btn-info btn-transparent" id="download-xls"><i class="fa fa-download "></i> Excel</a>
-                            <a class="btn btn-raised btn-raised  btn-sm btn-info btn-transparent" id="download-csv"><i class="fa fa-download"></i> CSV</a>
+                            @if(isset($can_download) && $can_download == true)
+                                <a class="btn btn-raised btn-raised  btn-sm btn-info btn-transparent" id="download-xls"><i class="fa fa-download "></i> Excel</a>
+                                <a class="btn btn-raised btn-raised  btn-sm btn-info btn-transparent" id="download-csv"><i class="fa fa-download"></i> CSV</a>
+                            @endif
 
                             @if(isset($is_report) && $is_report == true)
                                 {!! $report_action !!}

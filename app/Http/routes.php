@@ -28,6 +28,8 @@ Route::post('/incoming/commit/{sessid}', 'IncomingController@postCommit');
 Route::post('/incoming/dlxl', 'IncomingController@postDlxl');
 Route::get('/incoming/dl/{filename}', 'IncomingController@getDl');
 Route::get('/incoming/csv/{filename}', 'IncomingController@getCsv');
+Route::get('/incoming/add', 'IncomingController@getAdd');
+Route::post('/incoming/add', 'IncomingController@postAdd');
 
 
 Route::get('/zoning', 'ZoningController@getIndex');
