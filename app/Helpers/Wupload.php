@@ -1,6 +1,8 @@
 <?php
 namespace App\Helpers;
 
+use View;
+
 class Wupload {
 
     public static $element_id = 'fileupload';
@@ -18,6 +20,7 @@ class Wupload {
     public static $editreplacer = '';
     public static $newreplacer = '';
 
+    public static $formdata = null;
 
     public function __construct()
     {
@@ -96,9 +99,17 @@ class Wupload {
         return new self;
     }
 
+    public function formdata($formdata)
+    {
+        self::$formdata = $formdata;
+        return new self;
+    }
+
     public function make($formdata = null)
     {
-        return View::make('wupload.form')
+        self::$formdata = $formdata;
+
+        return view('wupload.form')
             ->with('label',self::$label)
             ->with('title',self::$title)
             ->with('url',self::$url)

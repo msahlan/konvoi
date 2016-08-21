@@ -1,4 +1,30 @@
 <?php
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+
+use Former\Facades\Former;
+use App\Helpers\Logger;
+use App\Helpers\Wupload;
+use App\Models\Importsession;
+use App\Models\Uploaded;
+
+
+use Creitive\Breadcrumbs\Breadcrumbs;
+
+use Auth;
+use Event;
+use View;
+use Input;
+use Request;
+use Response;
+use Mongomodel;
+use \MongoRegex;
+use \MongoDate;
+use DB;
+use HTML;
+use Excel;
+use Image;
 
 class UploadController extends Controller {
 
@@ -9,7 +35,7 @@ class UploadController extends Controller {
 
     public function postIndex()
     {
-        $files = Input::file('files');
+        $files = Request::file('files');
 
         $file = $files[0];
 
@@ -127,7 +153,7 @@ class UploadController extends Controller {
 
     public function postAvatar()
     {
-        $files = Input::file('files');
+        $files = Request::file('files');
 
         $parent_id = Request::input('parid');
 
@@ -251,7 +277,7 @@ class UploadController extends Controller {
 
         $files = Uploaded::where('parent_id',$parent_id )
                     ->where('parent_class', $parent_class)
-                    ->where('ns',$ns)
+                    //->where('ns',$ns)
                     ->where('deleted',0)
                     ->orderBy('createdDate','desc');
 
@@ -295,7 +321,7 @@ class UploadController extends Controller {
 
     public function postAvatarold()
     {
-        $files = Input::file('files');
+        $files = Request::file('files');
 
         $parent_id = Request::input('parid');
 
@@ -449,7 +475,7 @@ class UploadController extends Controller {
 
     public function postAsset($ns = 'asset')
     {
-        $files = Input::file('files');
+        $files = Request::file('files');
 
         $file = $files[0];
 
@@ -576,7 +602,7 @@ class UploadController extends Controller {
 
     public function postCover()
     {
-        $files = Input::file('files');
+        $files = Request::file('files');
 
         $file = $files[0];
 
@@ -699,7 +725,7 @@ class UploadController extends Controller {
 
     public function postMedia()
     {
-        $files = Input::file('files');
+        $files = Request::file('files');
 
         $file = $files[0];
 
@@ -827,7 +853,7 @@ class UploadController extends Controller {
 
     public function postSlide()
     {
-        $files = Input::file('files');
+        $files = Request::file('files');
 
         $file = $files[0];
 
@@ -896,7 +922,7 @@ class UploadController extends Controller {
 
     public function postMusic()
     {
-        $files = Input::file('files');
+        $files = Request::file('files');
 
         $file = $files[0];
 
@@ -945,7 +971,7 @@ class UploadController extends Controller {
 
     public function postAdd()
     {
-        $files = Input::file('files');
+        $files = Request::file('files');
 
         $file = $files[0];
 
@@ -992,7 +1018,7 @@ class UploadController extends Controller {
 
     public function postEdit()
     {
-        $files = Input::file('files');
+        $files = Request::file('files');
 
         $file = $files[0];
 
@@ -1044,12 +1070,12 @@ class UploadController extends Controller {
 
     public function postUp(){
 
-        $file = Input::file('file');
+        $file = Request::file('file');
 
         $destinationPath = config('kickstart.storage').'/uploads/'.str_random(8);
         $filename = $file->getClientOriginalName();
         //$extension =$file->getClientOriginalExtension();
-        $upload_success = Input::file('file')->move($destinationPath, $filename);
+        $upload_success = Request::file('file')->move($destinationPath, $filename);
 
         if( $upload_success ) {
            return Response::json('success', 200);

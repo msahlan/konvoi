@@ -1,7 +1,10 @@
-@extends('layout.form')
+@extends('layouts.formtwo')
 
 
 @section('left')
+        @inject('prefs','App\Helpers\Prefs')
+
+
     {{--
 
         <h4>Employee Info</h4>
@@ -23,51 +26,52 @@
 
         <h4>User Info</h4>
 
-        {{ Former::select('salutation')->options(Config::get('kickstart.salutation'))->label('Salutation') }}
-        {{ Former::text('firstname','First Name') }}
-        {{ Former::text('lastname','Last Name') }}
-        {{ Former::text('mobile','Mobile') }}
+        {!! Former::select('salutation')->options(config('kickstart.salutation'))->label('Salutation')  !!}
+        {!! Former::text('name','Full Name')  !!}
+        {!! Former::text('mobile','Mobile')  !!}
 
-        {{ Former::text('address_1','Address line 1') }}
-        {{ Former::text('address_2','Address line 2') }}
-        {{ Former::text('city','City') }}
+        {!! Former::text('address_1','Address line 1')  !!}
+        {!! Former::text('address_2','Address line 2')  !!}
+        {!! Former::text('city','City')  !!}
 
-        {{ Former::text('state','State / Province') }}
+        {!! Former::text('state','State / Province')  !!}
 
-        {{ Former::select('countryOfOrigin')->id('country')->options(Config::get('country.countries'))->label('Country of Origin') }}
+        {!! Former::select('countryOfOrigin')->id('country')->options(config('country.countries'))->label('Country of Origin')  !!}
 
 
-        {{ Form::submit('Save',array('class'=>'btn btn-raised btn-primary'))}}&nbsp;&nbsp;
+        {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary')) !!}&nbsp;&nbsp;
         {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
 
 @stop
 
 @section('right')
+
+
         <h4>Login Info</h4>
 
-        {{ Former::text('email','Email') }}
+        {!! Former::text('email','Email') !!}
 
-        {{ Former::password('pass','Password')->help('Leave blank for no changes') }}
-        {{ Former::password('repass','Repeat Password') }}
+        {!! Former::password('password','Password')->help('Leave blank for no changes') !!}
+        {!! Former::password('repass','Repeat Password') !!}
 
-        {{ Former::select('roleId')->options(Prefs::getRole()->RoleToSelection('_id','rolename' ) )->label('Role')}}
+        {!! Former::select('roleId')->options($prefs->getRole()->RoleToSelection('_id','rolename' ) )->label('Role')!!}
 
         <h4>Avatar</h4>
-        <?php
-            $fupload = new Fupload();
-        ?>
 
-        {{ $fupload->id('photoupload')->title('Select Photo')->label('Upload Photo')
+        {!! $fupload->id('photoupload')
+            ->ns('avatar')
+            ->title('Select Photo')
+            ->label('Upload Photo')
             ->url('upload/avatar')
             ->singlefile(true)
             ->prefix('photo')
-            ->multi(false)->make() }}
+            ->multi(false)->make() !!}
 
-@stop
+@endsection
 
 @section('modals')
 
-@stop
+@endsection
 
 @section('aux')
 
@@ -106,4 +110,4 @@ $(document).ready(function() {
 
 </script>
 
-@stop
+@endsection

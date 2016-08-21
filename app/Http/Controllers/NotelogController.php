@@ -1,4 +1,26 @@
 <?php
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\AdminController;
+
+use App\Models\Deliverynote;
+use App\Models\Uploaded;
+use App\Models\Role;
+
+use App\Helpers\Prefs;
+
+use Creitive\Breadcrumbs\Breadcrumbs;
+
+use Auth;
+use Event;
+use View;
+use Input;
+use Request;
+use Response;
+use Mongomodel;
+use \MongoRegex;
+use DB;
+use HTML;
 
 class NotelogController extends AdminController {
 
@@ -54,6 +76,8 @@ class NotelogController extends AdminController {
         $this->show_select = false;
 
         $this->place_action = 'none';
+
+        $this->can_add = false;
 
         return parent::getIndex();
 

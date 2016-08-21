@@ -1,26 +1,16 @@
-<table class="table" id="par_%s" >
+<table class="table" id="par_{{ $filedata['_id'] }}" >
     <tr>
         <td rowspan="6">
-            <img style="width:125px;" src="%s"><br />
-            <span class="file_copy" data-clipboard-text="%s"><i class="icon-copy"></i> copy URL</span>
+            <img style="width:100px;" src="{{ $filedata['thumbnail_url'] }}"><br />
+            <span class="file_copy" data-clipboard-text="{{ $filedata['url'] }}><i class="icon-copy"></i> copy URL</span>
         </td>
-        <td><span class="img-title">%s</span></td>
-        <td><span class="file_del icon-trash" id="%s"></td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <label for="defaultpic"><input type="radio" name="defaultpic" value="%s" %s > Cover</label>
+        <td>
+            <span class="img-title">{{ $filedata['name'] }}</span><br />
+            <input type="hidden" name="fileid" class="file-id" value="{{ $filedata['_id'] }}" />
         </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <input type="radio" name="brchead" value="%s" %s > Main
-        </td>
-    </tr>
-    <tr>
-        <td style="text-align:right;">Caption</td>
-        <td colspan="2">
-            <input type="text" name="caption[]" value="%s" />
-        </td>
+
+        <td><span class="file_del" ><i class="file_del icon-trash" id="{{ $filedata['_id'] }}"></i></span></td>
     </tr>
 </table>
+
+

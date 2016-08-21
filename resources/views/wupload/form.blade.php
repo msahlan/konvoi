@@ -1,36 +1,42 @@
+<?php
+    use App\Models\Uploaded;
+?>
 <div class="control-group">
     <div class="controls">
         <div class="fileupload fileupload-new margin-none" data-provides="fileupload">
             <span class="btn btn-default btn-file">
-                <span class="fileupload-new">{{ $title }}</span>
+                <span class="fileupload-new">{{ $title }} or just drop it here</span>
                 <input id="{{ $element_id }}" type="file" name="files[]" {{ ($multi)?'multiple':''}}  >
             </span>
         </div>
         <br />
-        <div id="{{ $element_id }}_progress" class="progress progress-mini" style="height:10px;">
-            <div class="bar progress-bar progress-bar-danger"></div>
+
+        <div  id="{{ $element_id }}_progress" class="progress progress-xxs" >
+            <div class="bar progress-bar progress-bar-info">
+            </div>
         </div>
         {{--
         <br />
         <span id="loading-pictures" style="display:none;" ><img src="{{URL::to('/') }}/images/loading.gif" />loading existing pictures...</span>
         --}}
 
+        <br/>
 
 
         <div id="{{ $element_id }}_files" class="files">
-                <?php
-                    $allin = Input::old();
-                    if(isset($allin['parent_id']) && !isset($formdata) ){
-                        $parent_id = $allin['parent_id'];
-                    }
-                ?>
+            <?php
+                $allin = Request::old();
+                if(isset($allin['parent_id']) && !isset($formdata) ){
+                    $parent_id = $allin['parent_id'];
+                }
+            ?>
 
             <input type="hidden" name="parent_id" value="{{ $parent_id }}" />
             <input type="hidden" name="{{ $element_id }}_ns" value="{{ $ns }}" />
             <ul>
                 <?php
 
-                    $allin = Input::old();
+                    $allin = Request::old();
                     $showold = false;
 
                     if( count($allin) > 0){
@@ -46,13 +52,13 @@
                         //for($t = 0; $t < count($filename);$t++){
 
                         if($singlefile){
-                            $files = Uploaded::where('parent_id',$formdata['_id'] )
+                            $files = Uploaded::where('parent_id',$parent_id )
                                         ->where('deleted',0)
                                         ->orderBy('createdDate','desc')
                                         ->take(1)
                                         ->get();
                         }else{
-                            $files = Uploaded::where('parent_id',$formdata['_id'] )
+                            $files = Uploaded::where('parent_id',$parent_id )
                                         ->where('deleted',0)
                                         ->orderBy('createdDate','desc')
                                         ->get();
@@ -64,11 +70,12 @@
                             foreach ($files->toArray() as $fd) {
                                 //print_r($fd);
 
-                                if($prefix != ''){
+                                if($prefix != '' && view()->exists($prefix.'.wdetail') ){
                                     $detailview = $prefix.'.wdetail';
                                 }else{
                                     $detailview = 'wupload.detail';
                                 }
+
 
                                 try {
                                     $thumb = View::make($detailview)
@@ -82,6 +89,7 @@
                                 if($fd['ns'] == $ns){
                                     print $thumb;
                                 }
+
 
                             }
 
@@ -114,11 +122,12 @@
                             foreach ($files->toArray() as $fd) {
                                 //print_r($fd);
 
-                                if($prefix != ''){
+                                if($prefix != '' && view()->exists($prefix.'.wdetail') ){
                                     $detailview = $prefix.'.wdetail';
                                 }else{
                                     $detailview = 'wupload.detail';
                                 }
+
 
                                 try {
 
@@ -219,37 +228,6 @@
 
                 $('#{{ $element_id }}_files ul').html(thumbs);
 
-                /*
-                $.each(data.result.files, function (index, file) {
-
-                    @if($prefix == '')
-                        {{-- View::make('wupload.jsdetail') --}}
-                    @else
-                        {{-- View::make($prefix.'.wjsdetail') --}}
-                    @endif
-
-                    console.log(thumb);
-
-                    @if($singlefile == true)
-                        $('#{{ $element_id }}_files ul').html(thumb);
-                    @else
-                        $(thumb).prependTo('#{{ $element_id }}_files ul');
-                    @endif
-
-                    @if($singlefile == true)
-                        $('#{{ $element_id }}_uploadedform ul').html(upl);
-                    @else
-                        $(upl).prependTo('#{{ $element_id }}_uploadedform ul');
-                    @endif
-
-                    clip = new ZeroClipboard($('.file_copy').each(function(){ }),{
-                        moviePath: '{{ URL::to('js/zeroclipboard')}}/ZeroClipboard.swf'
-                    });
-
-                });
-                */
-                //$('audio').audioPlayer();
-                //videojs(document.getElementsByClassName('video-js')[0], {}, function(){});
             }else{
                 alert(data.result.message)
             }

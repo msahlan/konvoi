@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AdminController;
 
 use App\Models\User;
+use App\Models\Uploaded;
+use App\Models\Role;
 
 use App\Helpers\Prefs;
 
@@ -80,8 +82,8 @@ class UserController extends AdminController {
     {
 
         $this->fields = array(
-            array('fullname',array('kind'=>'text', 'callback'=>'namePic' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('fullname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('name',array('kind'=>'text', 'callback'=>'namePic' ,'query'=>'like','pos'=>'both','show'=>true)),
+            array('name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('roleId',array('kind'=>'text', 'callback'=>'idRole' ,'query'=>'like','pos'=>'both','show'=>true)),
             array('email',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
             array('mobile',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -97,10 +99,9 @@ class UserController extends AdminController {
     {
 
         $this->validator = array(
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'email'=> 'required|unique:agents',
-            'pass'=>'required|same:repass'
+            'name' => 'required',
+            'email'=> 'required|unique:users',
+            'password'=>'required|same:repass'
         );
 
         return parent::postAdd($data);
@@ -109,36 +110,19 @@ class UserController extends AdminController {
     public function beforeSave($data)
     {
         unset($data['repass']);
-        $data['pass'] = Hash::make($data['pass']);
-
-        $data['fullname'] = $data['firstname'].' '.$data['lastname'];
+        $data['password'] = bcrypt($data['password']);
 
             $photo = array();
             $avatar = '';
 
-            if( isset($data['file_id']) && count($data['file_id'])){
+            if( isset($data['fileid'])){
 
-                for($i = 0 ; $i < count($data['thumbnail_url']);$i++ ){
-
-                    $photo['role'] = $data['role'][$i];
-                    $photo['thumbnail_url'] = $data['thumbnail_url'][$i];
-                    $photo['large_url'] = $data['large_url'][$i];
-                    $photo['medium_url'] = $data['medium_url'][$i];
-                    $photo['full_url'] = $data['full_url'][$i];
-                    $photo['delete_type'] = $data['delete_type'][$i];
-                    $photo['delete_url'] = $data['delete_url'][$i];
-                    $photo['filename'] = $data['filename'][$i];
-                    $photo['filesize'] = $data['filesize'][$i];
-                    $photo['temp_dir'] = $data['temp_dir'][$i];
-                    $photo['filetype'] = $data['filetype'][$i];
-                    $photo['is_image'] = $data['is_image'][$i];
-                    $photo['is_audio'] = $data['is_audio'][$i];
-                    $photo['is_video'] = $data['is_video'][$i];
-                    $photo['fileurl'] = $data['fileurl'][$i];
-                    $photo['file_id'] = $data['file_id'][$i];
-
-                    $avatar = $photo['medium_url'];
+                $avfile = Uploaded::find($data['fileid']);
+                if($avfile){
+                    $avatar = $avfile->square_url;
+                    $photo[] = $avfile->toArray();
                 }
+
             }
 
             $data['photo']= $photo;
@@ -147,19 +131,28 @@ class UserController extends AdminController {
         return $data;
     }
 
+    public function afterSave($data)
+    {
+        foreach($data['photo'] as $p) {
+            $up = Uploaded::find($p['_id']);
+            if($up){
+                $up->parent_id = $data['_id'];
+                $up->save();
+            }
+        }
+    }
+
     public function beforeUpdate($id,$data)
     {
 
-        if(isset($data['pass']) && $data['pass'] != ''){
+        if(isset($data['password']) && $data['password'] != ''){
             unset($data['repass']);
-            $data['pass'] = Hash::make($data['pass']);
+            $data['password'] = bcrypt($data['pass']);
 
         }else{
-            unset($data['pass']);
+            unset($data['password']);
             unset($data['repass']);
         }
-
-        $data['fullname'] = $data['firstname'].' '.$data['lastname'];
 
         $photo = array();
         $avatar = '';
@@ -183,16 +176,15 @@ class UserController extends AdminController {
     public function postEdit($id,$data = null)
     {
         $this->validator = array(
-            'firstname' => 'required',
-            'lastname' => 'required',
+            'name' => 'required',
             'email'=> 'required'
         );
 
-        if($data['pass'] == ''){
-            unset($data['pass']);
+        if($data['password'] == ''){
+            unset($data['password']);
             unset($data['repass']);
         }else{
-            $this->validator['pass'] = 'required|same:repass';
+            $this->validator['password'] = 'required|same:repass';
         }
 
         return parent::postEdit($id,$data);

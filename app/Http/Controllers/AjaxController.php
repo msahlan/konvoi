@@ -9,8 +9,10 @@ use App\Models\Codsurcharge;
 use App\Models\Printsession;
 use App\Models\Merchant;
 use App\Models\Application;
+use App\Models\Geolog;
 
 use App\Helpers\Prefs;
+use App\Helpers\PointLocation;
 
 use Config;
 
@@ -22,6 +24,8 @@ use Request;
 use Response;
 use Mongomodel;
 use \MongoRegex;
+use \MongoDate;
+use \MongoId;
 use DB;
 use HTML;
 

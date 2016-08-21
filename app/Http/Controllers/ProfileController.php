@@ -1,4 +1,26 @@
 <?php
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\AdminController;
+
+use App\Models\User;
+
+use App\Helpers\Prefs;
+
+use Creitive\Breadcrumbs\Breadcrumbs;
+
+use Config;
+
+use Auth;
+use Event;
+use View;
+use Input;
+use Request;
+use Response;
+use Mongomodel;
+use \MongoRegex;
+use DB;
+use HTML;
 
 class ProfileController extends AdminController {
 
@@ -48,10 +70,11 @@ class ProfileController extends AdminController {
 
         //return parent::getIndex();
 
-        $bt_edit = '<a href="'.url('profile/edit/'.Auth::user()->_id).'" class="btn btn-sm btn-primary btn-transparent"><i class="fa fa-edit"></i> Edit</a>';
+        $bt_edit = '<a href="'.url('profile/edit/'.Auth::user()->id).'" class="btn btn-sm btn-primary btn-transparent"><i class="fa fa-edit"></i> Edit</a>';
 
         return View::make('profile.view')
-            ->with('title',Auth::user()->fullname.' '.$bt_edit );
+            ->with('crumb',$this->crumb)
+            ->with('title',Auth::user()->name );
 
     }
 

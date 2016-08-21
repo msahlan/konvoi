@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 
 use Former\Facades\Former;
 use App\Helpers\Logger;
+use App\Helpers\Wupload;
 use App\Models\Importsession;
 
 
@@ -19,9 +20,12 @@ use Response;
 use Mongomodel;
 use \MongoRegex;
 use \MongoDate;
+use \MongoId;
+use \MongoInt32;
 use DB;
 use HTML;
 use Excel;
+use Validator;
 
 class AdminController extends Controller {
 
@@ -232,7 +236,6 @@ class AdminController extends Controller {
 
     public function getIndex()
     {
-
 
         $this->crumb->addCrumb($this->title,url('/'));
 
@@ -3198,11 +3201,14 @@ class AdminController extends Controller {
 
         $this->crumb->addCrumb('New '.$this->title,url('/'));
 
+        $fupload = new Wupload();
+
 		return View::make($controller_name.'.'.$this->form_add)
                     ->with('validator',$this->validator)
 					->with('back',$controller_name)
                     ->with('auxdata',$data)
 					->with('form',$form)
+                    ->with('fupload',$fupload)
 					->with('submit',$controller_name.'/add')
 					->with('crumb',$this->crumb)
 					->with('title','New '.$this->title);
@@ -3234,9 +3240,9 @@ class AdminController extends Controller {
 
             Event::fire('log.a',array($controller_name, 'add' ,$actor,'validation failed'));
 
-	    	return Redirect::to($controller_name.'/add')
+	    	return redirect($controller_name.'/add')
                 ->withErrors($validation)
-                ->withInput(Input::all());
+                ->withInput(Request::all());
 
 	    }else{
 
@@ -3263,12 +3269,12 @@ class AdminController extends Controller {
 
                 Event::fire('log.a',array($controller_name, 'add' ,$actor,json_encode($obj)));
 				//Event::fire('product.createformadmin',array($obj['_id'],$passwordRandom,$obj['conventionPaymentStatus']));
-		    	return Redirect::to($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saved successfully');
+		    	return redirect($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saved successfully');
 			}else{
 
                 Event::fire('log.a',array($controller_name, 'add' ,$actor,'saving failed'));
 
-    	    	return Redirect::to($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saving failed');
+    	    	return redirect($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saving failed');
 			}
 
 	    }
@@ -3318,8 +3324,12 @@ class AdminController extends Controller {
 
         $this->crumb->addCrumb('Update '.$this->title,url('/'));
 
+        $fupload = new Wupload();
+
 		return View::make(strtolower($this->controller_name).'.'.$this->form_edit)
 					->with('back',$controller_name)
+                    ->with('crumb',$this->crumb)
+                    ->with('fupload',$fupload)
 					->with('formdata',$population)
 					->with('submit',strtolower($this->controller_name).'/edit/'.$id)
 					->with('title','Edit '.$this->title);
@@ -3333,23 +3343,26 @@ class AdminController extends Controller {
 
         $this->backlink = ($this->backlink == '')?$controller_name:$this->backlink;
 
-	    $validation = Validator::make($input = Input::all(), $this->validator);
+	    $validation = Validator::make($input = Request::all(), $this->validator);
 
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+        $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
 
 	    if($validation->fails()){
 
             Event::fire('log.a',array($controller_name, 'update' ,$actor,'validation failed'));
 
-	    	return Redirect::to($controller_name.'/edit/'.$_id)->withInput(Input::all())->withErrors($validation);
+	    	return redirect($controller_name.'/edit/'.$_id)->withInput(Request::all())->withErrors($validation);
 
 	    }else{
+
 
 	    	if(is_null($data)){
 				$data = Request::input();
 	    	}
 
-            if($this->model instanceOf Jenssegers\Mongodb\Model ){
+            $model = $this->model;
+
+            if(get_parent_class($model) == 'Jenssegers\Mongodb\Eloquent\Model' ){
                 $id = new MongoId($_id);
                 $data['lastUpdate'] = new MongoDate();
             }else{
@@ -3366,16 +3379,24 @@ class AdminController extends Controller {
                 $this->saveTags($tags);
             }
 
-			$model = $this->model;
 
 			$data = $this->beforeUpdate($id,$data);
 
-            if($this->model instanceOf Jenssegers\Mongodb\Model ){
-                $obj = $model->where('_id',$id)->update($data);
+            if(get_parent_class($model) == 'Jenssegers\Mongodb\Eloquent\Model' ){
+                //$obj = $model->where('_id',$id)->update($data);
+                print_r($id);
+                $obj = $model->where('_id','=',$id)->first();
             }else{
-                $obj = $model->where('id',$id)->update($data);
+                $obj = $model->where('id',$id)->first();
             }
 
+            foreach ($data as $key =>$value) {
+
+                $obj->{$key} = $value;
+                # code...
+            }
+
+            $obj = $obj->save();
 
 			if($obj){
 
@@ -3384,13 +3405,13 @@ class AdminController extends Controller {
 
                     Event::fire('log.a',array($controller_name, 'update' ,$actor,json_encode($obj)));
 
-			    	return Redirect::to($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saved successfully');
+			    	return redirect($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saved successfully');
 				}
 			}else{
 
                 Event::fire('log.a',array($controller_name, 'update' ,$actor,'saving failed'));
 
-		    	return Redirect::to($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saving failed');
+		    	return redirect($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saving failed');
 			}
 
 	    }

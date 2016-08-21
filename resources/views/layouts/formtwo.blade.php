@@ -76,6 +76,11 @@
             display: block;
             text-align: right;
         }
+
+        a.btn, input.btn.btn-raised.btn-primary{
+            margin-top: 16px !important;
+        }
+
     </style>
 
 
@@ -339,6 +344,15 @@
                 <div class="panel panel-flat ">
 
                     <div class="panel-body form-panel">
+                        @if (count($errors) > 0)
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         {!! Former::open_for_files_vertical($submit,'POST',array('class'=>'container')) !!}
                         <div class="row">
                             <div class="col-xs-12 col-md-6">

@@ -1,5 +1,27 @@
 <?php
+namespace App\Http\Controllers;
 
+use App\Http\Controllers\AdminController;
+
+use App\Models\Orderlog;
+use App\Models\Uploaded;
+use App\Models\Geolog;
+use App\Models\Role;
+
+use App\Helpers\Prefs;
+
+use Creitive\Breadcrumbs\Breadcrumbs;
+
+use Auth;
+use Event;
+use View;
+use Input;
+use Request;
+use Response;
+use Mongomodel;
+use \MongoRegex;
+use DB;
+use HTML;
 class LocationlogController extends AdminController {
 
     public function __construct()

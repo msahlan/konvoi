@@ -17,7 +17,8 @@
         "simplesoftwareio/simple-qrcode": "^1.4",
         "milon/barcode": "^5.2",
         "knplabs/knp-snappy": "^0.4.3",
-        "barryvdh/laravel-snappy": "^0.3.0"
+        "barryvdh/laravel-snappy": "^0.3.0",
+        "barryvdh/laravel-debugbar": "^2.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
