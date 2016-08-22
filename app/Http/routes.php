@@ -82,6 +82,7 @@ Route::post('/ajax/sessionsave', 'AjaxController@postSessionsave');
 Route::get('/ajax/merchant', 'AjaxController@getMerchant');
 Route::post('/ajax/merchantapp', 'AjaxController@postMerchantapp');
 Route::post('/ajax/locationlog', 'AjaxController@postLocationlog');
+Route::post('/ajax/delfile', 'AjaxController@postDelfile');
 
 Route::get('/profile', 'ProfileController@getIndex');
 

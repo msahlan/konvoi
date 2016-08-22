@@ -10,6 +10,7 @@ use App\Models\Printsession;
 use App\Models\Merchant;
 use App\Models\Application;
 use App\Models\Geolog;
+use App\Models\Uploaded;
 
 use App\Helpers\Prefs;
 use App\Helpers\PointLocation;
