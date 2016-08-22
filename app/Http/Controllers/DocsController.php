@@ -585,82 +585,16 @@ class DocsController extends AdminController {
 
     public function getImport(){
 
-        $this->importkey = 'delivery_id';
+        //$this->importkey = 'delivery_id';
 
         return parent::getImport();
     }
 
     public function postUploadimport()
     {
-        $this->importkey = 'consignee_olshop_orderid';
+        //$this->importkey = 'consignee_olshop_orderid';
 
         return parent::postUploadimport();
-    }
-
-    public function prepImportItem($field, $v){
-
-        return $v;
-    }
-
-    public function beforeImportCommit($data)
-    {
-        /*
-        unset($data['createdDate']);
-        unset($data['lastUpdate']);
-
-        $data['created'] = $data['created_at'];
-
-        unset($data['created_at']);
-        unset($data['updated_at']);
-        */
-
-        $trav = $this->traverseFields(config('jex.default_export_fields'));
-
-        foreach ($data as $key=>$value){
-            if(array_key_exists($key, $trav)){
-                if($trav[$key]['kind'] == 'text'){
-                    $data[$key] = strval($value);
-                }
-
-                if($trav[$key]['kind'] == 'daterange' ||
-                    $trav[$key]['kind'] == 'datetimerange'||
-                    $trav[$key]['kind'] == 'date'||
-                    $trav[$key]['kind'] == 'datetime'
-
-                    ){
-
-                    if($key != 'createdDate' && $key != 'lastUpdate'){
-                        $data[$key] = new MongoDate( strtotime($data[$key]) );
-                    }
-
-                }
-
-            }
-        }
-        /*
-        $data['CONSIGNEE_OLSHOP_CUST'] = strval($data['CONSIGNEE_OLSHOP_CUST']);
-        $data['CONSIGNEE_OLSHOP_ORDERID'] = strval($data['CONSIGNEE_OLSHOP_ORDERID']);
-        $data['CONSIGNEE_OLSHOP_PHONE'] = strval($data['CONSIGNEE_OLSHOP_PHONE']);
-        $data['CONSIGNEE_OLSHOP_ZIP'] = strval($data['CONSIGNEE_OLSHOP_ZIP']);
-        $data['NO_SALES_ORDER'] = strval($data['NO_SALES_ORDER']);
-        */
-
-        //$data['PICK_UP_DATE'] = new MongoDate( strtotime($data['PICK_UP_DATE']) );
-
-        $data['bucket'] = config('jayon.bucket_incoming');
-
-        $data['status'] = config('jayon.trans_status_confirmed');
-        $data['logistic_status'] = '';
-        $data['pending_count'] = 0;
-        $data['courier_status'] = config('jayon.trans_cr_atmerchant');
-        $data['warehouse_status'] = config('jayon.trans_wh_atmerchant');
-        $data['pickup_status'] = config('jayon.trans_status_tobepickup');
-
-        unset($data['volume']);
-        unset($data['sessId']);
-        unset($data['isHead']);
-
-        return $data;
     }
 
     public function makeActions($data)

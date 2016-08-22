@@ -8,6 +8,8 @@
             <ul class="nav navbar-nav navbar-nav-material">
                 <li><a href="{{ url('/')}}"><i class="icon-display4 position-left"></i> Dashboard</a></li>
 
+                <li><a href="{{ url('docs')}}"><i class="icon-archive position-left"></i> Documents</a></li>
+
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="icon-stack2 position-left"></i> Orders <span class="caret"></span>
