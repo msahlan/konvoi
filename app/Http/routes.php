@@ -101,6 +101,21 @@ Route::post('/locationlog', 'LocationlogController@postIndex');
 Route::get('/route', 'RouteController@getIndex');
 Route::post('/route', 'RouteController@postIndex');
 
+Route::get('/docs', 'DocsController@getIndex');
+Route::post('/docs', 'DocsController@postIndex');
+Route::get('/docs/printlabel/{sessionname}/{printparam}/{format?}', 'DocsController@getPrintlabel');
+Route::get('/docs/import', 'DocsController@getImport');
+Route::post('/docs/uploadimport', 'DocsController@postUploadimport');
+Route::get('/docs/commit/{sessid}', 'DocsController@getCommit');
+Route::post('/docs/commit/{sessid}', 'DocsController@postCommit');
+Route::post('/docs/dlxl', 'DocsController@postDlxl');
+Route::get('/docs/dl/{filename}', 'DocsController@getDl');
+Route::get('/docs/csv/{filename}', 'DocsController@getCsv');
+Route::get('/docs/add', 'DocsController@getAdd');
+Route::post('/docs/add', 'DocsController@postAdd');
+
+
+
 /* Fast Routes */
 
 Route::get('qr/{txt}',function($txt){

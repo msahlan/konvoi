@@ -26,7 +26,7 @@
             </div>
 
             <div class="form-group has-feedback has-feedback-left">
-                <input type="text" name="password" class="form-control" placeholder="Password">
+                <input type="password" name="password" class="form-control" placeholder="Password">
                 <div class="form-control-feedback">
                     <i class="icon-lock2 text-muted"></i>
                 </div>

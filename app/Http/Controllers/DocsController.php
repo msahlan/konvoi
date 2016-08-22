@@ -1,29 +1,51 @@
 <?php
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\AdminController;
+
+use App\Models\Document;
+
+use App\Helpers\Prefs;
+
+use Creitive\Breadcrumbs\Breadcrumbs;
+
+use Config;
+
+use Auth;
+use Event;
+use View;
+use Input;
+use Request;
+use Response;
+use Mongomodel;
+use \MongoRegex;
+use DB;
+use HTML;
 
 class DocsController extends AdminController {
 
-        private $default_heads = array(
-            array('CREATED DATE',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
-            array('TYPE',array('search'=>true,'sort'=>true)),
-            array('FILE NAME',array('search'=>true,'sort'=>true)),
-            array('CREATED BY',array('search'=>true,'sort'=>true)),
-            array('PATH',array('search'=>true,'sort'=>true)),
-        );
+    private $default_heads = array(
+        array('Created',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
+        array('Incoming / Outgoing',array('search'=>true,'sort'=>true)),
+        array('I/O Date',array('search'=>true,'sort'=>true,'daterange'=>true)),
+        array('Subject',array('search'=>true,'sort'=>true)),
+        array('Originator',array('search'=>true,'sort'=>true)),
+    );
 
-        private $default_fields = array(
-            array('timestamp',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('type',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('filename',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('creator_name',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('fullpath',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        );
+    private $default_fields = array(
+        array('createdDate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('IO',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('IODate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('Subject',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('Sender',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+    );
 
 
     public function __construct()
     {
         parent::__construct();
 
-                $cname = substr(strrchr(get_class($this), '\\'), 1);
+        $cname = substr(strrchr(get_class($this), '\\'), 1);
         $this->controller_name = str_replace('Controller', '', $cname);
 
 
