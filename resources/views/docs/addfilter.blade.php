@@ -25,24 +25,24 @@
         <h6>Print options</h6>
         <div style="border-bottom:thin solid #ccc;" class="row clearfix">
             <div class="col-md-2">
-                {{ Former::text('label_columns','Number of columns')->value('4')->id('label_columns')->class('form-control input-sm') }}
-                {{ Former::text('label_res','Resolution')->value('150')->id('label_res')->class('form-control input-sm') }}
+                {!! Former::text('label_columns','Number of columns')->value('4')->id('label_columns')->class('form-control input-sm')  !!}
+                {!! Former::text('label_res','Resolution')->value('150')->id('label_res')->class('form-control input-sm')  !!}
             </div>
             <div class="col-md-2">
-                {{ Former::text('label_cell_height','Label height')->value('230')->id('label_cell_height')->class('form-control input-sm') }}
-                {{ Former::text('label_cell_width','Label width')->value('200')->id('label_cell_width')->class('form-control input-sm') }}
+                {!! Former::text('label_cell_height','Label height')->value('230')->id('label_cell_height')->class('form-control input-sm')  !!}
+                {!! Former::text('label_cell_width','Label width')->value('200')->id('label_cell_width')->class('form-control input-sm')  !!}
             </div>
             <div class="col-md-2">
-                {{ Former::text('label_margin_right','Label margin right')->value('8')->id('label_margin_right')->class('form-control input-sm') }}
-                {{ Former::text('label_margin_bottom','Label margin bottom')->value('10')->id('label_margin_bottom')->class('form-control input-sm') }}
+                {!! Former::text('label_margin_right','Label margin right')->value('8')->id('label_margin_right')->class('form-control input-sm')  !!}
+                {!! Former::text('label_margin_bottom','Label margin bottom')->value('10')->id('label_margin_bottom')->class('form-control input-sm')  !!}
             </div>
             <div class="col-md-2">
-                {{ Former::text('label_offset_right','Page left offset')->value('40')->id('label_offset_right')->class('form-control input-sm') }}
-                {{ Former::text('label_offset_bottom','Page top offset')->value('20')->id('label_offset_bottom')->class('form-control input-sm') }}
+                {!! Former::text('label_offset_right','Page left offset')->value('40')->id('label_offset_right')->class('form-control input-sm')  !!}
+                {!! Former::text('label_offset_bottom','Page top offset')->value('20')->id('label_offset_bottom')->class('form-control input-sm')  !!}
             </div>
             <div class="col-md-2">
-                {{ Former::text('font_size','Font size')->value('12')->id('font_size')->class('form-control input-sm') }}
-                {{ Former::select('code_type','Code type')->id('code_type')->options(array('qr'=>'QR','barcode'=>'Barcode') )}}
+                {!! Former::text('font_size','Font size')->value('12')->id('font_size')->class('form-control input-sm')  !!}
+                {!! Former::select('code_type','Code type')->id('code_type')->options(array('qr'=>'QR','barcode'=>'Barcode') ) !!}
             </div>
             <div class="col-md-2">
                 <button id="label_default" class="btn btn-raised btn-primary btn-sm" ><i class="fa fa-save"></i> make default</button>
@@ -109,7 +109,7 @@
             var code_type = $('#code_type').val();
             var offset_left = $('#label_offset_left').val();
             var offset_top = $('#label_offset_top').val();
-            var src = '{{ URL::to('incoming/printlabel')}}/' + sessionname + '/' + col + ':' + res + ':' + cell_width + ':' + cell_height + ':' + margin_right + ':' + margin_bottom + ':' + font_size + ':' + code_type + ':' + offset_left + ':' + offset_top;
+            var src = '{{ url('docs/printlabel')}}/' + sessionname + '/' + col + ':' + res + ':' + cell_width + ':' + cell_height + ':' + margin_right + ':' + margin_bottom + ':' + font_size + ':' + code_type + ':' + offset_left + ':' + offset_top;
 
             $('#label_frame').attr('src',src);
 
@@ -145,7 +145,7 @@
                             var code_type = $('#code_type').val();
                             var offset_left = $('#label_offset_left').val();
                             var offset_top = $('#label_offset_top').val();
-                            var src = '{{ URL::to('incoming/printlabel')}}/' + data.sessionname + '/' + col + ':' + res + ':' + cell_width + ':' + cell_height + ':' + margin_right + ':' + margin_bottom + ':' + font_size + ':' + code_type + ':' + offset_left + ':' + offset_top;
+                            var src = '{{ url('docs/printlabel')}}/' + data.sessionname + '/' + col + ':' + res + ':' + cell_width + ':' + cell_height + ':' + margin_right + ':' + margin_bottom + ':' + font_size + ':' + code_type + ':' + offset_left + ':' + offset_top;
                             $('#label_frame').attr('src',src);
                             $('#print-modal').modal('show');
                         }else{

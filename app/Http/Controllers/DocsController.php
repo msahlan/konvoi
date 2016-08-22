@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AdminController;
 
 use App\Models\Document;
+use App\Models\Printsession;
 
 use App\Helpers\Prefs;
 
@@ -19,25 +20,32 @@ use Request;
 use Response;
 use Mongomodel;
 use \MongoRegex;
+use \MongoDate;
+use \MongoId;
+use \MongoInt32;
 use DB;
 use HTML;
 
 class DocsController extends AdminController {
 
     private $default_heads = array(
-        array('Created',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
+        array('Call Code',array('search'=>true,'sort'=>true)),
         array('Incoming / Outgoing',array('search'=>true,'sort'=>true)),
         array('I/O Date',array('search'=>true,'sort'=>true,'daterange'=>true)),
+        array('Doc Date',array('search'=>true,'sort'=>true,'daterange'=>true)),
         array('Subject',array('search'=>true,'sort'=>true)),
-        array('Originator',array('search'=>true,'sort'=>true)),
+        array('Sender',array('search'=>true,'sort'=>true)),
+        array('Created',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
     );
 
     private $default_fields = array(
-        array('createdDate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('IO',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('IODate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('Subject',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('Sender',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('fcallcode',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('io',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('iodate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('docdate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('subject',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('sender',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('created',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
     );
 
 
@@ -597,6 +605,29 @@ class DocsController extends AdminController {
         return parent::postUploadimport();
     }
 
+    public function beforeImportCommit($data)
+    {
+
+        unset($data['createdDate']);
+        unset($data['lastUpdate']);
+
+        $data['created'] = $data['created_at'];
+
+        unset($data['created_at']);
+        unset($data['updated_at']);
+
+        unset($data['volume']);
+        unset($data['sessId']);
+        unset($data['isHead']);
+
+        $data['iodate']  = new MongoDate(strtotime($data['iodate']));
+        $data['docdate'] = new MongoDate(strtotime($data['docdate']));
+        $data['retdate'] = new MongoDate(strtotime($data['retdate']));
+
+        return $data;
+    }
+
+
     public function makeActions($data)
     {
 
@@ -891,7 +922,7 @@ class DocsController extends AdminController {
         $top_offset = $pr[9];
 
         $session = Printsession::find($sessionname)->toArray();
-        $labels = Shipment::whereIn('_id', $session)->get()->toArray();
+        $labels = Document::whereIn('_id', $session)->get()->toArray();
 
         $skus = array();
         foreach($labels as $l){
@@ -900,14 +931,14 @@ class DocsController extends AdminController {
 
         $skus = array_unique($skus);
 
-        $products = Shipment::whereIn('_id',$skus)->get()->toArray();
+        $products = Document::whereIn('_id',$skus)->get()->toArray();
 
         $plist = array();
         foreach($products as $product){
-            $plist[$product['_id']] = $product;
+            $plist[$product['fcallcode']] = $product;
         }
 
-        return View::make('asset.printlabel')
+        return View::make('docs.printlabel')
             ->with('columns',$columns)
             ->with('resolution',$resolution)
             ->with('cell_width',$cell_width)

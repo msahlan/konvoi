@@ -38,7 +38,7 @@
         width: 100%;
         height: 100%;
         border: none;
-        font-size: {{ $font_size; }}pt;
+        font-size: {{ $font_size }}pt;
         padding: 0px;
         margin: 0px;
     }
@@ -68,7 +68,7 @@
         @if($code_type == 'barcode')
             display: inline-block;
         @endif
-        max-width: {{ $cell_width; }}px;
+        max-width: {{ $cell_width }}px;
     }
 
     img.barcode{
@@ -98,8 +98,8 @@
     ?>
 
     #container{
-        width: {{ $container; }}px;
-        max-width: {{ $container; }}px;
+        width: {{ $container }}px;
+        max-width: {{ $container }}px;
         display: block;
     }
 
@@ -109,25 +109,34 @@
 <div id="container">
 
 @foreach( $labels as $l )
-    <?php $pd = $products[ $l['SKU'] ]; ?>
-    <div class="label">
-        <table>
-            <tr>
-                <td style="text-align:center">
-                    @if($code_type == 'qr')
-                        <img src="{{ URL::to('qr/'.urlencode(base64_encode($l['SKU'])) ) }}" class="barcode" alt="{{ $l['_id'] }}" />
-                    @else
-                        <img src="{{ URL::to('pdf417/'.urlencode(base64_encode($l['SKU'])) ) }}" class="barcode" alt="{{ $l['_id'] }}" />
-                    @endif
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align:center">
-                    {{ $pd['SKU']}}
-                </td>
-            </tr>
-        </table>
-    </div>
+    <?php $pd = $products[ $l['fcallcode'] ]; ?>
+
+        <div class="label">
+            <table>
+                <tr>
+                    <td style="text-align:center">
+                        @if($code_type == 'qr')
+
+                            <?php
+
+                                $qrstring = $l['fcallcode'];
+
+                            ?>
+
+                            <img src="{{ URL::to('qr/'.urlencode(base64_encode($qrstring)) ) }}" class="barcode" alt="{{ $l['fcallcode'] }}" />
+                        @else
+                            <img src="{{ URL::to('pdf417/'.urlencode(base64_encode($l['fcallcode'])) ) }}" class="barcode" alt="{{ $l['fcallcode'] }}" />
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center">
+                        {{ $pd['fcallcode'] }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+
 <?php endforeach; ?>
 
 </div>

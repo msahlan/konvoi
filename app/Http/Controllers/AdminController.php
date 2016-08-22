@@ -4328,6 +4328,7 @@ class AdminController extends Controller {
                 //$reader->formatDates(true, 'Y-m-d H:i:s');
                 $reader->noHeading();
                 $reader->formatDates(true);
+                $reader->setDateFormat('Y-m-d');
                 $imp = $reader->skip(config('import.header_row'))->toArray();
                 $ihead = $reader->skip(config('import.header_row'))->take(1)->toArray();
                 $idata = $reader->skip(config('import.data_row'))->take($datalimit)->toArray();
