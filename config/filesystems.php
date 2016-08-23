@@ -54,6 +54,12 @@ return [
             'visibility' => 'public',
         ],
 
+        'repo' => [
+            'driver' => 'local',
+            'root' => storage_path('public/repository'),
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => 'your-key',

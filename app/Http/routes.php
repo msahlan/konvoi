@@ -113,10 +113,20 @@ Route::get('/docs/dl/{filename}', 'DocsController@getDl');
 Route::get('/docs/csv/{filename}', 'DocsController@getCsv');
 Route::get('/docs/add', 'DocsController@getAdd');
 Route::post('/docs/add', 'DocsController@postAdd');
+Route::post('/docs/dirscan', 'DocsController@postDirscan');
 
 
 
 /* Fast Routes */
+
+Route::get('dir', function(){
+    $storagePath  = Storage::disk('local')->getDriver()->getAdapter()->getPathPrefix();
+    print $storagePath;
+
+    $files = Storage::disk('repo')->files();
+    print_r($files);
+});
+
 
 Route::get('qr/{txt}',function($txt){
     $txt = base64_decode($txt);

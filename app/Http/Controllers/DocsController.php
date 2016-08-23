@@ -25,6 +25,7 @@ use \MongoId;
 use \MongoInt32;
 use DB;
 use HTML;
+use Storage;
 
 class DocsController extends AdminController {
 
@@ -65,6 +66,24 @@ class DocsController extends AdminController {
         //$this->model = DB::collection('documents');
         $this->title = 'Documents';
 
+    }
+
+
+    public function postDirscan()
+    {
+        $files = Storage::disk('repo')->files();
+        foreach ($files as $file) {
+            $f = str_replace(['.jpg','.png','.gif','.pdf'],'',$file);
+
+            $d = Document::where('fcallcode','=',$f)->first();
+            if($d){
+                $storagePath  = Storage::disk('repo')->getDriver()->getAdapter()->getPathPrefix();
+                print $storagePath.$file;
+                $d->linked = $storagePath.$file;
+                $d->linkedfilename = $file;
+            }
+
+        }
     }
 
     public function getDetail($id)

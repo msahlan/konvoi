@@ -1,5 +1,6 @@
 <a class="btn btn-raised btn-transparent btn-info btn-sm" id="print_barcodes"><i class="fa fa-print"></i> Print QR Label</a>
 <a class="btn btn-raised btn-transparent btn-info btn-sm" id="move_orders"><i class="fa fa-arrows"></i> Move Selected to</a>
+<a class="btn btn-raised btn-transparent btn-info btn-sm" id="link_files"><i class="icon-link"></i> Link Files</a>
 
 <div id="move-order-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
@@ -89,6 +90,17 @@
         $('#outlet_filter').on('change',function(){
             oTable.draw();
         });
+
+        $('#link_files').on('click',function(e){
+            $.post('{{url('docs/dirscan') }}',
+                {},
+                function(data){
+
+                },'json');
+            //$('#move-order-modal').modal();
+            e.preventDefault();
+        });
+
 
         $('#move_orders').on('click',function(e){
             $('#move-order-modal').modal();
