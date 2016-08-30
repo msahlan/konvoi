@@ -12,6 +12,24 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-cube3 position-left"></i> Assets <span class="caret"></span>
+                    </a>
+
+                    <ul class="dropdown-menu width-200">
+                        <li>
+                            <a href="{{ url('asset') }}"><i class="icon-android"></i> Asset List</a>
+                        </li>
+                        <li>
+                            <a href="{{ url('assetlocation') }}"><i class="icon-arrow-right16"></i> Asset Location</a>
+                        </li>
+                        <li>
+                            <a href="{{ url('assetlocation') }}"><i class="icon-arrow-right16"></i> Asset Transaction</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="icon-stack2 position-left"></i> Orders <span class="caret"></span>
                     </a>
 
@@ -47,7 +65,7 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="icon-cube3 position-left"></i> Assets <span class="caret"></span>
+                        <i class="icon-cube3 position-left"></i> Op Assets <span class="caret"></span>
                     </a>
 
                     <ul class="dropdown-menu width-200">

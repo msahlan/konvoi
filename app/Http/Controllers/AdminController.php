@@ -4339,11 +4339,12 @@ class AdminController extends Controller {
 
             print_r($headrow);
 
+            /*
             for($h=0;$h < count($headrow);$h++){
                 if(isset($headrow[$h])){
                     $headrow[$h] = strtolower($headrow[$h]);
                 }
-            }
+            }*/
 
             if(count($aux_form_data) > 0){
                 foreach($aux_form_data as $ak=>$av){

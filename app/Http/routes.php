@@ -115,6 +115,19 @@ Route::get('/docs/add', 'DocsController@getAdd');
 Route::post('/docs/add', 'DocsController@postAdd');
 Route::post('/docs/dirscan', 'DocsController@postDirscan');
 
+Route::get('/asset', 'AssetController@getIndex');
+Route::post('/asset', 'AssetController@postIndex');
+Route::get('/asset/printlabel/{sessionname}/{printparam}/{format?}', 'AssetController@getPrintlabel');
+Route::get('/asset/import', 'AssetController@getImport');
+Route::post('/asset/uploadimport', 'AssetController@postUploadimport');
+Route::get('/asset/commit/{sessid}', 'AssetController@getCommit');
+Route::post('/asset/commit/{sessid}', 'AssetController@postCommit');
+Route::post('/asset/dlxl', 'AssetController@postDlxl');
+Route::get('/asset/dl/{filename}', 'AssetController@getDl');
+Route::get('/asset/csv/{filename}', 'AssetController@getCsv');
+Route::get('/asset/add', 'AssetController@getAdd');
+Route::post('/asset/add', 'AssetController@postAdd');
+Route::post('/asset/dirscan', 'AssetController@postDirscan');
 
 
 /* Fast Routes */
