@@ -40,12 +40,12 @@ class DocsController extends AdminController {
     );
 
     private $default_fields = array(
-        array('fcallcode',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('io',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('iodate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('docdate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('subject',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('sender',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('Fcallcode',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('IO',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('IODate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('DocDate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('Subject',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('Sender',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
         array('created',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
     );
 
@@ -75,7 +75,7 @@ class DocsController extends AdminController {
         foreach ($files as $file) {
             $f = str_replace(['.jpg','.png','.gif','.pdf'],'',$file);
 
-            $d = Document::where('fcallcode','=',$f)->first();
+            $d = Document::where('Fcallcode','=',$f)->first();
             if($d){
                 $storagePath  = Storage::disk('repo')->getDriver()->getAdapter()->getPathPrefix();
                 print $storagePath.$file;
@@ -626,6 +626,8 @@ class DocsController extends AdminController {
 
     public function beforeImportCommit($data)
     {
+        print "before commit";
+        print_r($data);
 
         unset($data['createdDate']);
         unset($data['lastUpdate']);
@@ -639,9 +641,12 @@ class DocsController extends AdminController {
         unset($data['sessId']);
         unset($data['isHead']);
 
-        $data['iodate']  = new MongoDate(strtotime($data['iodate']));
-        $data['docdate'] = new MongoDate(strtotime($data['docdate']));
-        $data['retdate'] = new MongoDate(strtotime($data['retdate']));
+        print "before commit after transform";
+        print_r($data);
+
+        $data['IODate']  = isset($data['IODate'])? new MongoDate(strtotime( trim($data['IODate']))):'';
+        $data['DocDate'] = isset($data['DocDate'])? new MongoDate(strtotime( trim($data['DocDate']))):'';
+        $data['RetDate'] = isset($data['RetDate'])? new MongoDate(strtotime( trim($data['RetDate']))):'';
 
         return $data;
     }
@@ -954,7 +959,7 @@ class DocsController extends AdminController {
 
         $plist = array();
         foreach($products as $product){
-            $plist[$product['fcallcode']] = $product;
+            $plist[$product['Fcallcode']] = $product;
         }
 
         return View::make('docs.printlabel')

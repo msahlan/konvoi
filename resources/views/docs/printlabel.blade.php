@@ -109,7 +109,7 @@
 <div id="container">
 
 @foreach( $labels as $l )
-    <?php $pd = $products[ $l['fcallcode'] ]; ?>
+    <?php $pd = $products[ $l['Fcallcode'] ]; ?>
 
         <div class="label">
             <table>
@@ -119,19 +119,19 @@
 
                             <?php
 
-                                $qrstring = $l['fcallcode'];
+                                $qrstring = $l['Fcallcode'];
 
                             ?>
 
-                            <img src="{{ URL::to('qr/'.urlencode(base64_encode($qrstring)) ) }}" class="barcode" alt="{{ $l['fcallcode'] }}" />
+                            <img src="{{ URL::to('qr/'.urlencode(base64_encode($qrstring)) ) }}" class="barcode" alt="{{ $l['Fcallcode'] }}" />
                         @else
-                            <img src="{{ URL::to('pdf417/'.urlencode(base64_encode($l['fcallcode'])) ) }}" class="barcode" alt="{{ $l['fcallcode'] }}" />
+                            <img src="{{ URL::to('pdf417/'.urlencode(base64_encode($l['Fcallcode'])) ) }}" class="barcode" alt="{{ $l['Fcallcode'] }}" />
                         @endif
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align:center">
-                        {{ $pd['fcallcode'] }}
+                        {{ $pd['Fcallcode'] }}
                     </td>
                 </tr>
             </table>

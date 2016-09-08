@@ -4337,14 +4337,14 @@ class AdminController extends Controller {
 
             $headrow = $imp[0];
 
-            print_r($headrow);
+            $htemp = [];
 
-            /*
             for($h=0;$h < count($headrow);$h++){
-                if(isset($headrow[$h])){
-                    $headrow[$h] = strtolower($headrow[$h]);
+                if(isset($headrow[$h]) && trim($headrow[$h]) != '' ){
+                    //$headrow[$h] = strtolower($headrow[$h]);
+                    $htemp[] = $headrow[$h];
                 }
-            }*/
+            }
 
             if(count($aux_form_data) > 0){
                 foreach($aux_form_data as $ak=>$av){
@@ -4352,6 +4352,7 @@ class AdminController extends Controller {
                 }
             }
 
+            //$headrow = $htemp;
 
             $firstdata = 1;
 
@@ -4364,6 +4365,9 @@ class AdminController extends Controller {
             $sessobj->sessId = $rstring;
             $sessobj->save();
 
+            print "head";
+            print_r($headrow);
+            //print_r($imp);
 
             for($i = $firstdata; $i < count($imp);$i++){
 
@@ -4377,26 +4381,40 @@ class AdminController extends Controller {
                 $sessobj = new Importsession();
 
                 $rowtemp = array();
+
+                print "item before clean up";
+                print_r($rowitem);
+
                 foreach($rowitem as $k=>$v){
-                    $hkey = strtolower($headrow[$k]);
-                    $v = trim($v);
-                    $sessobj->{ $hkey } = $this->prepImportItem($headrow[$k],$v,$rowitem);
-                    $rowtemp[$hkey] = $v;
-                    $check .= $v;
+
+                    if( isset($headrow[$k]) && trim($headrow[$k]) != ''){
+                        $hkey = $headrow[$k];
+                        $v = trim($v);
+                        $sessobj->{ $hkey } = $this->prepImportItem($headrow[$k],$v,$rowitem);
+                        $rowtemp[$hkey] = $v;
+                        $check .= $v;
+                    }
+
                 }
 
                 if(count($aux_form_data) > 0){
                     foreach($aux_form_data as $ak=>$av){
 
-                        $sessobj->{ $ak } = $this->prepImportItem($ak,$av);
-                        $rowtemp[$ak] = $av;
+                        if(trim($ak) != ''){
+                            $sessobj->{ $ak } = $this->prepImportItem($ak,$av);
+                            $rowtemp[$ak] = $av;                            
+                        }
                     }
                 }
 
                 $rowitem = $rowtemp;
 
+
                 $sessobj->sessId = $rstring;
                 $sessobj->isHead = 0;
+
+                print "object to save";
+                print_r($sessobj->toArray());
 
                 if(trim($check) == ''){
 
@@ -4407,8 +4425,6 @@ class AdminController extends Controller {
             }
 
         }
-
-        //die();
 
         $this->backlink = strtolower($this->controller_name);
 
@@ -4516,7 +4532,8 @@ class AdminController extends Controller {
 
                     $obj->lastUpdate = new MongoDate();
 
-                    //print_r($obj);
+                    print "updated item";
+                    print_r($obj->toArray());
 
                     $obj->save();
                 }else{
@@ -4525,6 +4542,9 @@ class AdminController extends Controller {
                     unset($rowitem['isHead']);
                     $rowitem['createdDate'] = new MongoDate();
                     $rowitem['lastUpdate'] = new MongoDate();
+
+                    print "upserted item";
+                    print_r($rowitem);
 
                     $rowitem = $this->beforeImportCommit($rowitem);
 
@@ -4540,7 +4560,8 @@ class AdminController extends Controller {
                 $rowitem['createdDate'] = new MongoDate();
                 $rowitem['lastUpdate'] = new MongoDate();
 
-                //print_r($rowitem);
+                print "new inserted item";
+                print_r($rowitem);
 
                 $rowitem = $this->beforeImportCommit($rowitem);
 
