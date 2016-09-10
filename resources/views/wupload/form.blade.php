@@ -52,13 +52,24 @@
                         //for($t = 0; $t < count($filename);$t++){
 
                         if($singlefile){
-                            $files = Uploaded::where('parent_id',$parent_id )
-                                        ->where('deleted',0)
-                                        ->orderBy('createdDate','desc')
-                                        ->take(1)
-                                        ->get();
+                            if( isset($formdata['fileid']) && $formdata['fileid'] != ''){
+                                $files = Uploaded::where('_id', new MongoId( $formdata['fileid']) )
+                                            ->where('deleted',0)
+                                            ->orderBy('createdDate','desc')
+                                            ->take(1)
+                                            ->get();
+
+                            }else{
+                                $files = Uploaded::where('parent_id',$parent_id )
+                                            ->where('deleted',0)
+                                            ->orderBy('createdDate','desc')
+                                            ->take(1)
+                                            ->get();
+                            }
                         }else{
+                            //print "multi";
                             $files = Uploaded::where('parent_id',$parent_id )
+                                        //->orWhere('parent_id', new MongoId($parent_id))
                                         ->where('deleted',0)
                                         ->orderBy('createdDate','desc')
                                         ->get();
@@ -66,7 +77,7 @@
 
 
 
-                        if( count($files->toArray()) > 0){
+                        if( $files && count($files->toArray()) > 0 ){
                             foreach ($files->toArray() as $fd) {
                                 //print_r($fd);
 
@@ -76,9 +87,12 @@
                                     $detailview = 'wupload.detail';
                                 }
 
+                                //print $detailview;
+
+
 
                                 try {
-                                    $thumb = View::make($detailview)
+                                    $thumb = view($detailview)
                                                     ->with('filedata',$fd)
                                                     ->render();
 
@@ -89,6 +103,7 @@
                                 if($fd['ns'] == $ns){
                                     print $thumb;
                                 }
+
 
 
                             }
@@ -104,11 +119,30 @@
                         //print_r($allin);
 
                         if($singlefile){
+                            /*
                             $files = Uploaded::where('parent_id',$allin['parent_id'] )
                                         ->where('deleted',0)
                                         ->orderBy('createdDate','desc')
                                         ->take(1)
                                         ->get();
+                            */
+
+                            if( isset($allin['fileid']) && $allin['fileid'] != ''){
+                                $files = Uploaded::where('_id', new MongoId($allin['fileid']) )
+                                            ->where('deleted',0)
+                                            ->orderBy('createdDate','desc')
+                                            ->take(1)
+                                            ->get();
+
+                            }else{
+                                $files = Uploaded::where('parent_id',$allin['parent_id'] )
+                                            ->where('deleted',0)
+                                            ->orderBy('createdDate','desc')
+                                            ->take(1)
+                                            ->get();
+
+                            }
+
                         }else{
                             $files = Uploaded::where('parent_id',$allin['parent_id'] )
                                         ->where('deleted',0)

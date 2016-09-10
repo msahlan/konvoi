@@ -49,6 +49,10 @@
 
     <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/selects/select2.min.js"></script>
 
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/selects/bootstrap_select.min.js"></script>
+
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/pages/form_bootstrap_select.js"></script>
+
     <!-- /core JS files -->
 
     @yield('page_js')
@@ -79,6 +83,12 @@
 
         a.btn, input.btn.btn-raised.btn-primary{
             margin-top: 16px !important;
+        }
+
+        label{
+            margin-top: 8px !important;
+            margin-bottom: 0px !important;
+            font-weight: bold !important;
         }
 
     </style>

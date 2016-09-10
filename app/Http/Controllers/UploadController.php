@@ -319,7 +319,7 @@ class UploadController extends Controller {
         return Response::JSON(array('status'=>'OK','message'=>'' ,'file'=>$fileitems, 'thumbs'=>$thumbs ) );
     }
 
-    public function postAvatarold()
+    public function postDocs()
     {
         $files = Request::file('files');
 
@@ -327,13 +327,15 @@ class UploadController extends Controller {
 
         $parent_class = Request::input('parclass');
 
+        $singlefile = Request::input('singlefile');
+
         $ns = Request::input('ns');
 
         $file = $files[0];
 
         $rstring = str_random(15);
 
-        $destinationPath = realpath('storage/avatar').'/'.$rstring;
+        $destinationPath = realpath('storage/repository').'/'.$rstring;
 
         $filename = $file->getClientOriginalName();
         $filemime = $file->getMimeType();
@@ -361,9 +363,12 @@ class UploadController extends Controller {
             $ps = config('picture.sizes');
 
             $thumbnail = Image::make($destinationPath.'/'.$filename)
-                ->fit(50,50)
-                //->fit($ps['thumbnail']['width'],$ps['thumbnail']['height'])
+                ->fit($ps['thumbnail']['width'],$ps['thumbnail']['height'])
                 ->save($destinationPath.'/th_'.$filename);
+
+            $square = Image::make($destinationPath.'/'.$filename)
+                ->fit($ps['square']['width'],$ps['square']['height'])
+                ->save($destinationPath.'/sq_'.$filename);
 
             $medium = Image::make($destinationPath.'/'.$filename)
                 ->fit($ps['medium']['width'],$ps['medium']['height'])
@@ -377,10 +382,11 @@ class UploadController extends Controller {
                 ->save($destinationPath.'/full_'.$filename);
 
             $image_size_array = array(
-                'thumbnail_url'=> url('storage/avatar/'.$rstring.'/'.$ps['thumbnail']['prefix'].$filename),
-                'large_url'=> url('storage/avatar/'.$rstring.'/'.$ps['large']['prefix'].$filename),
-                'medium_url'=> url('storage/avatar/'.$rstring.'/'.$ps['medium']['prefix'].$filename),
-                'full_url'=> url('storage/avatar/'.$rstring.'/'.$ps['full']['prefix'].$filename),
+                'thumbnail_url'=> url('storage/repository/'.$rstring.'/'.$ps['thumbnail']['prefix'].$filename),
+                'square_url'=> url('storage/repository/'.$rstring.'/'.$ps['square']['prefix'].$filename),
+                'large_url'=> url('storage/repository/'.$rstring.'/'.$ps['large']['prefix'].$filename),
+                'medium_url'=> url('storage/repository/'.$rstring.'/'.$ps['medium']['prefix'].$filename),
+                'full_url'=> url('storage/repository/'.$rstring.'/'.$ps['full']['prefix'].$filename),
             );
 
         }else{
@@ -439,10 +445,16 @@ class UploadController extends Controller {
 
         $files = Uploaded::where('parent_id',$parent_id )
                     ->where('parent_class', $parent_class)
-                    ->where('ns',$ns)
+                    //->where('ns',$ns)
                     ->where('deleted',0)
-                    ->orderBy('createdDate','desc')
-                    ->get();
+                    ->orderBy('createdDate','desc');
+
+        if($singlefile){
+            $files = $files->take(1)->get();
+        }else{
+            $files = $files->get();
+        }
+
 
         $prefix = $parent_class;
 
@@ -458,6 +470,8 @@ class UploadController extends Controller {
                     $detailview = 'wupload.detail';
                 }
 
+                //print $detailview;
+
                 $thumb = View::make($detailview)
                                 ->with('filedata',$fd)
                                 ->render();
@@ -471,6 +485,133 @@ class UploadController extends Controller {
         $thumbs = base64_encode($thumbs);
 
         return Response::JSON(array('status'=>'OK','message'=>'' ,'file'=>$fileitems, 'thumbs'=>$thumbs ) );
+    }
+
+    public function postDoc($ns = 'document')
+    {
+        $files = Request::file('files');
+
+        $file = $files[0];
+
+        //print_r($file);
+
+        //exit();
+
+        $large_wm = public_path().'/wm/wm_lrg.png';
+        $med_wm = public_path().'/wm/wm_med.png';
+        $sm_wm = public_path().'/wm/wm_sm.png';
+
+        $rstring = str_random(15);
+
+        $destinationPath = realpath('storage/repository').'/'.$rstring;
+
+        $filename = $file->getClientOriginalName();
+        $filemime = $file->getMimeType();
+        $filesize = $file->getSize();
+        $extension =$file->getClientOriginalExtension(); //if you need extension of the file
+
+        $filename = str_replace(config('kickstart.invalidchars'), '-', $filename);
+
+        $uploadSuccess = $file->move($destinationPath, $filename);
+
+
+        $is_image = $this->isImage($filemime);
+        $is_audio = $this->isAudio($filemime);
+        $is_video = $this->isVideo($filemime);
+        $is_pdf = $this->isPdf($filemime);
+
+        if(!($is_image || $is_audio || $is_video || $is_pdf)){
+            $is_doc = true;
+        }else{
+            $is_doc = false;
+        }
+
+        if($is_image){
+
+            $ps = config('picture.sizes');
+
+            $thumbnail = Image::make($destinationPath.'/'.$filename)
+                ->fit($ps['thumbnail']['width'],$ps['thumbnail']['height'])
+                //->insert($sm_wm,0,0, 'bottom-right')
+                ->save($destinationPath.'/th_'.$filename);
+
+            $medium = Image::make($destinationPath.'/'.$filename)
+                ->fit($ps['medium']['width'],$ps['medium']['height'])
+                //->insert($med_wm,0,0, 'bottom-right')
+                ->save($destinationPath.'/med_'.$filename);
+
+            $large = Image::make($destinationPath.'/'.$filename)
+                ->fit($ps['large']['width'],$ps['large']['height'])
+                //->insert($large_wm, 'bottom-right',15,15)
+                ->save($destinationPath.'/lrg_'.$filename);
+
+            $full = Image::make($destinationPath.'/'.$filename)
+                //->insert($large_wm, 'bottom-right',15,15)
+                ->save($destinationPath.'/full_'.$filename);
+
+            $image_size_array = array(
+                'thumbnail_url'=> url('storage/repository/'.$rstring.'/'.$ps['thumbnail']['prefix'].$filename),
+                'large_url'=> url('storage/repository/'.$rstring.'/'.$ps['large']['prefix'].$filename),
+                'medium_url'=> url('storage/repository/'.$rstring.'/'.$ps['medium']['prefix'].$filename),
+                'full_url'=> url('storage/repository/'.$rstring.'/'.$ps['full']['prefix'].$filename),
+            );
+
+            $status = 'OK';
+            $message = '';
+        }else{
+
+            $file_url = url('storage/repository/'.$rstring.'/'.$filename);
+
+            if($is_audio){
+                $thumbnail_url = View::make('media.audio')->with('title',$filename)->with('artist','-')->with('source',$file_url);
+            }elseif($is_video){
+                $thumbnail_url = url('images/video.png');
+            }else{
+                $thumbnail_url = url('images/media.png');
+            }
+
+            $image_size_array = array(
+                'thumbnail_url'=> $thumbnail_url,
+                'large_url'=> '',
+                'medium_url'=> '',
+                'full_url'=> ''
+            );
+
+            $status = 'ERR';
+            $message = 'Please upload picture file only';
+        }
+
+
+        $fileitems = array();
+
+        if($uploadSuccess){
+            $item = array(
+                    'ns'=>$ns,
+                    'role'=>'photo',
+                    'url'=> url('storage/repository/'.$rstring.'/'.$filename),
+                    'temp_dir'=> $destinationPath,
+                    'file_id'=> $rstring,
+                    'is_image'=>$is_image,
+                    'is_audio'=>$is_audio,
+                    'is_video'=>$is_video,
+                    'is_pdf'=>$is_pdf,
+                    'is_doc'=>$is_doc,
+                    'name'=> $filename,
+                    'type'=> $filemime,
+                    'size'=> $filesize,
+                    'delete_url'=> url('storage/repository/'.$rstring.'/'.$filename),
+                    'delete_type'=> 'DELETE'
+                );
+
+            foreach($image_size_array as $k=>$v){
+                $item[$k] = $v;
+            }
+
+            $fileitems[] = $item;
+
+        }
+
+        return Response::JSON(array('status'=>$status,'role'=>'document' ,'message'=>$message ,'files'=>$fileitems) );
     }
 
     public function postAsset($ns = 'asset')

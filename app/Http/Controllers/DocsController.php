@@ -5,6 +5,9 @@ use App\Http\Controllers\AdminController;
 
 use App\Models\Document;
 use App\Models\Printsession;
+use App\Models\Uploaded;
+
+use App\Models\History;
 
 use App\Helpers\Prefs;
 
@@ -46,7 +49,7 @@ class DocsController extends AdminController {
         array('DocDate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
         array('Subject',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
         array('Sender',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('created',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('createdDate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
     );
 
 
@@ -189,24 +192,10 @@ class DocsController extends AdminController {
 
         $this->fields = $this->default_fields;
 
-        /*
-        $categoryFilter = Request::input('categoryFilter');
-        if($categoryFilter != ''){
-            $this->additional_query = array('shopcategoryLink'=>$categoryFilter, 'group_id'=>4);
-        }
-
-        $db = config('jayon.main_db');
-
-        $this->def_order_by = 'ordertime';
+        $this->def_order_by = 'createdDate';
         $this->def_order_dir = 'desc';
         $this->place_action = 'first';
         $this->show_select = true;
-
-        $this->sql_key = 'delivery_id';
-        $this->sql_table_name = config('jayon.incoming_delivery_table');
-        $this->sql_connection = 'mysql';
-
-        */
 
         return parent::tableResponder();
     }
@@ -519,12 +508,65 @@ class DocsController extends AdminController {
     public function beforeSave($data)
     {
 
+        $docs = array();
+
+        if( isset($data['fileid'])){
+
+            if(is_array($data['fileid'])){
+                foreach($data['fileid'] as $fid){
+                    $avfile = Uploaded::find($data['fileid']);
+                    if($avfile){
+                        $docs[] = $avfile->toArray();
+                    }
+                }
+            }else{
+                $avfile = Uploaded::find($data['fileid']);
+                if($avfile){
+                    $docs[] = $avfile->toArray();
+                }
+            }
+
+        }
+
+        $data['docFiles']= $docs;
+
+        $data['created'] = $data['createdDate'];
         return $data;
     }
 
     public function beforeUpdate($id,$data)
     {
 
+        $docs = array();
+
+        if( isset($data['fileid'])){
+
+            if(is_array($data['fileid'])){
+
+                foreach($data['fileid'] as $fid){
+                    $ids[] = new MongoId($fid);
+                }
+
+                $avfiles = Uploaded::whereIn('_id',$ids)->get();
+
+                foreach($avfiles as $av){
+                    $av->parent_id = $id;
+                    $av->save();
+                }
+
+                $docs = $avfiles->toArray();
+
+            }else{
+                $avfile = Uploaded::find($data['fileid']);
+                if($avfile){
+                    $docs[] = $avfile->toArray();
+                }
+            }
+
+        }
+
+
+        $data['docFiles'] = $docs;
 
         return $data;
     }
@@ -548,13 +590,20 @@ class DocsController extends AdminController {
         $hdata['historyObject'] = $data;
         History::insert($hdata);
 
+        foreach($data['docFiles'] as $p) {
+            $up = Uploaded::find($p['_id']);
+            if($up){
+                $up->parent_id = $p['_id'];
+                $up->save();
+            }
+        }
+
         return $data;
     }
 
     public function afterUpdate($id,$data = null)
     {
         $data['_id'] = new MongoId($id);
-
 
         $hdata = array();
         $hdata['historyTimestamp'] = new MongoDate();
@@ -564,7 +613,14 @@ class DocsController extends AdminController {
         $hdata['historyObject'] = $data;
         History::insert($hdata);
 
-
+/*        foreach($data['docFiles'] as $p) {
+            $up = Uploaded::find($p['_id']);
+            if($up){
+                $up->parent_id = $id;
+                $up->save();
+            }
+        }
+*/
         return $id;
     }
 
@@ -572,7 +628,7 @@ class DocsController extends AdminController {
     public function postAdd($data = null)
     {
         $this->validator = array(
-            'logistic_code' => 'required'
+            'Subject' => 'required'
         );
 
         return parent::postAdd($data);
@@ -581,7 +637,7 @@ class DocsController extends AdminController {
     public function postEdit($id,$data = null)
     {
         $this->validator = array(
-            'logistic_code' => 'required'
+            'Subject' => 'required'
         );
 
         //exit();
@@ -629,10 +685,10 @@ class DocsController extends AdminController {
         print "before commit";
         print_r($data);
 
-        unset($data['createdDate']);
-        unset($data['lastUpdate']);
+        //unset($data['createdDate']);
+        //unset($data['lastUpdate']);
 
-        $data['created'] = $data['created_at'];
+        $data['created'] = $data['createdDate'];
 
         unset($data['created_at']);
         unset($data['updated_at']);
@@ -643,6 +699,8 @@ class DocsController extends AdminController {
 
         print "before commit after transform";
         print_r($data);
+
+        $data['created']  = isset($data['created'])? new MongoDate(strtotime( trim($data['created']))):'';
 
         $data['IODate']  = isset($data['IODate'])? new MongoDate(strtotime( trim($data['IODate']))):'';
         $data['DocDate'] = isset($data['DocDate'])? new MongoDate(strtotime( trim($data['DocDate']))):'';
@@ -660,7 +718,7 @@ class DocsController extends AdminController {
         $edit = '<a href="'.url( strtolower($this->controller_name).'/edit/'.$data['_id']).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Update" ><i class="fa fa-edit"></i></a>';
 
         $print = '<a href="'.url( strtolower($this->controller_name).'/print/'.$data['_id']).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Update" ><i class="fa fa-print"></i></a>';
-        $actions = $print;
+        $actions = $edit.'<br />'.$print.'<br />'.$delete;
 
         /*
         if(!is_array($data)){

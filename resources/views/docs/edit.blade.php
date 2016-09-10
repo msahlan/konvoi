@@ -1,69 +1,96 @@
-@extends('layout.form')
+@extends('layouts.formtwo')
 
 @section('left')
-        {{ Former::hidden('_id')->value($formdata['_id']) }}
 
-        <h5>Logistic Information</h5>
+        <h5>Document Info</h5>
 
-        {{ Former::text('name','Logistic Name') }}
-        {{ Former::text('logistic_code','Logistic Code') }}
 
-        {{ Former::select('type')->options(array('internal'=>'Internal','external'=>'External'))->label('Type') }}
+        {!! Former::text('Subject','Subject') !!}
 
-        {{ Former::select('status')->options(array('inactive'=>'Inactive','active'=>'Active'))->label('Status') }}
+        {!! Former::text('DocRef','Doc. Ref.') !!}
 
-        <h5>Person In Charge Contact Info</h5>
-
-        {{ Former::text('rep_name','Full Name') }}
-
-        {{ Former::text('rep_email','Email') }}
+        {!! Former::text('DocDate','Doc. Date') !!}
 
         <div class="row">
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('rep_phone','Phone') }}
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                {!! Former::select('Tipe')->options(array('inactive'=>'Inactive','active'=>'Active'))->label('Type')->class('form-control bootstrap-select')  !!}
             </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('rep_mobile_1','Mobile 1') }}
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                {!! Former::select('IO')->options(array('incoming'=>'Incoming','outgoing'=>'Outgoing'))->label('I/O')->class('form-control bootstrap-select')  !!}
             </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('rep_mobile_2','Mobile 2') }}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::text('rep_mobile_3','Mobile 3') }}
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                {!! Former::text('IODate','IO Date') !!}
             </div>
         </div>
 
 
-        {{ Former::text('rep_addr','Address') }}
 
-        <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {{ Former::text('rep_city','City') }}
-            </div>
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {{ Former::text('rep_zip','ZIP / Kode Pos') }}
-            </div>
-        </div>
+        <h5>Actors</h5>
 
-        {{ Former::select('rep_country')->id('country')->options(Config::get('country.countries'))->label('Country of Origin') }}
+        {!! Former::text('Sender','Sender') !!}
+
+        {!! Former::text('Recipient','Recipient') !!}
+
+        {!! Former::text('Action','Action') !!}
 
 
-        {{ Form::submit('Save',array('class'=>'btn btn-raised btn-primary'))}}&nbsp;&nbsp;
-        {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
+        {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary'))!!}&nbsp;&nbsp;
+        {!! HTML::link($back,'Cancel',array('class'=>'btn'))!!}
 
 @stop
 
 @section('right')
-        <h5>Consignee Information</h5>
+        <h5>Call Code</h5>
+        <div class="row">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('Topic','Topic') !!}
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('Coy','Company') !!}
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('MMYY','MMYY') !!}
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('Urut','Sequence') !!}
+            </div>
+        </div>
 
-        {{ Former::text('consignee_olshop_cust','Consignee ID') }}
 
-        <h5>Description & Support</h5>
+        {!! Former::text('Fcallcode','File Call Code')->id('Fcallcode') !!}
 
-        {{ Former::text('support_url','Support URL') }}
+        <h5>Location</h5>
 
-        {{ Former::textarea('logistic_desc','Logistic Description')->rows(10)->columns(20) }}
+        <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {!! Former::text('Location','Location') !!}
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {!! Former::text('Boxing','Boxing') !!}
+            </div>
+        </div>
 
+        <h5>Retention</h5>
+
+        <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {!! Former::text('RetPer','Retention Period') !!}
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {!! Former::text('RetDate','Retention Date') !!}
+            </div>
+        </div>
+
+        <h5>File</h5>
+
+        {!! $fupload->id('docupload')
+            ->ns('document')
+            ->title('Select Document')
+            ->label('Upload Document')
+            ->url('upload/docs')
+            ->singlefile(false)
+            ->prefix('document')
+            ->multi(true)->make($formdata) !!}
 
 @stop
 
@@ -72,10 +99,10 @@
 @stop
 
 @section('aux')
-{{ HTML::style('css/summernote.css') }}
-{{ HTML::style('css/summernote-bs3.css') }}
+{!! HTML::style('css/summernote.css') !!}
+{!! HTML::style('css/summernote-bs3.css') !!}
 
-{{ HTML::script('js/summernote.min.js') }}
+{!! HTML::script('js/summernote.min.js') !!}
 
 <script type="text/javascript">
 

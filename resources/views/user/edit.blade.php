@@ -38,6 +38,11 @@
 
         {!! Former::select('countryOfOrigin')->id('country')->options(config('country.countries'))->label('Country of Origin')  !!}
 
+        <h4>Company Info</h4>
+
+        {!! Former::text('companyName','Company Name')  !!}
+        {!! Former::text('companyAddress','Address')  !!}
+
 
         {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary')) !!}&nbsp;&nbsp;
         {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}

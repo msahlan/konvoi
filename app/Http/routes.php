@@ -17,6 +17,7 @@ Route::auth();
 
 Route::post('/upload', 'UploadController@postIndex');
 Route::post('/upload/avatar', 'UploadController@postAvatar');
+Route::post('/upload/docs', 'UploadController@postDocs');
 
 
 Route::get('/user', 'UserController@getIndex');
@@ -113,6 +114,10 @@ Route::get('/docs/dl/{filename}', 'DocsController@getDl');
 Route::get('/docs/csv/{filename}', 'DocsController@getCsv');
 Route::get('/docs/add', 'DocsController@getAdd');
 Route::post('/docs/add', 'DocsController@postAdd');
+
+Route::get('/docs/edit/{id}', 'DocsController@getEdit');
+Route::post('/docs/edit/{id}', 'DocsController@postEdit');
+
 Route::post('/docs/dirscan', 'DocsController@postDirscan');
 
 Route::get('/asset', 'AssetController@getIndex');
