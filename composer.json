@@ -30,8 +30,8 @@
     "autoload": {
         "classmap": [
             "database",
-            "app/models",
-            "app/helpers"
+            "app/Models",
+            "app/Helpers"
         ],
         "psr-4": {
             "App\\": "app/"
