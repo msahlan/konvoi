@@ -1,78 +1,107 @@
-@extends('layout.form')
-
+@extends('layouts.formtwo')
 
 @section('left')
 
-        <h5>Ad Asset Info</h5>
+        <h5>Asset Info</h5>
 
-        {{ Former::text('itemDescription','Description') }}
+
+        {!! Former::text('Name','Name') !!}
+
+        {!! Former::text('Description','Description') !!}
 
         <div class="row">
-            <div class="col-md-3">
-                {{ Former::select('externalLink')->options(array('yes'=>'Yes','no'=>'No'))->label('Link to External URL') }}
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {!! Former::text('Brand','Brand.') !!}
             </div>
-            <div class="col-md-9">
-                {{ Former::text('extURL','External URL') }}
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {!! Former::text('SerialNumber','MSN') !!}
             </div>
         </div>
-        {{ Former::select('status')->options(array('inactive'=>'Inactive','active'=>'Active','scheduled'=>'Scheduled'))->label('Status') }}
 
-        {{-- Former::select('assetType','Device Type')->options( Assets::getType()->TypeToSelection('type','type',true) ) --}}
-        <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {{ Former::text('fromDate','From')->class('form-control eventdate')
-                    ->id('fromDate')
-                    //->data_format('dd-mm-yyyy')
-                    ->append('<i class="fa fa-th"></i>') }}
-            </div>
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {{ Former::text('toDate','Until')->class('form-control eventdate')
-                    ->id('toDate')
-                    //->data_format('dd-mm-yyyy')
-                    ->append('<i class="fa fa-th"></i>') }}
-            </div>
-        </div>
+        <h5>Asset Number</h5>
         <div class="row">
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {{ Former::select('isDefault')->options(array('yes'=>'Yes','no'=>'No'))->label('Set As Default Ad') }}
+                {!! Former::text('Coy','Company') !!}
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('Dept','Dept.') !!}
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('Category','Category') !!}
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('Sequence','Sequence') !!}
             </div>
         </div>
 
-        <h5>Advertiser</h5>
-        {{ Former::text('merchantName','Merchant')->class('form-control auto_merchant')->help('autocomplete, use to get merchant ID') }}
-        {{ Former::text('merchantId','Merchant ID')->class('form-control auto_merchant')->id('merchant-id') }}
-
-        {{ Former::text('tags','Tags')->class('tag_keyword') }}
-
-        <h5>Advertorial</h5>
-        {{ Former::textarea('advertorial','Advertorial Body')->class('editor')->rows(10)->columns(20) }}
-
-        {{ Form::submit('Save',array('class'=>'btn btn-raised btn-primary'))}}&nbsp;&nbsp;
-        {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
+        {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary'))!!}&nbsp;&nbsp;
+        {!! HTML::link($back,'Cancel',array('class'=>'btn'))!!}
 
 @stop
 
 @section('right')
+        <h5>Depreciation</h5>
 
-
-        <h5>Banner Image</h5>
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {{ Former::select('useImage')->label('Image Source')->options(array('linked'=>'Linked Image','upload'=>'Uploaded Image'))->label('Choose whether to use linked of uploaded image') }}
+                {!! Former::text('AcqDate','Acquisition Date') !!}
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                {!! Former::select('AcqCurr')->options(array('inactive'=>'IDR','active'=>'USD'))->label('Curr.')->class('form-control bootstrap-select')  !!}
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                {!! Former::text('AcqValue','Acquisition Value') !!}
             </div>
         </div>
-        <h6>Link to Image</h6>
-        {{ Former::text('extImageURL','External Image URL')->help('Image URL eg: "http://some.domain/image.jpg"') }}
 
-        <h6>Upload Image</h6>
-        <?php
-            $fupload = new Fupload();
-        ?>
-        {{ $fupload->id('imageupload')->title('Select Picture')->label('Upload Picture')
-            ->url('upload/asset')
-            ->singlefile(true)
+
+        <div class="row">
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                {!! Former::text('UtilizationDate','Utilization Date') !!}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::select('Depreciable')->options(array(1=>'Depreciable',0=>'Non Depreciable'))->label('Depreciable')->class('form-control bootstrap-select')  !!}
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::select('DeprStart')->options(array('ACQ'=>'Since Acquisition','UT'=>'Since Utilization'))->label('Start')->class('form-control bootstrap-select')  !!}
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::select('DeprMethod')->options(array('SL'=>'Straight Line','DD'=>'Double Declining'))->label('Method')->class('form-control bootstrap-select')  !!}
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('DeprPeriod','Depr. Period') !!}
+            </div>
+        </div>
+
+        <h5>Location</h5>
+
+        <div class="row">
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                {!! Former::select('Mobile')->options(array(0=>'Fixed Asset / Non Mobile',1=>'Movable / Mobile'))->label('Mobility')->class('form-control bootstrap-select')  !!}
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                {!! Former::text('Location','Location') !!}
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                {!! Former::text('Room','Room') !!}
+            </div>
+        </div>
+
+
+        <h5>File</h5>
+
+        {!! $fupload->id('docupload')
+            ->parentclass('asset')
+            ->ns('asset')
+            ->title('Select Document')
+            ->label('Upload Document')
+            ->url('upload/docs')
+            ->singlefile(false)
             ->prefix('asset')
-            ->multi(false)->make() }}
+            ->multi(true)->make() !!}
 
 @stop
 
@@ -81,10 +110,10 @@
 @stop
 
 @section('aux')
-{{ HTML::style('css/summernote.css') }}
-{{ HTML::style('css/summernote-bs3.css') }}
+{!! HTML::style('css/summernote.css') !!}
+{!! HTML::style('css/summernote-bs3.css') !!}
 
-{{ HTML::script('js/summernote.min.js') }}
+{!! HTML::script('js/summernote.min.js') !!}
 
 <script type="text/javascript">
 
@@ -127,7 +156,6 @@ $(document).ready(function() {
         }
     });
 
-
     function updateselector(data){
         var opt = '';
         for(var k in data){
@@ -135,8 +163,6 @@ $(document).ready(function() {
         }
         return opt;
     }
-
-
 
 
 });

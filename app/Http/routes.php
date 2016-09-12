@@ -132,8 +132,24 @@ Route::get('/asset/dl/{filename}', 'AssetController@getDl');
 Route::get('/asset/csv/{filename}', 'AssetController@getCsv');
 Route::get('/asset/add', 'AssetController@getAdd');
 Route::post('/asset/add', 'AssetController@postAdd');
+Route::get('/asset/edit/{id}', 'AssetController@getEdit');
+Route::post('/asset/edit/{id}', 'AssetController@postEdit');
 Route::post('/asset/dirscan', 'AssetController@postDirscan');
 
+Route::get('/assetlocation', 'AssetlocationController@getIndex');
+Route::post('/assetlocation', 'AssetlocationController@postIndex');
+Route::get('/assetlocation/printlabel/{sessionname}/{printparam}/{format?}', 'AssetlocationController@getPrintlabel');
+Route::get('/assetlocation/import', 'AssetlocationController@getImport');
+Route::post('/assetlocation/uploadimport', 'AssetlocationController@postUploadimport');
+Route::get('/assetlocation/commit/{sessid}', 'AssetlocationController@getCommit');
+Route::post('/assetlocation/commit/{sessid}', 'AssetlocationController@postCommit');
+Route::post('/assetlocation/dlxl', 'AssetlocationController@postDlxl');
+Route::get('/assetlocation/dl/{filename}', 'AssetlocationController@getDl');
+Route::get('/assetlocation/csv/{filename}', 'AssetlocationController@getCsv');
+Route::get('/assetlocation/add', 'AssetlocationController@getAdd');
+Route::post('/assetlocation/add', 'AssetlocationController@postAdd');
+Route::get('/assetlocation/edit/{id}', 'AssetlocationController@getEdit');
+Route::post('/assetlocation/edit/{id}', 'AssetlocationController@postEdit');
 
 /* Fast Routes */
 

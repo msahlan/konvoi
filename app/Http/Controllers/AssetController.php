@@ -5,6 +5,9 @@ use App\Http\Controllers\AdminController;
 
 use App\Models\Asset;
 use App\Models\Printsession;
+use App\Models\Uploaded;
+
+use App\Models\History;
 
 use App\Helpers\Prefs;
 
@@ -30,10 +33,11 @@ use Storage;
 class AssetController extends AdminController {
 
     private $default_heads = array(
+        array('Pictures',array('search'=>false,'sort'=>false)),
         array('Name',array('search'=>true,'sort'=>true)),
         array('Brand',array('search'=>true,'sort'=>true)),
         array('Asset #',array('search'=>true,'sort'=>true)),
-        array('S/N',array('search'=>true,'sort'=>true)),
+        array('MSN',array('search'=>true,'sort'=>true)),
         array('Description',array('search'=>true,'sort'=>true)),
         array('Type',array('search'=>true,'sort'=>true)),
         array('Acquired',array('search'=>true,'sort'=>true,'daterange'=>true)),
@@ -43,16 +47,17 @@ class AssetController extends AdminController {
     );
 
     private $default_fields = array(
-        array('name',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('brand',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('assetno',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('serialnumber',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('description',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('type',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('acqdate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('utilizationdate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('deprmethod',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('created',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('Name',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true,'callback'=>'picList' )),
+        array('Name',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('Brand',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('AssetNo',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true, 'callback'=>'dispBar' )),
+        array('SerialNumber',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('Description',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('Type',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('AcqDate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('UtilizationDate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('DeprMethod',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('createdDate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
     );
 
 
@@ -81,7 +86,7 @@ class AssetController extends AdminController {
         foreach ($files as $file) {
             $f = str_replace(['.jpg','.png','.gif','.pdf'],'',$file);
 
-            $d = Document::where('fcallcode','=',$f)->first();
+            $d = Document::where('Fcallcode','=',$f)->first();
             if($d){
                 $storagePath  = Storage::disk('repo')->getDriver()->getAdapter()->getPathPrefix();
                 print $storagePath.$file;
@@ -164,7 +169,7 @@ class AssetController extends AdminController {
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Documents';
+        $this->title = 'Assets';
 
         $this->place_action = 'first';
 
@@ -172,7 +177,7 @@ class AssetController extends AdminController {
 
         $this->crumb->addCrumb('System',url( strtolower($this->controller_name) ));
 
-        //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
+        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
 
         //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
 
@@ -195,24 +200,10 @@ class AssetController extends AdminController {
 
         $this->fields = $this->default_fields;
 
-        /*
-        $categoryFilter = Request::input('categoryFilter');
-        if($categoryFilter != ''){
-            $this->additional_query = array('shopcategoryLink'=>$categoryFilter, 'group_id'=>4);
-        }
-
-        $db = config('jayon.main_db');
-
-        $this->def_order_by = 'ordertime';
+        $this->def_order_by = 'createdDate';
         $this->def_order_dir = 'desc';
         $this->place_action = 'first';
         $this->show_select = true;
-
-        $this->sql_key = 'delivery_id';
-        $this->sql_table_name = config('jayon.incoming_delivery_table');
-        $this->sql_connection = 'mysql';
-
-        */
 
         return parent::tableResponder();
     }
@@ -525,12 +516,68 @@ class AssetController extends AdminController {
     public function beforeSave($data)
     {
 
+        $docs = array();
+
+        if( isset($data['fileid'])){
+
+            if(is_array($data['fileid'])){
+                foreach($data['fileid'] as $fid){
+                    $avfile = Uploaded::find($data['fileid']);
+                    if($avfile){
+                        $docs[] = $avfile->toArray();
+                    }
+                }
+            }else{
+                $avfile = Uploaded::find($data['fileid']);
+                if($avfile){
+                    $docs[] = $avfile->toArray();
+                }
+            }
+
+        }
+
+        $data['docFiles']= $docs;
+
+        $data['created'] = $data['createdDate'];
         return $data;
     }
 
     public function beforeUpdate($id,$data)
     {
 
+        $docs = array();
+
+        if( isset($data['fileid'])){
+
+            if(is_array($data['fileid'])){
+
+                foreach($data['fileid'] as $fid){
+                    $ids[] = new MongoId($fid);
+                }
+
+                $avfiles = Uploaded::whereIn('_id',$ids)->get();
+
+
+                foreach($avfiles as $av){
+                    $av->parent_id = $id->__toString();
+
+
+                    $av->save();
+                }
+
+                $docs = $avfiles->toArray();
+
+            }else{
+                $avfile = Uploaded::find($data['fileid']);
+                if($avfile){
+                    $docs[] = $avfile->toArray();
+                }
+            }
+
+        }
+
+
+        $data['docFiles'] = $docs;
 
         return $data;
     }
@@ -552,7 +599,38 @@ class AssetController extends AdminController {
         $hdata['historySequence'] = 0;
         $hdata['historyObjectType'] = 'asset';
         $hdata['historyObject'] = $data;
-        History::insert($hdata);
+        //History::insert($hdata);
+
+        print_r($data);
+
+        if(isset($data['fileid'])){
+
+            if(is_array($data['fileid'])){
+
+                foreach($data['fileid'] as $fid){
+                    $ids[] = new MongoId($fid);
+                }
+
+                $avfiles = Uploaded::whereIn('_id',$ids)->get();
+
+                foreach($avfiles as $av){
+                    $av->parent_id = $data['_id']->__toString();
+                    $av->save();
+                }
+
+            }else{
+
+                $up = Uploaded::find($data['_id']);
+
+                if($up){
+                    $up->parent_id = $data['_id']->__toString();
+                    $up->save();
+                }
+
+            }
+
+
+        }
 
         return $data;
     }
@@ -560,7 +638,6 @@ class AssetController extends AdminController {
     public function afterUpdate($id,$data = null)
     {
         $data['_id'] = new MongoId($id);
-
 
         $hdata = array();
         $hdata['historyTimestamp'] = new MongoDate();
@@ -570,7 +647,6 @@ class AssetController extends AdminController {
         $hdata['historyObject'] = $data;
         History::insert($hdata);
 
-
         return $id;
     }
 
@@ -578,7 +654,7 @@ class AssetController extends AdminController {
     public function postAdd($data = null)
     {
         $this->validator = array(
-            'logistic_code' => 'required'
+            'Name' => 'required'
         );
 
         return parent::postAdd($data);
@@ -587,7 +663,7 @@ class AssetController extends AdminController {
     public function postEdit($id,$data = null)
     {
         $this->validator = array(
-            'logistic_code' => 'required'
+            'Name' => 'required'
         );
 
         //exit();
@@ -632,11 +708,13 @@ class AssetController extends AdminController {
 
     public function beforeImportCommit($data)
     {
+        print "before commit";
+        print_r($data);
 
-        unset($data['createdDate']);
-        unset($data['lastUpdate']);
+        //unset($data['createdDate']);
+        //unset($data['lastUpdate']);
 
-        $data['created'] = $data['created_at'];
+        $data['created'] = $data['createdDate'];
 
         unset($data['created_at']);
         unset($data['updated_at']);
@@ -645,8 +723,14 @@ class AssetController extends AdminController {
         unset($data['sessId']);
         unset($data['isHead']);
 
-        //$data['AcqDate']  = new MongoDate(strtotime($data['AcqDate']));
-        //$data['UtilizationDate'] = new MongoDate(strtotime($data['UtilizationDate']));
+        print "before commit after transform";
+        print_r($data);
+
+        $data['created']  = isset($data['created'])? new MongoDate(strtotime( trim($data['created']))):'';
+
+        $data['IODate']  = isset($data['IODate'])? new MongoDate(strtotime( trim($data['IODate']))):'';
+        $data['DocDate'] = isset($data['DocDate'])? new MongoDate(strtotime( trim($data['DocDate']))):'';
+        $data['RetDate'] = isset($data['RetDate'])? new MongoDate(strtotime( trim($data['RetDate']))):'';
 
         return $data;
     }
@@ -660,7 +744,7 @@ class AssetController extends AdminController {
         $edit = '<a href="'.url( strtolower($this->controller_name).'/edit/'.$data['_id']).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Update" ><i class="fa fa-edit"></i></a>';
 
         $print = '<a href="'.url( strtolower($this->controller_name).'/print/'.$data['_id']).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Update" ><i class="fa fa-print"></i></a>';
-        $actions = $print;
+        $actions = $edit.'<br />'.$print.'<br />'.$delete;
 
         /*
         if(!is_array($data)){
@@ -817,6 +901,62 @@ class AssetController extends AdminController {
 
     }
 
+    public function picList($data)
+    {
+        $data = $data->toArray();
+
+        $pics = Uploaded::where('parent_id','=', $data['_id'] )
+                    ->where('deleted',0)
+                    ->get();
+
+        $glinks = '';
+
+        $thumbnail_url = '';
+
+        $img_cnt = 0;
+        $total_cnt = 0;
+
+        if($pics){
+            if(count($pics) > 0){
+                foreach($pics as $g){
+                    if($g->is_image == 1){
+                        $thumbnail_url = $g->square_url;
+                        $glinks .= '<input type="hidden" class="g_'.$data['_id'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
+                        $img_cnt++;
+                    }
+
+                    $total_cnt++;
+                }
+
+                $stat = $img_cnt.' pics, '.( $total_cnt - $img_cnt ).' docs';
+
+                if($img_cnt > 0){
+                    $display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['_id'])).$glinks.'<br />'.$stat;
+                }else{
+                
+                    $display = '<span class="fa-stack fa-2x">
+                          <i class="fa fa-circle fa-stack-2x"></i>
+                          <i class="fa fa-file fa-stack-1x fa-inverse"></i>
+                        </span><br />'.$stat;
+                }
+
+                return $display;
+            }else{
+                return 'No Picture';
+            }
+        }else{
+            return 'No Picture';
+        }
+    }
+
+
+    public function picStats($data)
+    {
+        $pic_stat = Prefs::getAssetPics($data['_id']);
+
+        return $pic_stat['pic'].' pictures, '.$pic_stat['sign'].' signature <span class="badge">'.$pic_stat['app'].'</span>';
+    }
+
     public function statNumbers($data){
         $datemonth = date('M Y',time());
         $firstday = Carbon::parse('first day of '.$datemonth);
@@ -894,9 +1034,12 @@ class AssetController extends AdminController {
     public function dispBar($data)
 
     {
-        $display = HTML::image(url('qr/'.urlencode(base64_encode($data['delivery_id'].'|'.$data['merchant_trans_id'].'|'.$data['fulfillment_code'].'|box:1' ))), $data['merchant_trans_id'], array('id' => $data['delivery_id'], 'style'=>'width:100px;height:auto;' ));
+
+        $qrstring = $data['AssetNo'].'|'.$data['SerialNumber'];
+
+        $display = HTML::image(url('qr/'.urlencode(base64_encode( $qrstring ))), $data['AssetNo'], array('id' => $data['AssetNo'], 'style'=>'width:100px;height:auto;' ));
         //$display = '<a href="'.url('barcode/dl/'.urlencode($data['SKU'])).'">'.$display.'</a>';
-        return $display.'<br />'. '<a href="'.url('asset/detail/'.$data['delivery_id']).'" >'.$data['merchant_trans_id'].'</a>';
+        return $display.'<br />'. '<a href="'.url('asset/detail/'.$data['_id']).'" >'.$data['AssetNo'].'</a>';
     }
 
     public function statusList($data)
@@ -946,7 +1089,7 @@ class AssetController extends AdminController {
         $top_offset = $pr[9];
 
         $session = Printsession::find($sessionname)->toArray();
-        $labels = Document::whereIn('_id', $session)->get()->toArray();
+        $labels = Asset::whereIn('_id', $session)->get()->toArray();
 
         $skus = array();
         foreach($labels as $l){
@@ -955,14 +1098,14 @@ class AssetController extends AdminController {
 
         $skus = array_unique($skus);
 
-        $products = Document::whereIn('_id',$skus)->get()->toArray();
+        $products = Asset::whereIn('_id',$skus)->get()->toArray();
 
         $plist = array();
         foreach($products as $product){
-            $plist[$product['fcallcode']] = $product;
+            $plist[$product['AssetNo']] = $product;
         }
 
-        return View::make('docs.printlabel')
+        return View::make('asset.printlabel')
             ->with('columns',$columns)
             ->with('resolution',$resolution)
             ->with('cell_width',$cell_width)

@@ -2,37 +2,33 @@
 
 @section('left')
 
-        <h5>Document Info</h5>
+        <h5>Location Info</h5>
 
 
-        {!! Former::text('Subject','Subject') !!}
+        {!! Former::text('Name','Name') !!}
 
-        {!! Former::text('DocRef','Doc. Ref.') !!}
+        {!! Former::text('Description','Description') !!}
 
-        {!! Former::text('DocDate','Doc. Date') !!}
+        {!! Former::text('Address','Address') !!}
+
+        <h5>Location Clasification</h5>
+
+        {!! Former::select('Type')->options(array('Building'=>'Building','Field'=>'Field'))->label('Type')->class('form-control bootstrap-select')  !!}
 
         <div class="row">
-            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                {!! Former::select('Tipe')->options(array('inactive'=>'Inactive','active'=>'Active'))->label('Type')->class('form-control bootstrap-select')  !!}
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('Coy','Company') !!}
             </div>
-            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                {!! Former::select('IO')->options(array('incoming'=>'Incoming','outgoing'=>'Outgoing'))->label('I/O')->class('form-control bootstrap-select')  !!}
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('Dept','Dept.') !!}
             </div>
-            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                {!! Former::text('IODate','IO Date') !!}
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('City','City') !!}
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                {!! Former::text('Country','Country') !!}
             </div>
         </div>
-
-
-
-        <h5>Actors</h5>
-
-        {!! Former::text('Sender','Sender') !!}
-
-        {!! Former::text('Recipient','Recipient') !!}
-
-        {!! Former::text('Action','Action') !!}
-
 
         {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary'))!!}&nbsp;&nbsp;
         {!! HTML::link($back,'Cancel',array('class'=>'btn'))!!}
@@ -40,57 +36,26 @@
 @stop
 
 @section('right')
-        <h5>Call Code</h5>
-        <div class="row">
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {!! Former::text('Topic','Topic') !!}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {!! Former::text('Coy','Company') !!}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {!! Former::text('MMYY','MMYY') !!}
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                {!! Former::text('Urut','Sequence') !!}
-            </div>
-        </div>
-
-
-        {!! Former::text('Fcallcode','File Call Code')->id('Fcallcode') !!}
-
-        <h5>Location</h5>
-
+        <h5>Geo Location</h5>
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {!! Former::text('Location','Location') !!}
+                {!! Former::text('Latitude','Latitude') !!}
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {!! Former::text('Boxing','Boxing') !!}
-            </div>
-        </div>
-
-        <h5>Retention</h5>
-
-        <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {!! Former::text('RetPer','Retention Period') !!}
-            </div>
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {!! Former::text('RetDate','Retention Date') !!}
+                {!! Former::text('Longitude','Longitude') !!}
             </div>
         </div>
 
         <h5>File</h5>
 
         {!! $fupload->id('docupload')
-            ->parentclass('document')
-            ->ns('document')
+            ->parentclass('assetlocation')
+            ->ns('assetlocation')
             ->title('Select Document')
             ->label('Upload Document')
             ->url('upload/docs')
             ->singlefile(false)
-            ->prefix('document')
+            ->prefix('assetlocation')
             ->multi(true)->make() !!}
 
 @stop

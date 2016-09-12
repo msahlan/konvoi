@@ -45,6 +45,7 @@
 
                     if( !is_null($formdata) && isset($formdata['_id']) && $showold == false ){
 
+                        $parent_id = $formdata['_id'];
                         //print 'this 1';
                         /* external detail template */
 
@@ -67,9 +68,9 @@
                                             ->get();
                             }
                         }else{
-                            //print "multi";
+                            //print "multi ".$parent_id;
                             $files = Uploaded::where('parent_id',$parent_id )
-                                        //->orWhere('parent_id', new MongoId($parent_id))
+                                        ->where('parent_class',$parent_class)
                                         ->where('deleted',0)
                                         ->orderBy('createdDate','desc')
                                         ->get();

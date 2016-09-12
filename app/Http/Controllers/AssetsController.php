@@ -3,11 +3,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\AdminController;
 
-use App\Models\Document;
+use App\Models\Asset;
 use App\Models\Printsession;
-use App\Models\Uploaded;
-
-use App\Models\History;
 
 use App\Helpers\Prefs;
 
@@ -30,26 +27,32 @@ use DB;
 use HTML;
 use Storage;
 
-class DocsController extends AdminController {
+class AssetsController extends AdminController {
 
     private $default_heads = array(
-        array('Call Code',array('search'=>true,'sort'=>true)),
-        array('Incoming / Outgoing',array('search'=>true,'sort'=>true)),
-        array('I/O Date',array('search'=>true,'sort'=>true,'daterange'=>true)),
-        array('Doc Date',array('search'=>true,'sort'=>true,'daterange'=>true)),
-        array('Subject',array('search'=>true,'sort'=>true)),
-        array('Sender',array('search'=>true,'sort'=>true)),
+        array('Name',array('search'=>true,'sort'=>true)),
+        array('Brand',array('search'=>true,'sort'=>true)),
+        array('Asset #',array('search'=>true,'sort'=>true)),
+        array('S/N',array('search'=>true,'sort'=>true)),
+        array('Description',array('search'=>true,'sort'=>true)),
+        array('Type',array('search'=>true,'sort'=>true)),
+        array('Acquired',array('search'=>true,'sort'=>true,'daterange'=>true)),
+        array('Utilized',array('search'=>true,'sort'=>true,'daterange'=>true)),
+        array('Method',array('search'=>true,'sort'=>true)),
         array('Created',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
     );
 
     private $default_fields = array(
-        array('Fcallcode',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('IO',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('IODate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('DocDate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('Subject',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('Sender',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-        array('createdDate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('name',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('brand',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('assetno',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('serialnumber',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('description',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('type',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('acqdate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('utilizationdate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('deprmethod',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
+        array('created',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
     );
 
 
@@ -65,9 +68,9 @@ class DocsController extends AdminController {
         //$this->crumb->append('Home','left',true);
         //$this->crumb->append(strtolower($this->controller_name));
 
-        $this->model = new Document();
+        $this->model = new Asset();
         //$this->model = DB::collection('documents');
-        $this->title = 'Documents';
+        $this->title = 'Assets';
 
     }
 
@@ -78,7 +81,7 @@ class DocsController extends AdminController {
         foreach ($files as $file) {
             $f = str_replace(['.jpg','.png','.gif','.pdf'],'',$file);
 
-            $d = Document::where('Fcallcode','=',$f)->first();
+            $d = Document::where('fcallcode','=',$f)->first();
             if($d){
                 $storagePath  = Storage::disk('repo')->getDriver()->getAdapter()->getPathPrefix();
                 print $storagePath.$file;
@@ -169,7 +172,7 @@ class DocsController extends AdminController {
 
         $this->crumb->addCrumb('System',url( strtolower($this->controller_name) ));
 
-        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
+        //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
 
         //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
 
@@ -192,10 +195,24 @@ class DocsController extends AdminController {
 
         $this->fields = $this->default_fields;
 
-        $this->def_order_by = 'createdDate';
+        /*
+        $categoryFilter = Request::input('categoryFilter');
+        if($categoryFilter != ''){
+            $this->additional_query = array('shopcategoryLink'=>$categoryFilter, 'group_id'=>4);
+        }
+
+        $db = config('jayon.main_db');
+
+        $this->def_order_by = 'ordertime';
         $this->def_order_dir = 'desc';
         $this->place_action = 'first';
         $this->show_select = true;
+
+        $this->sql_key = 'delivery_id';
+        $this->sql_table_name = config('jayon.incoming_delivery_table');
+        $this->sql_connection = 'mysql';
+
+        */
 
         return parent::tableResponder();
     }
@@ -508,68 +525,12 @@ class DocsController extends AdminController {
     public function beforeSave($data)
     {
 
-        $docs = array();
-
-        if( isset($data['fileid'])){
-
-            if(is_array($data['fileid'])){
-                foreach($data['fileid'] as $fid){
-                    $avfile = Uploaded::find($data['fileid']);
-                    if($avfile){
-                        $docs[] = $avfile->toArray();
-                    }
-                }
-            }else{
-                $avfile = Uploaded::find($data['fileid']);
-                if($avfile){
-                    $docs[] = $avfile->toArray();
-                }
-            }
-
-        }
-
-        $data['docFiles']= $docs;
-
-        $data['created'] = $data['createdDate'];
         return $data;
     }
 
     public function beforeUpdate($id,$data)
     {
 
-        $docs = array();
-
-        if( isset($data['fileid'])){
-
-            if(is_array($data['fileid'])){
-
-                foreach($data['fileid'] as $fid){
-                    $ids[] = new MongoId($fid);
-                }
-
-                $avfiles = Uploaded::whereIn('_id',$ids)->get();
-
-
-                foreach($avfiles as $av){
-                    $av->parent_id = $id->__toString();
-
-
-                    $av->save();
-                }
-
-                $docs = $avfiles->toArray();
-
-            }else{
-                $avfile = Uploaded::find($data['fileid']);
-                if($avfile){
-                    $docs[] = $avfile->toArray();
-                }
-            }
-
-        }
-
-
-        $data['docFiles'] = $docs;
 
         return $data;
     }
@@ -591,38 +552,7 @@ class DocsController extends AdminController {
         $hdata['historySequence'] = 0;
         $hdata['historyObjectType'] = 'asset';
         $hdata['historyObject'] = $data;
-        //History::insert($hdata);
-
-        print_r($data);
-
-        if(isset($data['fileid'])){
-
-            if(is_array($data['fileid'])){
-
-                foreach($data['fileid'] as $fid){
-                    $ids[] = new MongoId($fid);
-                }
-
-                $avfiles = Uploaded::whereIn('_id',$ids)->get();
-
-                foreach($avfiles as $av){
-                    $av->parent_id = $data['_id']->__toString();
-                    $av->save();
-                }
-
-            }else{
-
-                $up = Uploaded::find($data['_id']);
-
-                if($up){
-                    $up->parent_id = $data['_id']->__toString();
-                    $up->save();
-                }
-
-            }
-
-
-        }
+        History::insert($hdata);
 
         return $data;
     }
@@ -630,6 +560,7 @@ class DocsController extends AdminController {
     public function afterUpdate($id,$data = null)
     {
         $data['_id'] = new MongoId($id);
+
 
         $hdata = array();
         $hdata['historyTimestamp'] = new MongoDate();
@@ -639,6 +570,7 @@ class DocsController extends AdminController {
         $hdata['historyObject'] = $data;
         History::insert($hdata);
 
+
         return $id;
     }
 
@@ -646,7 +578,7 @@ class DocsController extends AdminController {
     public function postAdd($data = null)
     {
         $this->validator = array(
-            'Subject' => 'required'
+            'logistic_code' => 'required'
         );
 
         return parent::postAdd($data);
@@ -655,7 +587,7 @@ class DocsController extends AdminController {
     public function postEdit($id,$data = null)
     {
         $this->validator = array(
-            'Subject' => 'required'
+            'logistic_code' => 'required'
         );
 
         //exit();
@@ -700,13 +632,11 @@ class DocsController extends AdminController {
 
     public function beforeImportCommit($data)
     {
-        print "before commit";
-        print_r($data);
 
-        //unset($data['createdDate']);
-        //unset($data['lastUpdate']);
+        unset($data['createdDate']);
+        unset($data['lastUpdate']);
 
-        $data['created'] = $data['createdDate'];
+        $data['created'] = $data['created_at'];
 
         unset($data['created_at']);
         unset($data['updated_at']);
@@ -715,14 +645,8 @@ class DocsController extends AdminController {
         unset($data['sessId']);
         unset($data['isHead']);
 
-        print "before commit after transform";
-        print_r($data);
-
-        $data['created']  = isset($data['created'])? new MongoDate(strtotime( trim($data['created']))):'';
-
-        $data['IODate']  = isset($data['IODate'])? new MongoDate(strtotime( trim($data['IODate']))):'';
-        $data['DocDate'] = isset($data['DocDate'])? new MongoDate(strtotime( trim($data['DocDate']))):'';
-        $data['RetDate'] = isset($data['RetDate'])? new MongoDate(strtotime( trim($data['RetDate']))):'';
+        //$data['AcqDate']  = new MongoDate(strtotime($data['AcqDate']));
+        //$data['UtilizationDate'] = new MongoDate(strtotime($data['UtilizationDate']));
 
         return $data;
     }
@@ -736,7 +660,7 @@ class DocsController extends AdminController {
         $edit = '<a href="'.url( strtolower($this->controller_name).'/edit/'.$data['_id']).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Update" ><i class="fa fa-edit"></i></a>';
 
         $print = '<a href="'.url( strtolower($this->controller_name).'/print/'.$data['_id']).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Update" ><i class="fa fa-print"></i></a>';
-        $actions = $edit.'<br />'.$print.'<br />'.$delete;
+        $actions = $print;
 
         /*
         if(!is_array($data)){
@@ -1035,7 +959,7 @@ class DocsController extends AdminController {
 
         $plist = array();
         foreach($products as $product){
-            $plist[$product['Fcallcode']] = $product;
+            $plist[$product['fcallcode']] = $product;
         }
 
         return View::make('docs.printlabel')

@@ -1,53 +1,52 @@
-<a class="btn btn-raised btn-transparent btn-info btn-sm" id="print_barcodes"><i class="fa fa-print"></i> Print QR Label</a>
-<a class="btn btn-raised btn-transparent btn-info btn-sm" id="move_orders"><i class="fa fa-arrows"></i> Move Selected to</a>
-<a class="btn btn-raised btn-transparent btn-info btn-sm" id="link_files"><i class="icon-link"></i> Link Files</a>
+<div class="row">
+    {{ Former::open_vertical($report_action)->method('get') }}
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {{ Former::text('date_filter','Date Range')->id('date_filter')->class('search_init form-control input-sm filterdaterangepicker')->placeholder('pick date range')->value(Input::get('date_filter')) }}
 
-<div id="move-order-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Move Selected</span></h3>
+        {{ Former::text('merchantName','Merchant')->class('form-control auto_merchant')->help('autocomplete, use to get merchant ID') }}
+        {{ Former::hidden('merchantId','Merchant ID')->class('form-control auto_merchant')->id('merchant-id') }}
+
+        {{ Form::submit('Generate',array('name'=>'submit','class'=>'btn btn-raised btn-primary input-sm pull-right'))}}
     </div>
-    <div class="modal-body" >
-        {{ Former::select('status', 'To' )->id('move-to')->options(Config::get('jex.buckets')) }}
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
     </div>
-    <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-        <button class="btn btn-raised btn-primary" id="do-move">Move</button>
-    </div>
+    {{ Former::close()}}
 </div>
-
 
 <div id="print-modal" class="modal fade large" tabindex="-1" role="dialog" aria-labelledby="myPrintModalLabel" aria-hidden="true">
     <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myPrintModalLabel">Print Selected Codes</span></h3>
+    <h5 id="myPrintModalLabel">Print Selected Codes</span></h5>
     </div>
     <div class="modal-body" style="overflow:auto;" >
         <h6>Print options</h6>
-        <div style="border-bottom:thin solid #ccc;" class="row clearfix">
+        <?php
+            $d = Prefs::getPrintDefault('asset');
+        ?>
+        <div style="border-bottom:thin solid #ccc;" class="row form-vertical clearfix">
             <div class="col-md-2">
-                {!! Former::text('label_columns','Number of columns')->value('4')->id('label_columns')->class('form-control input-sm')  !!}
-                {!! Former::text('label_res','Resolution')->value('150')->id('label_res')->class('form-control input-sm')  !!}
+                {{ Former::text('label_columns','Number of columns')->value($d->col)->id('label_columns')->class('form-control input-sm') }}
+                {{ Former::text('label_res','Resolution')->value($d->res)->id('label_res')->class('form-control input-sm') }}
             </div>
             <div class="col-md-2">
-                {!! Former::text('label_cell_height','Label height')->value('230')->id('label_cell_height')->class('form-control input-sm')  !!}
-                {!! Former::text('label_cell_width','Label width')->value('200')->id('label_cell_width')->class('form-control input-sm')  !!}
+                {{ Former::text('label_cell_height','Label height')->value($d->cell_height)->id('label_cell_height')->class('form-control input-sm') }}
+                {{ Former::text('label_cell_width','Label width')->value($d->cell_width )->id('label_cell_width')->class('form-control input-sm') }}
             </div>
             <div class="col-md-2">
-                {!! Former::text('label_margin_right','Label margin right')->value('8')->id('label_margin_right')->class('form-control input-sm')  !!}
-                {!! Former::text('label_margin_bottom','Label margin bottom')->value('10')->id('label_margin_bottom')->class('form-control input-sm')  !!}
+                {{ Former::text('label_margin_right','Label margin right')->value( $d->margin_right )->id('label_margin_right')->class('form-control input-sm') }}
+                {{ Former::text('label_margin_bottom','Label margin bottom')->value( $d->margin_bottom )->id('label_margin_bottom')->class('form-control input-sm') }}
             </div>
             <div class="col-md-2">
-                {!! Former::text('label_offset_right','Page left offset')->value('40')->id('label_offset_right')->class('form-control input-sm')  !!}
-                {!! Former::text('label_offset_bottom','Page top offset')->value('20')->id('label_offset_bottom')->class('form-control input-sm')  !!}
+                {{ Former::text('label_offset_right','Page left offset')->value('40')->id('label_offset_right')->class('form-control input-sm') }}
+                {{ Former::text('label_offset_bottom','Page top offset')->value('20')->id('label_offset_bottom')->class('form-control input-sm') }}
             </div>
             <div class="col-md-2">
-                {!! Former::text('font_size','Font size')->value('12')->id('font_size')->class('form-control input-sm')  !!}
-                {!! Former::select('code_type','Code type')->id('code_type')->options(array('qr'=>'QR','barcode'=>'Barcode') ) !!}
+                {{ Former::text('font_size','Font size')->value( $d->font_size )->id('font_size')->class('form-control input-sm') }}
+                {{ Former::select('code_type','Code type')->id('code_type')->options(array('qr'=>'QR','pdf417'=>'PDF417'), $d->code_type ) }}
             </div>
             <div class="col-md-2">
-                <button id="label_default" class="btn btn-raised btn-primary btn-sm" ><i class="fa fa-save"></i> make default</button>
-                <button id="label_refresh" class="btn btn-raised btn-primary btn-sm" ><i class="fa fa-refresh"></i> refresh</button>
+                <button id="label_default" class="form-control" >make default</button>
+                <button id="label_refresh" class="form-control" >refresh</button>
             </div>
         </div>
         <input type="hidden" value="" id="session_name" />
@@ -79,33 +78,18 @@
     overflow: auto;
 }
 
+button#label_refresh{
+    margin-top: 27px;
+}
+
+button#label_default{
+    margin-top: 28px;
+}
+
 </style>
 
 <script type="text/javascript">
     $(document).ready(function(){
-        $('#refresh_filter').on('click',function(){
-            oTable.draw();
-        });
-
-        $('#outlet_filter').on('change',function(){
-            oTable.draw();
-        });
-
-        $('#link_files').on('click',function(e){
-            $.post('{{url('asset/dirscan') }}',
-                {},
-                function(data){
-
-                },'json');
-            //$('#move-order-modal').modal();
-            e.preventDefault();
-        });
-
-
-        $('#move_orders').on('click',function(e){
-            $('#move-order-modal').modal();
-            e.preventDefault();
-        });
 
         $('#label_refresh').on('click',function(){
 
@@ -121,7 +105,7 @@
             var code_type = $('#code_type').val();
             var offset_left = $('#label_offset_left').val();
             var offset_top = $('#label_offset_top').val();
-            var src = '{{ url('asset/printlabel')}}/' + sessionname + '/' + col + ':' + res + ':' + cell_width + ':' + cell_height + ':' + margin_right + ':' + margin_bottom + ':' + font_size + ':' + code_type + ':' + offset_left + ':' + offset_top;
+            var src = '{{ URL::to('asset/printlabel')}}/' + sessionname + '/' + col + ':' + res + ':' + cell_width + ':' + cell_height + ':' + margin_right + ':' + margin_bottom + ':' + font_size + ':' + code_type + ':' + offset_left + ':' + offset_top;
 
             $('#label_frame').attr('src',src);
 
@@ -157,7 +141,7 @@
                             var code_type = $('#code_type').val();
                             var offset_left = $('#label_offset_left').val();
                             var offset_top = $('#label_offset_top').val();
-                            var src = '{{ url('asset/printlabel')}}/' + data.sessionname + '/' + col + ':' + res + ':' + cell_width + ':' + cell_height + ':' + margin_right + ':' + margin_bottom + ':' + font_size + ':' + code_type + ':' + offset_left + ':' + offset_top;
+                            var src = '{{ URL::to('asset/printlabel')}}/' + data.sessionname + '/' + col + ':' + res + ':' + cell_width + ':' + cell_height + ':' + margin_right + ':' + margin_bottom + ':' + font_size + ':' + code_type + ':' + offset_left + ':' + offset_top;
                             $('#label_frame').attr('src',src);
                             $('#print-modal').modal('show');
                         }else{
@@ -173,6 +157,13 @@
 
         });
 
+        $('.auto_merchant').autocomplete({
+            source: base + 'ajax/merchant',
+            select: function(event, ui){
+                $('#merchant-id').val(ui.item.id);
+            }
+        });
+
         $('#do-print').click(function(){
 
             var pframe = document.getElementById('label_frame');
@@ -182,6 +173,7 @@
         });
 
         $('#label_default').on('click',function(){
+            var type = 'asset';
             var col = $('#label_columns').val();
             var res = $('#label_res').val();
             var cell_width = $('#label_cell_width').val();
@@ -195,6 +187,7 @@
 
             $.post('{{ URL::to('ajax/printdefault')}}',
                 {
+                    type : type,
                     col : col,
                     res : res,
                     cell_width : cell_width,
@@ -218,34 +211,6 @@
 
         });
 
-        $('#do-move').on('click',function(){
-            var props = $('.selector:checked');
-            var ids = [];
-            $.each(props, function(index){
-                ids.push( $(this).val() );
-            });
-
-            console.log(ids);
-
-            if(ids.length > 0){
-                $.post('{{ URL::to('ajax/moveorder')}}',
-                    {
-                        bucket : $('#move-to').val(),
-                        ids : ids
-                    },
-                    function(data){
-                        $('#move-order-modal').modal('hide');
-                        oTable.draw();
-                    }
-                    ,'json');
-
-            }else{
-                alert('No shipment selected.');
-                $('#move-order-modal').modal('hide');
-            }
-
-        });
-
 
         $('#do-assign').on('click',function(){
             var props = $('.selector:checked');
@@ -264,7 +229,7 @@
                     },
                     function(data){
                         $('#assign-modal').modal('hide');
-                        oTable.draw();
+                        oTable.fnDraw();
                     }
                     ,'json');
 
@@ -296,7 +261,7 @@
                     prop_ids : ids
                 },
                 function(data){
-                    oTable.draw();
+                    oTable.fnDraw();
                 }
                 ,'json');
 

@@ -8,6 +8,9 @@ use App\Models\Deliveryfee;
 use App\Models\Codsurcharge;
 use App\Models\Box;
 use App\Models\Boxstatus;
+use App\Models\Printdefault;
+
+use \Auth;
 
 class Prefs {
 
@@ -270,6 +273,49 @@ class Prefs {
         }
 
         return $trips;
+    }
+
+    public static function getAssetPics($delivery_id)
+    {
+        $pic_count = 0;
+        $sign_count = 0;
+
+        $app = 'app v 1.0';
+
+        $pics_db = Uploaded::where('parent_id','=',$delivery_id)
+                    ->get();
+
+        if($pics_db){
+
+            if(count($pics_db->toArray()) > 0){
+                $app = 'app v 2.0';
+            }
+
+            foreach($pics_db as $pic){
+                if( intval($pic->is_signature) == 1){
+                    $sign_count++;
+                }else{
+                    $pic_count++;
+                }
+            }
+        }
+
+
+        if($pic_count == 0 && $sign_count == 0){
+            $existingpic = glob(config('jayon.picture_path').$delivery_id.'*.jpg');
+
+            foreach($existingpic as $pic){
+                if(preg_match('/_sign.jpg$/', $pic)){
+                    $sign_count++;
+                }else{
+                    $pic_count++;
+                }
+            }
+        }
+
+
+
+        return array('pic'=>$pic_count, 'sign'=>$sign_count, 'app'=>$app );
     }
 
 
@@ -1348,7 +1394,7 @@ class Prefs {
     }
 
     public static function getPrintDefault($type = 'asset'){
-        $printdef = Printdefault::where('ownerId',Auth::user()->_id)
+        $printdef = Printdefault::where('ownerId',Auth::user()->id)
                         ->where('type',$type)
                         ->first();
         if($printdef){

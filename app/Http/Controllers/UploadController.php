@@ -329,6 +329,10 @@ class UploadController extends Controller {
 
         $singlefile = Request::input('singlefile');
 
+        $uploadsession = Request::input('usession');
+
+        $prefix = 'document';
+
         $ns = Request::input('ns');
 
         $file = $files[0];
@@ -352,10 +356,12 @@ class UploadController extends Controller {
         $is_video = $this->isVideo($filemime);
         $is_pdf = $this->isPdf($filemime);
 
-        if(!($is_image || $is_audio || $is_video || $is_pdf)){
-            $is_doc = true;
-        }else{
+        if($is_image || $is_audio || $is_video 
+            //|| $is_pdf
+            ){
             $is_doc = false;
+        }else{
+            $is_doc = true;
         }
 
         if($is_image){
@@ -427,6 +433,7 @@ class UploadController extends Controller {
                     'type'=> $filemime,
                     'size'=> $filesize,
                     'deleted'=>0,
+                    'uploadsession'=>$uploadsession,
                     'createdDate'=>new MongoDate(),
                     'lastUpdate'=>new MongoDate()
                 );
@@ -445,7 +452,8 @@ class UploadController extends Controller {
 
         $files = Uploaded::where('parent_id',$parent_id )
                     ->where('parent_class', $parent_class)
-                    //->where('ns',$ns)
+                    //->where('uploadsession',$uploadsession)
+                    ->where('ns',$ns)
                     ->where('deleted',0)
                     ->orderBy('createdDate','desc');
 
