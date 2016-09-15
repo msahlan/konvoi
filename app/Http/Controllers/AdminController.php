@@ -872,8 +872,13 @@ class AdminController extends Controller {
                                 }elseif ($doc[$field[0]] instanceof Date) {
                                     $rowitem = date('d-m-Y',$doc[$field[0]]);
                                 }else{
-                                    //$rowitem = $doc[$field[0]];
-                                    $rowitem = date('d-m-Y',strtotime($doc[$field[0]]) );
+                                    if(is_array($doc[$field[0]])){
+                                        if(isset( $doc[$field[0]]['sec'])){
+                                            $rowitem = date('d-m-Y',$doc[$field[0]]['sec'] );
+                                        }
+                                    }else{
+                                        $rowitem = date('d-m-Y',strtotime($doc[$field[0]]) );
+                                    }
                                 }
 							}elseif($field[1]['kind'] == 'currency'){
 								$num = (double) $doc[$field[0]];
@@ -4402,7 +4407,7 @@ class AdminController extends Controller {
 
                         if(trim($ak) != ''){
                             $sessobj->{ $ak } = $this->prepImportItem($ak,$av);
-                            $rowtemp[$ak] = $av;                            
+                            $rowtemp[$ak] = $av;
                         }
                     }
                 }
