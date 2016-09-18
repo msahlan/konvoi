@@ -90,6 +90,11 @@
             position:relative;
         }
 
+        .del,.upload{
+            cursor:pointer;
+            padding:4px;
+        }
+
     </style>
 
 @endsection

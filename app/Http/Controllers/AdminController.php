@@ -3256,6 +3256,10 @@ class AdminController extends Controller {
 			$data['createdDate'] = new MongoDate();
 			$data['lastUpdate'] = new MongoDate();
 
+            $data['ownerId'] = Auth::user()->_id;
+            $data['ownerName'] = Auth::user()->fullname;
+
+
             // process tags by default
             if(isset($data['tags'])){
                 $tags = $this->tagToArray($data['tags']);

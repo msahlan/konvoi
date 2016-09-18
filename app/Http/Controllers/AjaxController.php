@@ -11,6 +11,7 @@ use App\Models\Merchant;
 use App\Models\Application;
 use App\Models\Geolog;
 use App\Models\Uploaded;
+use App\Models\Company;
 
 use App\Helpers\Prefs;
 use App\Helpers\PointLocation;
@@ -86,6 +87,13 @@ class AjaxController extends BaseController {
             return Response::json( array('status'=>'NOK', 'timestamp'=>time() ));
         }
 
+    }
+
+    public function getOrg()
+    {
+        $orgs = Company::all();
+
+        return Response::json($orgs);
     }
 
     public function postRoutelist()

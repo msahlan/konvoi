@@ -17,6 +17,7 @@ Route::auth();
 
 Route::post('/upload', 'UploadController@postIndex');
 Route::post('/upload/avatar', 'UploadController@postAvatar');
+Route::post('/upload/logo', 'UploadController@postLogo');
 Route::post('/upload/docs', 'UploadController@postDocs');
 
 
@@ -35,6 +36,14 @@ Route::post('/usergroup/add', 'UsergroupController@postAdd');
 Route::get('/usergroup/edit/{id}', 'UsergroupController@getEdit');
 Route::post('/usergroup/edit/{id}', 'UsergroupController@postEdit');
 Route::post('/usergroup/del', 'UsergroupController@postDel');
+
+Route::get('/organization', 'OrganizationController@getIndex');
+Route::post('/organization', 'OrganizationController@postIndex');
+Route::get('/organization/add', 'OrganizationController@getAdd');
+Route::post('/organization/add', 'OrganizationController@postAdd');
+Route::get('/organization/edit/{id}', 'OrganizationController@getEdit');
+Route::post('/organization/edit/{id}', 'OrganizationController@postEdit');
+Route::post('/organization/del', 'OrganizationController@postDel');
 
 
 Route::get('/incoming', 'IncomingController@getIndex');
@@ -84,6 +93,8 @@ Route::get('/ajax/merchant', 'AjaxController@getMerchant');
 Route::post('/ajax/merchantapp', 'AjaxController@postMerchantapp');
 Route::post('/ajax/locationlog', 'AjaxController@postLocationlog');
 Route::post('/ajax/delfile', 'AjaxController@postDelfile');
+Route::get('/ajax/org', 'AjaxController@getOrg');
+
 
 Route::get('/profile', 'ProfileController@getIndex');
 
@@ -119,6 +130,25 @@ Route::get('/docs/edit/{id}', 'DocsController@getEdit');
 Route::post('/docs/edit/{id}', 'DocsController@postEdit');
 
 Route::post('/docs/dirscan', 'DocsController@postDirscan');
+
+Route::get('/invoice', 'InvoiceController@getIndex');
+Route::post('/invoice', 'InvoiceController@postIndex');
+Route::get('/invoice/printlabel/{sessionname}/{printparam}/{format?}', 'InvoiceController@getPrintlabel');
+Route::get('/invoice/import', 'InvoiceController@getImport');
+Route::post('/invoice/uploadimport', 'InvoiceController@postUploadimport');
+Route::get('/invoice/commit/{sessid}', 'InvoiceController@getCommit');
+Route::post('/invoice/commit/{sessid}', 'InvoiceController@postCommit');
+Route::post('/invoice/dlxl', 'InvoiceController@postDlxl');
+Route::get('/invoice/dl/{filename}', 'InvoiceController@getDl');
+Route::get('/invoice/csv/{filename}', 'InvoiceController@getCsv');
+Route::get('/invoice/add', 'InvoiceController@getAdd');
+Route::post('/invoice/add', 'InvoiceController@postAdd');
+
+Route::get('/invoice/edit/{id}', 'InvoiceController@getEdit');
+Route::post('/invoice/edit/{id}', 'InvoiceController@postEdit');
+
+Route::post('/invoice/dirscan', 'InvoiceController@postDirscan');
+
 
 Route::get('/asset', 'AssetController@getIndex');
 Route::post('/asset', 'AssetController@postIndex');

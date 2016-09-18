@@ -12,6 +12,39 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-cube3 position-left"></i> Finance <span class="caret"></span>
+                    </a>
+
+                    <ul class="dropdown-menu width-200">
+                        <li>
+                            <a href="{{ url('invoice') }}"><i class="icon-android"></i> Invoices</a>
+                        </li>
+                        <li>
+                            <a href="{{ url('receipt') }}"><i class="icon-money"></i> Receipts</a>
+                        </li>
+                        <li>
+                            <a href="{{ url('payment') }}"><i class="icon-arrow-right16"></i> Payment Vouchers</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-cube3 position-left"></i> Rolodex <span class="caret"></span>
+                    </a>
+
+                    <ul class="dropdown-menu width-200">
+                        <li>
+                            <a href="{{ url('companydex') }}"><i class="icon-android"></i> Companies</a>
+                        </li>
+                        <li>
+                            <a href="{{ url('persondex') }}"><i class="icon-money"></i> Persons</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="icon-cube3 position-left"></i> Assets <span class="caret"></span>
                     </a>
 
@@ -142,6 +175,10 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu width-200 dropdown-menu-right">
+                            <li class="{{ sa('organization') }}" >
+                              <a href="{{ url('organization') }}" class="{{ sa('organization') }}" ><span class="fa fa-group"></span>
+                               Organization</a>
+                            </li>                            
                             <li class="{{ sa('user') }}" >
                               <a href="{{ url('user') }}" class="{{ sa('user') }}" ><span class="fa fa-group"></span>
                                Users</a>
