@@ -33,6 +33,7 @@ use Storage;
 class DocsController extends AdminController {
 
     private $default_heads = array(
+        array('File',array('search'=>true,'sort'=>true)),
         array('Call Code',array('search'=>true,'sort'=>true)),
         array('Incoming / Outgoing',array('search'=>true,'sort'=>true)),
         array('I/O Date',array('search'=>true,'sort'=>true,'daterange'=>true)),
@@ -43,6 +44,7 @@ class DocsController extends AdminController {
     );
 
     private $default_fields = array(
+        array('Fcallcode',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true, 'callback'=>'picList' )),
         array('Fcallcode',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
         array('IO',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
         array('IODate',array('kind'=>'daterange' , 'query'=>'like', 'pos'=>'both','show'=>true)),
@@ -552,8 +554,6 @@ class DocsController extends AdminController {
 
                 foreach($avfiles as $av){
                     $av->parent_id = $id->__toString();
-
-
                     $av->save();
                 }
 
@@ -918,6 +918,58 @@ class DocsController extends AdminController {
 
         return $clicks.' clicks<br />'.$views.' views';
     }
+
+    public function picList($data)
+    {
+        $data = $data->toArray();
+
+        $pics = Uploaded::where('parent_id','=', $data['_id'] )
+                    //->whereIn('_id', $data['fileid'])
+                    ->where('deleted','=',0)
+                    ->get();
+
+                    //print_r($pics->toArray());
+
+        $glinks = '';
+
+        $thumbnail_url = '';
+
+        $img_cnt = 0;
+        $total_cnt = 0;
+
+        if($pics){
+            if(count($pics) > 0){
+                foreach($pics as $g){
+                    if($g->is_image == 1){
+                        $thumbnail_url = $g->square_url;
+                        $glinks .= '<input type="hidden" class="g_'.$data['_id'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
+                        $img_cnt++;
+                    }
+
+                    $total_cnt++;
+                }
+
+                $stat = $img_cnt.' pics, '.( $total_cnt - $img_cnt ).' docs';
+
+                if($img_cnt > 0){
+                    $display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['_id'])).$glinks.'<br />'.$stat;
+                }else{
+
+                    $display = '<span class="fa-stack fa-2x">
+                          <i class="fa fa-circle fa-stack-2x"></i>
+                          <i class="fa fa-file fa-stack-1x fa-inverse"></i>
+                        </span><br />'.$stat;
+                }
+
+                return $display;
+            }else{
+                return 'No Picture';
+            }
+        }else{
+            return 'No Picture';
+        }
+    }
+
 
     public function namePic($data)
     {

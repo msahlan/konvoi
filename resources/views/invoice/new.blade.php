@@ -1,4 +1,4 @@
-@extends('layouts.formone')
+ @extends('layouts.formone')
 
 @section('content')
 
@@ -74,7 +74,7 @@
 
                     <div class="" >
                         <table class="table table-lg">
-                            <thead>                                    
+                            <thead>
                                 <tr>
                                     <th>Description</th>
                                     <th class="col-sm-1">Unit</th>
@@ -196,7 +196,7 @@
                 <script type="text/javascript">
 
                     Vue.http.headers.common['X-CSRF-TOKEN'] = '{{ csrf_token() }}';
-                    
+
                     var vm = new Vue({
                         'ready': function(){
                             this.fetchOrgSelection();
