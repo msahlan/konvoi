@@ -181,6 +181,49 @@ Route::post('/assetlocation/add', 'AssetlocationController@postAdd');
 Route::get('/assetlocation/edit/{id}', 'AssetlocationController@getEdit');
 Route::post('/assetlocation/edit/{id}', 'AssetlocationController@postEdit');
 
+Route::group(array('prefix' => 'api/v1/mobile','middleware'=>array('api') ), function (){
+    Route::get('/auth', 'Api\AuthController@index');
+    Route::post('/auth/login', 'Api\AuthController@login');
+    Route::put('/auth/login', 'Api\AuthController@login');
+    Route::post('/auth/logout', 'Api\AuthController@logout');
+    Route::put('/auth/logout', 'Api\AuthController@logout');
+    Route::post('/upload', 'Api\UploadapiController@postFile');
+    Route::put('/sync/assets', 'Api\SyncapiController@putAssets');
+    Route::post('/sync/meta', 'Api\SyncapiController@postMeta');
+    Route::post('/sync/scanlog', 'Api\SyncapiController@postScanlog');
+    Route::post('/sync/note', 'Api\SyncapiController@postNote');
+    Route::post('/sync/geolog', 'Api\SyncapiController@postGeolog');
+    Route::post('/sync/order', 'Api\SyncapiController@postOrder');
+    Route::post('/sync/orderstatus', 'Api\SyncapiController@postOrderstatus');
+
+    Route::post('/sync/hub', 'Api\SyncapiController@postHuborder');
+    Route::post('/sync/hubstatus', 'Api\SyncapiController@postHubstatus');
+
+    Route::post('/sync/pickup', 'Api\SyncapiController@postPickuporder');
+    Route::post('/sync/pickupstatus', 'Api\SyncapiController@postPickupstatus');
+
+    Route::post('/fcm/register', 'Api\FcmController@postRegister');
+
+    Route::post('/sync/box', 'Api\SyncapiController@postBox');
+    Route::post('/sync/boxstatus', 'Api\SyncapiController@postBoxstatus');
+    Route::resource('img', 'Api\ImgapiController');
+    Route::resource('location', 'Api\LocationapiController');
+    Route::resource('rack', 'Api\RackapiController');
+    Route::resource('asset', 'Api\AssetapiController');
+    Route::resource('delivery', 'Api\DeliveryapiController');
+    Route::resource('pickup', 'Api\PickupapiController');
+    Route::resource('warehouse', 'Api\HubapiController');
+    Route::resource('merchant', 'Api\MerchantapiController');
+});
+
+Route::group(array('prefix' => 'api/v1/service'), function (){
+    Route::resource('awb', 'Api\AwbController');
+    Route::resource('confirm', 'Api\ConfirmController');
+    Route::resource('status', 'Api\StatusController');
+    Route::post('wv', 'Api\AwbController@postWv');
+});
+
+
 /* Fast Routes */
 
 Route::get('dir', function(){
