@@ -65,7 +65,8 @@ class FcmdeviceController extends AdminController {
     {
         parent::__construct();
 
-        $this->controller_name = str_replace('Controller', '', get_class());
+        $cname = substr(strrchr(get_class($this), '\\'), 1);
+        $this->controller_name = str_replace('Controller', '', $cname);
 
         //$this->crumb = new Breadcrumb();
         //$this->crumb->append('Home','left',true);
@@ -86,13 +87,13 @@ class FcmdeviceController extends AdminController {
 
         $this->show_select = true;
 
-        Breadcrumbs::addCrumb('Assets',URL::to( strtolower($this->controller_name) ));
+        $this->crumb->addCrumb('Assets',url( strtolower($this->controller_name) ));
 
-        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('sync_url', strtolower($this->controller_name).'/syncparse'  )->render();
+        $this->additional_filter = view(strtolower($this->controller_name).'.addfilter')->with('sync_url', strtolower($this->controller_name).'/syncparse'  )->render();
 
         $this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
 
-        $this->js_table_event = View::make(strtolower($this->controller_name).'.jsevents')->with('devlist_url', strtolower($this->controller_name).'/devlist'  )->render();
+        $this->js_table_event = view(strtolower($this->controller_name).'.jsevents')->with('devlist_url', strtolower($this->controller_name).'/devlist'  )->render();
 
         $this->product_info_url = strtolower($this->controller_name).'/info';
 
@@ -112,9 +113,9 @@ class FcmdeviceController extends AdminController {
 
         $this->place_action = 'first';
 
-        Breadcrumbs::addCrumb('Parse Device Registry',URL::to( strtolower($this->controller_name) ));
+        $this->crumb->addCrumb('Parse Device Registry',url( strtolower($this->controller_name) ));
 
-        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('sync_url', strtolower($this->controller_name).'/synclegacy'  )->render();
+        $this->additional_filter = view(strtolower($this->controller_name).'.addfilter')->with('sync_url', strtolower($this->controller_name).'/synclegacy'  )->render();
 
         $this->js_additional_param = "aoData.push( { 'name':'categoryFilter', 'value': $('#assigned-product-filter').val() } );";
 
@@ -124,7 +125,7 @@ class FcmdeviceController extends AdminController {
         $this->def_order_dir = 'desc';
 
         /*
-        $categoryFilter = Input::get('categoryFilter');
+        $categoryFilter = Request::input('categoryFilter');
         if($categoryFilter != ''){
             $this->additional_query = array('shopcategoryLink'=>$categoryFilter, 'group_id'=>4);
         }
@@ -153,9 +154,9 @@ class FcmdeviceController extends AdminController {
         $this->title = 'General Ledger';
 
 
-        Breadcrumbs::addCrumb('Cost Report',URL::to( strtolower($this->controller_name) ));
+        $this->crumb->addCrumb('Cost Report',url( strtolower($this->controller_name) ));
 
-        //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl/static')->render();
+        //$this->additional_filter = view(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl/static')->render();
 
         //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
 
@@ -196,11 +197,11 @@ class FcmdeviceController extends AdminController {
 
     public function postFcmpush()
     {
-        $message = Input::get('message');
-        $title = Input::get('title');
-        $device_name = Input::get('device_name');
-        $device_key = Input::get('device_key');
-        $fcm_installation_id = Input::get('pinstall');
+        $message = Request::input('message');
+        $title = Request::input('title');
+        $device_name = Request::input('device_name');
+        $device_key = Request::input('device_key');
+        $fcm_installation_id = Request::input('pinstall');
 
 
 
@@ -276,11 +277,11 @@ class FcmdeviceController extends AdminController {
 
         //ParseClient::initialize('lNz2h3vr3eJK9QMAKOLSaIvETaQWsbFJ8Em32TIw', '8QQoPiTZTkqSMkYLQQxHiaKBXO6Jq7iD2dCJjGUz', '2bKlPqYIKMpW1rJOdpBXQ8pf7cMXxGaFKrCXMr19');
 
-        $message = Input::get('message');
-        $title = Input::get('title');
-        $device_name = Input::get('device_name');
-        $device_key = Input::get('device_key');
-        $parse_installation_id = Input::get('pinstall');
+        $message = Request::input('message');
+        $title = Request::input('title');
+        $device_name = Request::input('device_name');
+        $device_key = Request::input('device_key');
+        $parse_installation_id = Request::input('pinstall');
 
         try{
 
@@ -408,9 +409,9 @@ class FcmdeviceController extends AdminController {
 
         $this->title = 'Parse Device';
 
-        Breadcrumbs::addCrumb('Cost Report',URL::to( strtolower($this->controller_name) ));
+        $this->crumb->addCrumb('Cost Report',url( strtolower($this->controller_name) ));
 
-        //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl/static')->render();
+        //$this->additional_filter = view(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl/static')->render();
 
         //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
 
@@ -477,14 +478,14 @@ class FcmdeviceController extends AdminController {
 
     public function SQL_additional_query($model)
     {
-        $in = Input::get();
+        $in = Request::input();
 
-        $period_from = Input::get('acc-period-from');
-        $period_to = Input::get('acc-period-to');
+        $period_from = Request::input('acc-period-from');
+        $period_to = Request::input('acc-period-to');
 
         $db = Config::get('lundin.main_db');
 
-        $company = Input::get('acc-company');
+        $company = Request::input('acc-company');
 
         $company = strtolower($company);
 
@@ -495,10 +496,10 @@ class FcmdeviceController extends AdminController {
         }else{
             $model = $model->select($company.'_a_salfldg.*',$company.'_acnt.DESCR as ACC_DESCR')
                 ->leftJoin($company.'_acnt', $company.'_a_salfldg.ACCNT_CODE', '=', $company.'_acnt.ACNT_CODE' )
-                ->where('PERIOD','>=', Input::get('acc-period-from') )
-                ->where('PERIOD','<=', Input::get('acc-period-to') )
-                ->where('ACCNT_CODE','>=', Input::get('acc-code-from') )
-                ->where('ACCNT_CODE','<=', Input::get('acc-code-to') )
+                ->where('PERIOD','>=', Request::input('acc-period-from') )
+                ->where('PERIOD','<=', Request::input('acc-period-to') )
+                ->where('ACCNT_CODE','>=', Request::input('acc-code-from') )
+                ->where('ACCNT_CODE','<=', Request::input('acc-code-to') )
                 ->orderBy('PERIOD','DESC')
                 ->orderBy('ACCNT_CODE','ASC')
                 ->orderBy('TRANS_DATETIME','DESC');
@@ -895,7 +896,7 @@ class FcmdeviceController extends AdminController {
 
     public function postRack()
     {
-        $locationId = Input::get('loc');
+        $locationId = Request::input('loc');
         if($locationId == ''){
             $racks = Assets::getRack()->RackToSelection('_id','SKU',true);
         }else{
@@ -919,14 +920,14 @@ class FcmdeviceController extends AdminController {
         }
 
         $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-times-circle"></i> Delete</span>';
-        $edit = '<a href="'.URL::to('advertiser/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
-        $dl = '<a href="'.URL::to('brochure/dl/'.$data['_id']).'" target="new"><i class="fa fa-download"></i> Download</a>';
-        $print = '<a href="'.URL::to('brochure/print/'.$data['_id']).'" target="new"><i class="fa fa-print"></i> Print</a>';
+        $edit = '<a href="'.url('advertiser/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
+        $dl = '<a href="'.url('brochure/dl/'.$data['_id']).'" target="new"><i class="fa fa-download"></i> Download</a>';
+        $print = '<a href="'.url('brochure/print/'.$data['_id']).'" target="new"><i class="fa fa-print"></i> Print</a>';
         $upload = '<span class="upload" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Upload Picture</span>';
         $inv = '<span class="upinv" id="'.$data['_id'].'" rel="'.$data['SKU'].'" ><i class="fa fa-upload"></i> Update Inventory</span>';
-        $stat = '<a href="'.URL::to('stats/merchant/'.$data['id']).'"><i class="fa fa-line-chart"></i> Stats</a>';
+        $stat = '<a href="'.url('stats/merchant/'.$data['id']).'"><i class="fa fa-line-chart"></i> Stats</a>';
 
-        $history = '<a href="'.URL::to('advertiser/history/'.$data['_id']).'"><i class="fa fa-clock-o"></i> History</a>';
+        $history = '<a href="'.url('advertiser/history/'.$data['_id']).'"><i class="fa fa-clock-o"></i> History</a>';
 
         $actions = $stat.'<br />'.$edit.'<br />'.$delete;
         */
@@ -1128,9 +1129,9 @@ class FcmdeviceController extends AdminController {
     public function dispBar($data)
 
     {
-        $display = HTML::image(URL::to('qr/'.urlencode(base64_encode($data['delivery_id'].'|'.$data['merchant_trans_id'] ))), $data['merchant_trans_id'], array('id' => $data['delivery_id'], 'style'=>'width:100px;height:auto;' ));
-        //$display = '<a href="'.URL::to('barcode/dl/'.urlencode($data['SKU'])).'">'.$display.'</a>';
-        return $display.'<br />'. '<a href="'.URL::to('asset/detail/'.$data['delivery_id']).'" >'.$data['merchant_trans_id'].'</a>';
+        $display = HTML::image(url('qr/'.urlencode(base64_encode($data['delivery_id'].'|'.$data['merchant_trans_id'] ))), $data['merchant_trans_id'], array('id' => $data['delivery_id'], 'style'=>'width:100px;height:auto;' ));
+        //$display = '<a href="'.url('barcode/dl/'.urlencode($data['SKU'])).'">'.$display.'</a>';
+        return $display.'<br />'. '<a href="'.url('asset/detail/'.$data['delivery_id']).'" >'.$data['merchant_trans_id'].'</a>';
     }
 
     public function colorizetype($data)
@@ -1182,7 +1183,7 @@ class FcmdeviceController extends AdminController {
             $plist[$product['SKU']] = $product;
         }
 
-        return View::make('asset.printlabel')
+        return view('asset.printlabel')
             ->with('columns',$columns)
             ->with('resolution',$resolution)
             ->with('cell_width',$cell_width)
