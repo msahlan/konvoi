@@ -179,7 +179,7 @@ class FcmdeviceController extends AdminController {
             array('is_on',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
 
-        $db = Config::get('jayon.main_db');
+        $db = config('jayon.main_db');
 
         $this->def_order_by = 'ordertime';
         $this->def_order_dir = 'desc';
@@ -187,7 +187,7 @@ class FcmdeviceController extends AdminController {
         $this->show_select = false;
 
         $this->sql_key = 'delivery_id';
-        $this->sql_table_name = Config::get('jayon.incoming_delivery_table');
+        $this->sql_table_name = config('jayon.incoming_delivery_table');
         $this->sql_connection = 'mysql';
 
         $this->responder_type = 's';
@@ -210,7 +210,7 @@ class FcmdeviceController extends AdminController {
 
             $notification = array(
                     'body'=>'Device ID Assignment - '.$device_name,
-                    'title'=>Config::get('site.name'),
+                    'title'=>config('site.name'),
                     'sound'=>'default'
                 );
 
@@ -235,13 +235,13 @@ class FcmdeviceController extends AdminController {
 
         $headers = array
             (
-                'Authorization: key=' . Config::get('fcm.fcm_key') ,
+                'Authorization: key=' . config('fcm.fcm_key') ,
                 'Content-Type: application/json'
             );
 
         $ch = curl_init();
 
-        curl_setopt( $ch,CURLOPT_URL, Config::get('fcm.fcm_url') );
+        curl_setopt( $ch,CURLOPT_URL, config('fcm.fcm_url') );
         curl_setopt( $ch,CURLOPT_POST, true );
         curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
         curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
@@ -270,9 +270,9 @@ class FcmdeviceController extends AdminController {
     public function postPush()
     {
         ParseClient::initialize(
-            Config::get('parse.app_id'),
-            Config::get('parse.rest_key'),
-            Config::get('parse.master_key')
+            config('parse.app_id'),
+            config('parse.rest_key'),
+            config('parse.master_key')
         );
 
         //ParseClient::initialize('lNz2h3vr3eJK9QMAKOLSaIvETaQWsbFJ8Em32TIw', '8QQoPiTZTkqSMkYLQQxHiaKBXO6Jq7iD2dCJjGUz', '2bKlPqYIKMpW1rJOdpBXQ8pf7cMXxGaFKrCXMr19');
@@ -329,9 +329,9 @@ class FcmdeviceController extends AdminController {
     {
 
         ParseClient::initialize(
-            Config::get('parse.app_id'),
-            Config::get('parse.rest_key'),
-            Config::get('parse.master_key')
+            config('parse.app_id'),
+            config('parse.rest_key'),
+            config('parse.master_key')
         );
 
         $query = ParseInstallation::query();
@@ -389,7 +389,7 @@ class FcmdeviceController extends AdminController {
             array('City',array('search'=>true,'sort'=>true)),
             array('Shipping Address',array('search'=>true,'sort'=>true, 'style'=>'max-width:200px;width:200px;' )),
             array('No Kode Penjualan Toko',array('search'=>true,'sort'=>true)),
-            array('Type',array('search'=>true,'sort'=>true,'select'=>Config::get('jayon.deliverytype_selector') )),
+            array('Type',array('search'=>true,'sort'=>true,'select'=>config('jayon.deliverytype_selector') )),
             array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
             array('Delivery ID',array('search'=>true,'sort'=>true)),
             array('Status',array('search'=>true,'sort'=>true)),
@@ -433,7 +433,7 @@ class FcmdeviceController extends AdminController {
             array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('merchant_trans_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('delivery_type',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array(Config::get('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
+            array(config('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
             array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -448,7 +448,7 @@ class FcmdeviceController extends AdminController {
             array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         );
 
-        $db = Config::get('jayon.main_db');
+        $db = config('jayon.main_db');
 
         $this->def_order_by = 'ordertime';
         $this->def_order_dir = 'desc';
@@ -456,7 +456,7 @@ class FcmdeviceController extends AdminController {
         $this->show_select = false;
 
         $this->sql_key = 'delivery_id';
-        $this->sql_table_name = Config::get('jayon.incoming_delivery_table');
+        $this->sql_table_name = config('jayon.incoming_delivery_table');
         $this->sql_connection = 'mysql';
 
         $this->responder_type = 's';
@@ -476,59 +476,6 @@ class FcmdeviceController extends AdminController {
         return $model;
     }
 
-    public function SQL_additional_query($model)
-    {
-        $in = Request::input();
-
-        $period_from = Request::input('acc-period-from');
-        $period_to = Request::input('acc-period-to');
-
-        $db = Config::get('lundin.main_db');
-
-        $company = Request::input('acc-company');
-
-        $company = strtolower($company);
-
-        /*
-        if($period_from == ''){
-            $model = $model->select($company.'_a_salfldg.*',$company.'_acnt.DESCR as ACC_DESCR')
-                ->leftJoin($company.'_acnt', $company.'_a_salfldg.ACCNT_CODE', '=', $company.'_acnt.ACNT_CODE' );
-        }else{
-            $model = $model->select($company.'_a_salfldg.*',$company.'_acnt.DESCR as ACC_DESCR')
-                ->leftJoin($company.'_acnt', $company.'_a_salfldg.ACCNT_CODE', '=', $company.'_acnt.ACNT_CODE' )
-                ->where('PERIOD','>=', Request::input('acc-period-from') )
-                ->where('PERIOD','<=', Request::input('acc-period-to') )
-                ->where('ACCNT_CODE','>=', Request::input('acc-code-from') )
-                ->where('ACCNT_CODE','<=', Request::input('acc-code-to') )
-                ->orderBy('PERIOD','DESC')
-                ->orderBy('ACCNT_CODE','ASC')
-                ->orderBy('TRANS_DATETIME','DESC');
-        }
-
-        $txtab = Config::get('jayon.incoming_delivery_table');
-
-        $model = $model->select(
-                DB::raw(
-                    Config::get('jayon.incoming_delivery_table').'.* ,'.
-                    Config::get('jayon.jayon_members_table').'.merchantname as merchant_name ,'.
-                    Config::get('jayon.applications_table').'.application_name as app_name ,'.
-                    '('.$txtab.'.width * '.$txtab.'.height * '.$txtab.'.length ) as volume'
-                )
-            )
-            ->leftJoin(Config::get('jayon.jayon_members_table'), Config::get('jayon.incoming_delivery_table').'.merchant_id', '=', Config::get('jayon.jayon_members_table').'.id' )
-            ->leftJoin(Config::get('jayon.applications_table'), Config::get('jayon.incoming_delivery_table').'.application_id', '=', Config::get('jayon.applications_table').'.id' )
-            ->where('status','=', Config::get('jayon.trans_status_new') )
-            ->orderBy('ordertime','desc');
-        */
-
-        //print_r($in);
-
-
-        //$model = $model->where('group_id', '=', 4);
-
-        return $model;
-
-    }
 
     public function SQL_before_paging($model)
     {
@@ -1096,7 +1043,7 @@ class FcmdeviceController extends AdminController {
 
         $thumbnail_url = '';
 
-        $ps = Config::get('picture.sizes');
+        $ps = config('picture.sizes');
 
 
         if(isset($data['files']) && count($data['files'])){
