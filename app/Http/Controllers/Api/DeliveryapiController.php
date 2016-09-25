@@ -2,11 +2,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
-
-//use Illuminate\Support\Facades\Hash;
-//use Illuminate\Database\Eloquent\ModelNotFoundException;
-//use Illuminate\Support\Facades\Response;
-
 use App\Models\Device;
 use App\Models\Deliverydetail;
 

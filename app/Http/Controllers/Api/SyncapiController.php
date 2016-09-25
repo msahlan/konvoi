@@ -7,6 +7,7 @@ use App\Models\Scanlog;
 use App\Models\Geolog;
 use App\Models\Boxstatus;
 use App\Models\Boxid;
+use App\Models\Shipment;
 
 use App\Models\Deliverydetail;
 
@@ -1318,7 +1319,7 @@ class SyncapiController extends Controller {
 
         $dids = array_unique($dids);
 
-        $ships = \Shipment::whereIn('delivery_id', $dids)->get();
+        $ships = Shipment::whereIn('delivery_id', $dids)->get();
 
         $shipments = array();
         foreach($ships->toArray() as $sh){
@@ -1334,7 +1335,7 @@ class SyncapiController extends Controller {
 
         $logIds = array_unique($logIds);
 
-        $exLogId = \Geolog::whereIn('logId', $logIds )->get(array('logId'));
+        $exLogId = Geolog::whereIn('logId', $logIds )->get(array('logId'));
 
         $existLog = array();
         foreach ($exLogId as $ex ) {
@@ -1367,7 +1368,7 @@ class SyncapiController extends Controller {
                 if( in_array($j['logId'], $existLog )){
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'], 'insert'=>'0' );
                 }else{
-                    \Geolog::insert($j);
+                    Geolog::insert($j);
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'], 'insert'=>'1' );
                 }
             }
