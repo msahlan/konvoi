@@ -66,6 +66,9 @@ class ZoningController extends AdminController {
                         ->with('importawburl','incoming/importawb')
                         ->render();
 
+        $this->additional_filter .= View::make(strtolower($this->controller_name).'.addfilter')
+            ->with('ajaxdeviceurl',strtolower($this->controller_name).'/shipmentlist')->render();
+
         $this->additional_filter .= View::make('shared.cancelaction')->render();
 
         //$this->additional_filter .= View::make('shared.confirmaction')->render();
