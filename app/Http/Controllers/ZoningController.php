@@ -297,6 +297,106 @@ class ZoningController extends AdminController {
         return parent::printPage();
     }
 
+    public function postShipmentlist()
+    {
+        $in = Request::input();
+
+        $city = $in['city'];
+
+        $date = $in['date'];
+
+        //$pick_up_date = new MongoDate(strtotime($date));
+
+        $shipments = Shipment::where('assignmentdate','=', $pick_up_date )
+                        ->where('status','=', config('jayon.trans_status_admin_dated'))
+                        ->where('buyerdeliverycity','=',$city)->get();
+
+        $shipments = $shipments->toArray();
+
+        for($i = 0; $i < count($shipments); $i++){
+            $shipments[$i]['pick_up_date'] = date('Y-m-d', $shipments[$i]['pick_up_date']->sec );
+        }
+
+        $city = trim($city);
+
+        $devices = Device::where('city','regex', new MongoRegex('/'.$city.'/i'))
+                                ->where(function($on){
+                                        $on->where('is_on','=',1)
+                                            ->orWhere('is_on','=',strval(1));
+                                })
+                                ->get();
+
+        $caps = array();
+
+        foreach($devices as $d){
+            $caps[$d->key]['identifier'] = $d->identifier;
+            $caps[$d->key]['key'] = $d->key;
+            $caps[$d->key]['city'] = $d->city;
+            $caps[$d->key]['count'] = Shipment::where('device_key',$d->key)->where('assignmentdate',$pick_up_date)->count();
+        }
+
+        return Response::json( array('result'=>'OK', 'shipment'=>$shipments, 'device'=>$caps ) );
+        //print_r($caps);
+
+    }
+
+    public function postAssigndevice()
+    {
+        $in = Request::input();
+
+        $device = Device::where('key','=', $in['device'] )->first();
+
+        $shipments = Shipment::whereIn('delivery_id', $in['ship_ids'] )->get();
+
+        //print_r($shipments->toArray());
+
+        $ts = new MongoDate();
+
+        foreach($shipments as $sh){
+
+            $pre = clone $sh;
+
+            $sh->status = Config::get('jayon.trans_status_admin_zoned');
+            $sh->device_key = $device->key;
+            $sh->device_name = $device->identifier;
+            $sh->device_id = $device->_id;
+            $sh->save();
+
+
+            $hdata = array();
+            $hdata['historyTimestamp'] = $ts;
+            $hdata['historyAction'] = 'assign_device';
+            $hdata['historySequence'] = 1;
+            $hdata['historyObjectType'] = 'shipment';
+            $hdata['historyObject'] = $sh->toArray();
+            $hdata['actor'] = Auth::user()->fullname;
+            $hdata['actor_id'] = Auth::user()->_id;
+
+            History::insert($hdata);
+
+            $sdata = array();
+            $sdata['timestamp'] = $ts;
+            $sdata['action'] = 'assign_device';
+            $sdata['reason'] = 'initial';
+            $sdata['objectType'] = 'shipment';
+            $sdata['object'] = $sh->toArray();
+            $sdata['preObject'] = $pre->toArray();
+            $sdata['actor'] = Auth::user()->fullname;
+            $sdata['actor_id'] = Auth::user()->_id;
+            Shipmentlog::insert($sdata);
+
+        }
+
+        return Response::json( array('result'=>'OK', 'shipment'=>$shipments ) );
+
+    }
+
+    public function postDeviceavail()
+    {
+
+    }
+
+
     public function SQL_make_join($model)
     {
         //$model->with('coa');

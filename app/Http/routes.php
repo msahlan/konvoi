@@ -62,6 +62,10 @@ Route::post('/incoming/add', 'IncomingController@postAdd');
 
 Route::get('/zoning', 'ZoningController@getIndex');
 Route::post('/zoning', 'ZoningController@postIndex');
+Route::post('/zoning/shipmentlist', 'ZoningController@postShipmentlist');
+Route::post('/zoning/assigndevice', 'ZoningController@postAssigndevice');
+Route::post('/zoning/deviceavail', 'ZoningController@postDeviceavail');
+
 
 Route::get('/courierassign', 'CourierassignController@getIndex');
 Route::post('/courierassign', 'CourierassignController@postIndex');
