@@ -99,6 +99,7 @@ Route::post('/ajax/merchantapp', 'AjaxController@postMerchantapp');
 Route::post('/ajax/locationlog', 'AjaxController@postLocationlog');
 Route::post('/ajax/delfile', 'AjaxController@postDelfile');
 Route::get('/ajax/org', 'AjaxController@getOrg');
+Route::get('/ajax/device', 'AjaxController@getDevice');
 
 
 Route::get('/profile', 'ProfileController@getIndex');
