@@ -1,12 +1,32 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\Controller;
+use App\Models\Device;
+use App\Models\Fcm;
 
-class FcmController extends \Controller {
+use App\Helpers\Prefs;
+
+
+use Config;
+
+use Auth;
+use Event;
+use View;
+use Input;
+use Request;
+use Response;
+use Mongomodel;
+use \MongoRegex;
+use \MongoDate;
+use \MongoId;
+use \MongoInt32;
+use DB;
+use HTML;
+use Excel;
+use Validator;
+
+class FcmController extends Controller {
     public $controller_name = '';
 
     public function  __construct()
@@ -19,18 +39,18 @@ class FcmController extends \Controller {
 
     public function postRegister()
     {
-        $token = \Input::get('Token');
-        $prevToken = \Input::get('prevToken');
+        $token = Request::input('Token');
+        $prevToken = Request::input('prevToken');
 
         if($prevToken == 'new'){
-            $fcm = new \Fcm();
+            $fcm = new Fcm();
 
             $fcm->token = $token;
             $fcm->prevToken = $prevToken;
             $fcm->save();
         }else{
 
-            $efcm = \Fcm::where('token','=', $prevToken)->first();
+            $efcm = Fcm::where('token','=', $prevToken)->first();
 
             if($efcm ){
                 $efcm->token = $token;
@@ -38,7 +58,7 @@ class FcmController extends \Controller {
                 $efcm->save();
 
             }else{
-                $fcm = new \Fcm();
+                $fcm = new Fcm();
                 $fcm->token = $token;
                 $fcm->prevToken = $prevToken;
                 $fcm->save();

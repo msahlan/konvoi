@@ -108,6 +108,9 @@
                         <li>
                             <a href="{{ url('parsedevice') }}"><i class="icon-arrow-right16"></i> Parse Devices</a>
                         </li>
+                        <li>
+                            <a href="{{ url('fcmdevice') }}"><i class="icon-arrow-right16"></i> FCM Devices</a>
+                        </li>
                     </ul>
                 </li>
 

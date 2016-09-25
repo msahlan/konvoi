@@ -88,6 +88,11 @@ Route::get('/parsedevice', 'ParsedeviceController@getIndex');
 Route::post('/parsedevice', 'ParsedeviceController@postIndex');
 Route::post('/parsedevice/syncparse', 'ParsedeviceController@postSyncparse');
 
+Route::get('/fcmdevice', 'FcmdeviceController@getIndex');
+Route::post('/fcmdevice', 'FcmdeviceController@postIndex');
+Route::post('/fcmdevice/syncparse', 'FcmdeviceController@postSyncparse');
+
+
 Route::post('/ajax/sessionsave', 'AjaxController@postSessionsave');
 Route::get('/ajax/merchant', 'AjaxController@getMerchant');
 Route::post('/ajax/merchantapp', 'AjaxController@postMerchantapp');
