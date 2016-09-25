@@ -12,6 +12,7 @@ use App\Models\Application;
 use App\Models\Geolog;
 use App\Models\Uploaded;
 use App\Models\Company;
+use App\Models\Device;
 
 use App\Helpers\Prefs;
 use App\Helpers\PointLocation;
