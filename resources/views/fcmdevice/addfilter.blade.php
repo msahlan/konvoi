@@ -8,8 +8,8 @@
         <h3 id="myModalLabel">Push Message</span></h3>
     </div>
     <div class="modal-body" >
-        {{ Former::text('title','Title')->id('title') }}
-        {{ Former::textarea('message','Message')->id('message') }}
+        {!! Former::text('title','Title')->id('title') !!}
+        {!! Former::textarea('message','Message')->id('message') !!}
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -23,9 +23,9 @@
         <h3 id="myModalLabel">Push Device ID</span></h3>
     </div>
     <div class="modal-body" id="push-modal-body" >
-        {{ Former::text('parse_id','Parse ID')->id('parse-device-id') }}
-        {{ Former::text('device_name','Device Identifier')->id('device-name')->class('auto_device form-control') }}
-        {{ Former::text('device_key','Device Key')->id('device-key') }}
+        {!! Former::text('parse_id','Parse ID')->id('parse-device-id') !!}
+        {!! Former::text('device_name','Device Identifier')->id('device-name')->class('auto_device form-control') !!}
+        {!! Former::text('device_key','Device Key')->id('device-key') !!}
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
