@@ -91,7 +91,7 @@ Route::post('/parsedevice/syncparse', 'ParsedeviceController@postSyncparse');
 Route::get('/fcmdevice', 'FcmdeviceController@getIndex');
 Route::post('/fcmdevice', 'FcmdeviceController@postIndex');
 Route::post('/fcmdevice/syncparse', 'FcmdeviceController@postSyncparse');
-Route::post('/fcmpush', 'FcmdeviceController@postFcmpush');
+Route::post('/fcmdevice/fcmpush', 'FcmdeviceController@postFcmpush');
 
 
 Route::post('/ajax/sessionsave', 'AjaxController@postSessionsave');
