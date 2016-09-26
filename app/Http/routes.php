@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'DocsController@getIndex')->middleware('auth');
+Route::get('/', env('MENU_HOME','IncomingController@getIndex'))->middleware('auth');
 
 Route::auth();
 

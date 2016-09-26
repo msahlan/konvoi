@@ -1,4 +1,6 @@
-        <!-- Second navbar -->
+<?php
+    $menu = env('MENU_SET','LOGISTIC');
+?>        <!-- Second navbar -->
         <div class="navbar navbar-inverse navbar-transparent" id="navbar-second">
             <ul class="nav navbar-nav visible-xs-block">
                 <li><a class="text-center collapsed" data-toggle="collapse" data-target="#navbar-second-toggle"><i class="icon-paragraph-justify3"></i></a></li>
@@ -8,7 +10,10 @@
             <ul class="nav navbar-nav navbar-nav-material">
                 <li><a href="{{ url('/')}}"><i class="icon-display4 position-left"></i> Dashboard</a></li>
 
+                @if($menu == 'DOCUMENT')
                 <li><a href="{{ url('docs')}}"><i class="icon-archive position-left"></i> Documents</a></li>
+                @endif
+                @if($menu == 'ASSET' || $menu == 'FINANCE')
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -42,6 +47,9 @@
                         </li>
                     </ul>
                 </li>
+                @endif
+
+                @if($menu == 'ASSET' || $menu == 'FINANCE')
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -60,6 +68,9 @@
                         </li>
                     </ul>
                 </li>
+                @endif
+
+                @if($menu == 'LOGISTIC')
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -95,6 +106,8 @@
 
                     </ul>
                 </li>
+
+                @endif
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -181,7 +194,7 @@
                             <li class="{{ sa('organization') }}" >
                               <a href="{{ url('organization') }}" class="{{ sa('organization') }}" ><span class="fa fa-group"></span>
                                Organization</a>
-                            </li>                            
+                            </li>
                             <li class="{{ sa('user') }}" >
                               <a href="{{ url('user') }}" class="{{ sa('user') }}" ><span class="fa fa-group"></span>
                                Users</a>
