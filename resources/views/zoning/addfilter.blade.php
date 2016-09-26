@@ -8,7 +8,7 @@
     <div class="modal-body" >
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                <table id="shipment_list">
+                <table class="table" id="shipment_list">
                     <thead>
                         <tr>
                             <th><input type="checkbox" id="dev_select_all" /></th>
@@ -24,7 +24,7 @@
                 </table>
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="scroll:auto;height:100%;">
-                <table id="device_list">
+                <table class="table" id="device_list">
                     <thead>
                         <tr>
                             <th></th>
@@ -76,6 +76,13 @@ button#label_default{
 <script type="text/javascript">
     $(document).ready(function(){
 
+        $('#dev_select_all').on('click',function(){
+            if($('#dev_select_all').is(':checked')){
+                $('.shipselect').prop('checked', true);
+            }else{
+                $('.shipselect').prop('checked',false);
+            }
+        });
 
         $('#company-code').on('change',function(){
             oTable.draw();
@@ -139,7 +146,7 @@ button#label_default{
 
                         $.each(shipment_list, function(index, val) {
 
-                            $('table#shipment_list tbody').prepend('<tr><td><input type="checkbox" class="shipselect" name="ship" value="' + val.delivery_id + '" ></td><td>' + val.order_id + '</td><td>' + val.fulfillment_code + '</td><td>' + val.consignee_olshop_city + '</td><td>' + val.number_of_package + '</td></tr>');
+                            $('table#shipment_list tbody').prepend('<tr><td><input type="checkbox" class="shipselect" name="ship" value="' + val.delivery_id + '" ></td><td>' + val.delivery_id + '</td><td>' + val.fulfillment_code + '</td><td>' + val.buyerdeliverycity + '</td><td>' + val.box_count + '</td></tr>');
                         });
 
                     }else{
@@ -151,6 +158,42 @@ button#label_default{
             console.log(date);
 
         });
+
+
+        $('#do-assign').on('click',function(){
+            var ships = $('.shipselect:checked');
+
+            var device = $('.devselect:checked');
+
+            //var props = $('.selector:checked');
+            var ids = [];
+            $.each(ships, function(index){
+                ids.push( $(this).val() );
+            });
+
+            console.log(ids);
+
+            console.log(device.val());
+
+            if(ids.length > 0){
+                $.post('{{ URL::to('zoning/assigndevice')}}',
+                    {
+                        device : device.val(),
+                        ship_ids : ids
+                    },
+                    function(data){
+                        $('#device-assign-modal').modal('hide');
+                        oTable.draw();
+                    }
+                    ,'json');
+
+            }else{
+                alert('No product selected.');
+                $('#device-assign-modal').modal('hide');
+            }
+
+        });
+
 
 
     });

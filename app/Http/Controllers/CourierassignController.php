@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AdminController;
 
 use App\Models\Shipment;
+use App\Models\Courier;
+use App\Models\Device;
+use App\Models\History;
+use App\Models\Shipmentlog;
 
 use App\Helpers\Prefs;
 

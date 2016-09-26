@@ -2,10 +2,10 @@
 
 @section('page_js')
 
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/forms/inputs/typeahead/typeahead.bundle.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/forms/tags/tagsinput.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/forms/tags/tokenfield.min.js"></script>
-    <script type="text/javascript" src="{{ URL::to('limitless')}}/assets/js/plugins/ui/prism.min.js"></script>
+    <script type="text/javascript" src="{!! URL::to('limitless')!!}/assets/js/plugins/forms/inputs/typeahead/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="{!! URL::to('limitless')!!}/assets/js/plugins/forms/tags/tagsinput.min.js"></script>
+    <script type="text/javascript" src="{!! URL::to('limitless')!!}/assets/js/plugins/forms/tags/tokenfield.min.js"></script>
+    <script type="text/javascript" src="{!! URL::to('limitless')!!}/assets/js/plugins/ui/prism.min.js"></script>
 
 @stop
 
@@ -49,12 +49,12 @@
 
         $.ajaxSetup({
            'beforeSend': function(xhr) {
-                xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
+                xhr.setRequestHeader("X-CSRF-TOKEN", "{!! csrf_token() !!}" );
             }
         });
 
 
-        
+
         $('#select_all').on('click',function(){
             if($('#select_all').is(':checked')){
                 $('.selector').prop('checked', true);
@@ -107,15 +107,15 @@
                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <h5>Import {{ $title }} Preview</h5>
+                                    <h5>Import {!! $title !!} Preview</h5>
                                     {!! Former::select('force_all')->label('Commit All Records')->options(array(0=>'No', 1=>'Yes'))->id('importkey')->class('form-control importkey input-sm')->help('Disregard selection checkbox and commit all rows to import. Including all data not shown in current preview page.') !!}
                                     {!! Former::select('edit_key')->label('Edit Key')->options($headselect)->id('importkey')->class('form-control importkey input-sm')->help('select to set which field used for update key') !!}
                                 </div>
                                 <div class="col-md-5" style="padding-top:25px;">
                                     {!! Former::submit('Commit Import')->id('execute')->class('btn btn-raised btn-primary input-sm') !!}&nbsp;&nbsp;
-                                    {{ HTML::link($back,'Cancel',array('class'=>'btn btn-raised input-sm'))}}
+                                    {!! HTML::link($back,'Cancel',array('class'=>'btn btn-raised input-sm'))!!}
                                 </div>
-                            </div>                            
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -154,20 +154,20 @@
                                     @foreach($imports->toArray() as $row)
                                     <tr>
                                         <td>
-                                            {{ $counter }}
+                                            {!! $counter !!}
                                         </td>
                                         <td>
-                                            <input class="selector" name="selector[]" value="{{ $row['_id'] }}" type="checkbox">
+                                            <input class="selector" name="selector[]" value="{!! $row['_id'] !!}" type="checkbox">
                                         </td>
                                         <td>
-                                            <input class="edit_selector" name="edit_selector[]" value="{{ $row['_id'] }}" type="checkbox">
+                                            <input class="edit_selector" name="edit_selector[]" value="{!! $row['_id'] !!}" type="checkbox">
                                         </td>
                                         @foreach($row as $d)
                                             <td>
                                                 @if( $d instanceof Carbon || $d instanceof MongoDate )
-                                                    {{ $d->toRfc822String() }}
+                                                    {!! $d->toRfc822String() !!}
                                                 @else
-                                                    {{ $d }}
+                                                    {!! $d !!}
                                                 @endif
                                             </td>
                                         @endforeach

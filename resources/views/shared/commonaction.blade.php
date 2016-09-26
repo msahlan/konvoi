@@ -11,10 +11,10 @@
     </div>
     <div class="modal-body" id="push-modal-body" >
 
-        {{ Former::text('re_courier_name','Reassign to Courier')->id('re-courier-name')->class('auto_courier_reassign form-control') }}
-        {{ Former::text('re_courier_id','Courier ID')->id('re-courier-id') }}
+        {!! Former::text('re_courier_name','Reassign to Courier')->id('re-courier-name')->class('auto_courier_reassign form-control') !!}
+        {!! Former::text('re_courier_id','Courier ID')->id('re-courier-id') !!}
 
-        {{ Former::textarea('reason','Reason')->id('re-courier-reason') }}
+        {!! Former::textarea('reason','Reason')->id('re-courier-reason') !!}
 
     </div>
     <div class="modal-footer">
@@ -31,7 +31,7 @@
     <div class="modal-body" >
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {{ Former::textarea('reason','Reason')->id('re-device-reason') }}
+                {!! Former::textarea('reason','Reason')->id('re-device-reason') !!}
                 <br />
 
                 <table id="shipment_list">
@@ -79,7 +79,7 @@
         <h3 id="myModalLabel">Reschedule Delivery Date</span></h3>
     </div>
     <div class="modal-body" >
-        {{ Former::text('pickup_date', 'Set Delivery Date' )->id('reschedule-pickup-date')->class('form-control d-datepicker') }}
+        {!! Former::text('pickup_date', 'Set Delivery Date' )->id('reschedule-pickup-date')->class('form-control d-datepicker') !!}
         <?php
             $trip_count = Options::get('trip_per_day',1);
             $trips = array();
@@ -88,8 +88,8 @@
             }
 
         ?>
-        {{ Former::select('trip', 'Trip' )->id('reschedule-trip')->options( $trips ) }}
-        {{ Former::textarea('reason','Reason')->id('re-reschedule-reason') }}
+        {!! Former::select('trip', 'Trip' )->id('reschedule-trip')->options( $trips ) !!}
+        {!! Former::textarea('reason','Reason')->id('re-reschedule-reason') !!}
 
     </div>
     <div class="modal-footer">
@@ -119,7 +119,7 @@
 
         $.ajaxSetup({
            'beforeSend': function(xhr) {
-                xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
+                xhr.setRequestHeader("X-CSRF-TOKEN", "{!! csrf_token() !!}" );
             }
         });
 
@@ -146,7 +146,7 @@
             //console.log(ids);
 
             if(courier_id != ''){
-                $.post('{{ URL::to('ajax/reassigncourier')}}',
+                $.post('{!! URL::to('ajax/reassigncourier')!!}',
                     {
 
                         courier_name : courier_name,
@@ -185,7 +185,7 @@
         $('#device-reassign-modal').on('shown',function(){
             var ids = getSelected();
 
-            $.post('{{ URL::to('ajax/shipmentlist')}}',
+            $.post('{!! URL::to('ajax/shipmentlist')!!}',
                 {
                     ids : ids
                 },
@@ -242,7 +242,7 @@
             console.log(device.val());
 
             if(ids.length > 0){
-                $.post('{{ URL::to('ajax/reassigndevice')}}',
+                $.post('{!! URL::to('ajax/reassigndevice')!!}',
                     {
                         device : device.val(),
                         ship_ids : ids,
@@ -280,7 +280,7 @@
             console.log(ids);
 
             if(ids.length > 0){
-                $.post('{{ URL::to('ajax/reschedule')}}',
+                $.post('{!! URL::to('ajax/reschedule')!!}',
                     {
                         date : $('#reschedule-pickup-date').val(),
                         trip : $('#reschedule-trip').val(),

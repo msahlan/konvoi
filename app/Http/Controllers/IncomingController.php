@@ -9,6 +9,8 @@ use App\Models\Codsurcharge;
 use App\Models\Printsession;
 use App\Models\Application;
 use App\Models\Buyer;
+use App\Models\History;
+use App\Models\Shipmentlog;
 
 use App\Helpers\Prefs;
 
@@ -24,6 +26,7 @@ use Request;
 use Response;
 use Mongomodel;
 use \MongoRegex;
+use \MongoDate;
 use DB;
 use HTML;
 

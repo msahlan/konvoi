@@ -8,11 +8,11 @@
     <div class="modal-body" >
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {{ Former::textarea('reason','Reason')->id('re-status-reason') }}
-                {{ Former::select('Delivery Status','delivery_status')->options(Config::get('jayon.dialog_delivery_status'))->id('delivery_status') }}
-                {{ Former::select('Courier Status','courier_status')->options(Config::get('jayon.dialog_courier_status'))->id('courier_status') }}
-                {{ Former::select('Hub Status','warehouse_status')->options(Config::get('jayon.dialog_warehouse_status'))->id('warehouse_status') }}
-                {{ Former::select('Position','position')->options(Prefs::getPosition()->PositionToSelection('node_code','name',true,'Tidak Ada Perubahan'))->id('chg_position') }}
+                {!! Former::textarea('reason','Reason')->id('re-status-reason') !!}
+                {!! Former::select('Delivery Status','delivery_status')->options(Config::get('jayon.dialog_delivery_status'))->id('delivery_status') !!}
+                {!! Former::select('Courier Status','courier_status')->options(Config::get('jayon.dialog_courier_status'))->id('courier_status') !!}
+                {!! Former::select('Hub Status','warehouse_status')->options(Config::get('jayon.dialog_warehouse_status'))->id('warehouse_status') !!}
+                {!! Former::select('Position','position')->options(Prefs::getPosition()->PositionToSelection('node_code','name',true,'Tidak Ada Perubahan'))->id('chg_position') !!}
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <table id="order_shipment_list">
@@ -44,7 +44,7 @@
 
         $.ajaxSetup({
            'beforeSend': function(xhr) {
-                xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
+                xhr.setRequestHeader("X-CSRF-TOKEN", "{!! csrf_token() !!}" );
             }
         });
 
@@ -65,7 +65,7 @@
         $('#change-status-modal').on('shown',function(){
             var ids = getSelectedChg();
 
-            $.post('{{ URL::to('ajax/boxlist')}}',
+            $.post('{!! URL::to('ajax/boxlist')!!}',
                 {
                     ids : ids
                 },
@@ -155,7 +155,7 @@
             });
 
             if(ids.length > 0){
-                $.post('{{ URL::to('ajax/changestatus')}}',
+                $.post('{!! URL::to('ajax/changestatus')!!}',
                     {
                         box_ids : ids,
                         delivery_status : delivery_status,

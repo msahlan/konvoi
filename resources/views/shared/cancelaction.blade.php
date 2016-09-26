@@ -6,7 +6,7 @@
         <h3 id="myModalLabel">Cancel Data</span></h3>
     </div>
     <div class="modal-body" >
-        {{ Former::textarea('cancel_reason', 'Reason' )->id('cancel-reason')->class('form-control') }}
+        {!! Former::textarea('cancel_reason', 'Reason' )->id('cancel-reason')->class('form-control') !!}
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -19,7 +19,7 @@
 
         $.ajaxSetup({
            'beforeSend': function(xhr) {
-                xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
+                xhr.setRequestHeader("X-CSRF-TOKEN", "{!! csrf_token() !!}" );
             }
         });
 
@@ -46,7 +46,7 @@
 
                     alert('Please specify reason for cancelation');
                 }else{
-                    $.post('{{ URL::to('ajax/canceldata')}}',
+                    $.post('{!! URL::to('ajax/canceldata')!!}',
                         {
                             ids : ids,
                             reason : reason

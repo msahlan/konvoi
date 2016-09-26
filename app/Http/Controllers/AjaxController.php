@@ -13,6 +13,8 @@ use App\Models\Geolog;
 use App\Models\Uploaded;
 use App\Models\Company;
 use App\Models\Device;
+use App\Models\History;
+use App\Models\Shipmentlog;
 
 use App\Helpers\Prefs;
 use App\Helpers\PointLocation;

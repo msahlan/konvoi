@@ -3,7 +3,7 @@
 
 @section('left')
 
-<h5>Import {{ $title }}</h5>
+<h5>Import {!! $title !!}</h5>
 
 
         {!! $aux_form !!}
@@ -21,7 +21,7 @@
         </div>
 
         {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary')) !!}&nbsp;&nbsp;
-        {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
+        {!! HTML::link($back,'Cancel',array('class'=>'btn'))!!}
 
 
 @endsection

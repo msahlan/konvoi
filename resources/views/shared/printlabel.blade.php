@@ -4,24 +4,24 @@
 
 <style type="text/css">
     body{
-        font-size: {{ $font_size }}pt;
+        font-size: {!! $font_size !!}pt;
         background-color:white;
-        padding-top: {{ $top_offset}}px;
-        padding-left: {{ $left_offset}}px;
+        padding-top: {!! $top_offset!!}px;
+        padding-left: {!! $left_offset!!}px;
     }
     .label{
         float: left;
         font-family: Arial, sans-serif;
-        max-height: {{ $cell_height }}px;
-        min-height: {{ $cell_height }}px;
-        height: {{ $cell_height }}px;
+        max-height: {!! $cell_height !!}px;
+        min-height: {!! $cell_height !!}px;
+        height: {!! $cell_height !!}px;
 
-        max-width: {{ $cell_width }}px;
-        min-width: {{ $cell_width }}px;
-        width: {{ $cell_width }}px;
+        max-width: {!! $cell_width !!}px;
+        min-width: {!! $cell_width !!}px;
+        width: {!! $cell_width !!}px;
 
-        margin-right: {{ $margin_right }}px;
-        margin-bottom: {{ $margin_bottom }}px;
+        margin-right: {!! $margin_right !!}px;
+        margin-bottom: {!! $margin_bottom !!}px;
         display: table-cell;
 
         border: thin ridge #ddd;
@@ -38,7 +38,7 @@
         width: 100%;
         height: 100%;
         border: none;
-        font-size: {{ $font_size }}pt;
+        font-size: {!! $font_size !!}pt;
         padding: 0px;
         margin: 0px;
     }
@@ -68,7 +68,7 @@
         @if($code_type == 'barcode')
             display: inline-block;
         @endif
-        max-width: {{ $cell_width }}px;
+        max-width: {!! $cell_width !!}px;
     }
 
     img.barcode{
@@ -98,8 +98,8 @@
     ?>
 
     #container{
-        width: {{ $container }}px;
-        max-width: {{ $container; }}px;
+        width: {!! $container !!}px;
+        max-width: {!! $container; !!}px;
         display: block;
     }
 
@@ -125,16 +125,16 @@
 
                             ?>
 
-                            <img src="{{ URL::to('qr/'.urlencode(base64_encode($qrstring)) ) }}" class="barcode" alt="{{ $l['_id'] }}" />
+                            <img src="{!! URL::to('qr/'.urlencode(base64_encode($qrstring)) ) !!}" class="barcode" alt="{!! $l['_id'] !!}" />
                         @else
-                            <img src="{{ URL::to('barcode/'.urlencode(base64_encode($l['consignee_olshop_orderid'].'-'.($b + 1))) ) }}" class="barcode" alt="{{ $l['_id'] }}" />
+                            <img src="{!! URL::to('barcode/'.urlencode(base64_encode($l['consignee_olshop_orderid'].'-'.($b + 1))) ) !!}" class="barcode" alt="{!! $l['_id'] !!}" />
                         @endif
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align:center">
-                        {{ $pd['no_sales_order'] }}<br />
-                        {{ $pd['consignee_olshop_orderid'].' '.($b + 1).'/'.$pd['number_of_package']}}
+                        {!! $pd['no_sales_order'] !!}<br />
+                        {!! $pd['consignee_olshop_orderid'].' '.($b + 1).'/'.$pd['number_of_package']!!}
                     </td>
                 </tr>
             </table>

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\AdminController;
 
 use App\Models\Shipment;
+use App\Models\Device;
+use App\Models\History;
+use App\Models\Shipmentlog;
 
 use App\Helpers\Prefs;
 
@@ -19,6 +22,7 @@ use Request;
 use Response;
 use Mongomodel;
 use \MongoRegex;
+use \MongoDate;
 use DB;
 use HTML;
 
@@ -307,19 +311,29 @@ class ZoningController extends AdminController {
 
         //$pick_up_date = new MongoDate(strtotime($date));
 
-        $shipments = Shipment::where('assignmentdate','=', $pick_up_date )
+        $pick_up_date = date('Y-m-d', strtotime($date));
+
+        $shipments = Shipment::where('assignment_date','like', $pick_up_date.'%' )
                         ->where('status','=', config('jayon.trans_status_admin_dated'))
                         ->where('buyerdeliverycity','=',$city)->get();
 
         $shipments = $shipments->toArray();
 
         for($i = 0; $i < count($shipments); $i++){
-            $shipments[$i]['pick_up_date'] = date('Y-m-d', $shipments[$i]['pick_up_date']->sec );
+            $shipments[$i]['assignmentdate'] = date('Y-m-d', strtotime($shipments[$i]['assignment_date']) );
+            //$shipments[$i]['assignmentdate'] = date('Y-m-d', $shipments[$i]['assignmentdate']->sec );
         }
 
         $city = trim($city);
-
+        /*
         $devices = Device::where('city','regex', new MongoRegex('/'.$city.'/i'))
+                                ->where(function($on){
+                                        $on->where('is_on','=',1)
+                                            ->orWhere('is_on','=',strval(1));
+                                })
+                                ->get();
+        */
+        $devices = Device::where('city','like', '%'.$city.'%')
                                 ->where(function($on){
                                         $on->where('is_on','=',1)
                                             ->orWhere('is_on','=',strval(1));
@@ -328,11 +342,31 @@ class ZoningController extends AdminController {
 
         $caps = array();
 
+        $dids = array();
+        foreach($devices as $d){
+            $dids[] = $d->id;
+        }
+
+        $qloads = Shipment::select(DB::raw('device_id, count(*) as cnt'))
+                    ->where('assignment_date',$pick_up_date)
+                    ->where('device_id','!=','')
+                    ->groupBy('device_id')->get();
+
+        $loads = array();
+
+        foreach($qloads as $ld){
+            $loads[$ld->device_id] = $ld['cnt'];
+        }
+
+
+
         foreach($devices as $d){
             $caps[$d->key]['identifier'] = $d->identifier;
+            $caps[$d->key]['id'] = $d->id;
             $caps[$d->key]['key'] = $d->key;
             $caps[$d->key]['city'] = $d->city;
-            $caps[$d->key]['count'] = Shipment::where('device_key',$d->key)->where('assignmentdate',$pick_up_date)->count();
+            $caps[$d->key]['count'] = (isset( $loads[$d->id] ))?$loads[$d->id]:0;
+
         }
 
         return Response::json( array('result'=>'OK', 'shipment'=>$shipments, 'device'=>$caps ) );
@@ -368,9 +402,10 @@ class ZoningController extends AdminController {
             $hdata['historyAction'] = 'assign_device';
             $hdata['historySequence'] = 1;
             $hdata['historyObjectType'] = 'shipment';
-            $hdata['historyObject'] = $sh->toArray();
             $hdata['actor'] = Auth::user()->fullname;
             $hdata['actor_id'] = Auth::user()->_id;
+
+            $hdata = array_merge($sh->toArray(), $hdata );
 
             History::insert($hdata);
 

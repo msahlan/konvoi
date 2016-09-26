@@ -12,7 +12,7 @@
         <h3 id="myModalLabel">Confirm Data</span></h3>
     </div>
     <div class="modal-body" >
-        {{ Former::textarea('mark_reason', 'Reason' )->id('mark-reason')->class('form-control') }}
+        {!! Former::textarea('mark_reason', 'Reason' )->id('mark-reason')->class('form-control') !!}
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Confirm</button>
@@ -25,7 +25,7 @@
 
         $.ajaxSetup({
            'beforeSend': function(xhr) {
-                xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
+                xhr.setRequestHeader("X-CSRF-TOKEN", "{!! csrf_token() !!}" );
             }
         });
 
@@ -40,7 +40,7 @@
                 ids.push( $(this).val() );
             });
 
-            $.post('{{ URL::to('ajax/mark')}}',
+            $.post('{!! URL::to('ajax/mark')!!}',
             {
                 ids : ids,
                 action : 'mark_phone'
@@ -65,7 +65,7 @@
                 ids.push( $(this).val() );
             });
 
-            $.post('{{ URL::to('ajax/mark')}}',
+            $.post('{!! URL::to('ajax/mark')!!}',
             {
                 ids : ids,
                 action : 'unmark_phone'
@@ -90,7 +90,7 @@
                 ids.push( $(this).val() );
             });
 
-            $.post('{{ URL::to('ajax/mark')}}',
+            $.post('{!! URL::to('ajax/mark')!!}',
             {
                 ids : ids,
                 action : 'mark_email'
@@ -115,7 +115,7 @@
                 ids.push( $(this).val() );
             });
 
-            $.post('{{ URL::to('ajax/mark')}}',
+            $.post('{!! URL::to('ajax/mark')!!}',
             {
                 ids : ids,
                 action : 'unmark_email'

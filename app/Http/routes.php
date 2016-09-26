@@ -59,6 +59,8 @@ Route::get('/incoming/csv/{filename}', 'IncomingController@getCsv');
 Route::get('/incoming/add', 'IncomingController@getAdd');
 Route::post('/incoming/add', 'IncomingController@postAdd');
 
+Route::post('/incoming/assigndate', 'IncomingController@postAssigndate');
+
 
 Route::get('/zoning', 'ZoningController@getIndex');
 Route::post('/zoning', 'ZoningController@postIndex');
@@ -97,7 +99,7 @@ Route::post('/fcmdevice', 'FcmdeviceController@postIndex');
 Route::post('/fcmdevice/syncparse', 'FcmdeviceController@postSyncparse');
 Route::post('/fcmdevice/fcmpush', 'FcmdeviceController@postFcmpush');
 
-
+/* common ajax routes */
 Route::post('/ajax/sessionsave', 'AjaxController@postSessionsave');
 Route::get('/ajax/merchant', 'AjaxController@getMerchant');
 Route::post('/ajax/merchantapp', 'AjaxController@postMerchantapp');
@@ -105,6 +107,8 @@ Route::post('/ajax/locationlog', 'AjaxController@postLocationlog');
 Route::post('/ajax/delfile', 'AjaxController@postDelfile');
 Route::get('/ajax/org', 'AjaxController@getOrg');
 Route::get('/ajax/device', 'AjaxController@getDevice');
+Route::post('/ajax/confirmdata', 'AjaxController@postConfirmdata');
+Route::post('/ajax/canceldata', 'AjaxController@postCanceldata');
 
 
 Route::get('/profile', 'ProfileController@getIndex');

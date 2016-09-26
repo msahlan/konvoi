@@ -6,8 +6,8 @@
         <h3 id="myModalLabel">Change Logistic</span></h3>
     </div>
     <div class="modal-body" >
-        {{ Former::select('logistic', "Logistic")->options( Prefs::getLogistic()->LogisticToSelection('logistic_code','name') )->id('logistic-code')->class('input-sm input-white form-control') }}
-        {{ Former::textarea('change_logistic_reason', 'Reason' )->id('change-logistic-reason')->class('form-control') }}
+        {!! Former::select('logistic', "Logistic")->options( Prefs::getLogistic()->LogisticToSelection('logistic_code','name') )->id('logistic-code')->class('input-sm input-white form-control') !!}
+        {!! Former::textarea('change_logistic_reason', 'Reason' )->id('change-logistic-reason')->class('form-control') !!}
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -20,7 +20,7 @@
 
         $.ajaxSetup({
            'beforeSend': function(xhr) {
-                xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
+                xhr.setRequestHeader("X-CSRF-TOKEN", "{!! csrf_token() !!}" );
             }
         });
 
@@ -48,12 +48,12 @@
 
                     alert('Please specify reason for changing logistic carrier');
                 }else{
-                    $.post('{{ URL::to('ajax/changelogistic')}}',
+                    $.post('{!! URL::to('ajax/changelogistic')!!}',
                         {
                             logistic : logistic,
                             ids : ids,
                             reason : reason,
-                            url : '{{ URL::current() }}'
+                            url : '{!! URL::current() !!}'
                         },
                         function(data){
                             $('#change-logistic-modal').modal('hide');

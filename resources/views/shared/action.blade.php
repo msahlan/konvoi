@@ -4,7 +4,7 @@
   <span class="dropdown-arrow dropdown-arrow-inverse"></span>
   <ul class="dropdown-menu dropdown-inverse" role="menu">
     @foreach($actions as $action)
-      <li>{{ $action }}</a>
+      <li>{!! $action !!}</a>
       </li>
     @endforeach
   </ul>
