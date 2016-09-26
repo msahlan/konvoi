@@ -14,7 +14,7 @@
         {!! Former::text('courier_name','Courier')->id('courier-name')->class('auto_courier form-control') !!}
         {!! Former::text('courier_id','Courier ID')->id('courier-id') !!}
 
-        {!! Former::text('pickup_date','Pick Up Date')->id('pickup-date')->class('form-control')->readonly(true) !!}
+        {!! Former::text('pickup_date','Delivery Date')->id('pickup-date')->class('form-control')->readonly(true) !!}
         {!! Former::text('device_name','Device')->id('device-name')->class('form-control')->readonly(true) !!}
         {!! Former::text('device_key','Device')->id('device-key')->class('form-control')->readonly(true) !!}
 

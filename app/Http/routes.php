@@ -71,6 +71,7 @@ Route::post('/zoning/deviceavail', 'ZoningController@postDeviceavail');
 
 Route::get('/courierassign', 'CourierassignController@getIndex');
 Route::post('/courierassign', 'CourierassignController@postIndex');
+Route::post('/courierassign/assigncourier', 'CourierassignController@postAssigncourier');
 
 Route::get('/dispatched', 'DispatchedController@getIndex');
 Route::post('/dispatched', 'DispatchedController@postIndex');
@@ -107,6 +108,7 @@ Route::post('/ajax/locationlog', 'AjaxController@postLocationlog');
 Route::post('/ajax/delfile', 'AjaxController@postDelfile');
 Route::get('/ajax/org', 'AjaxController@getOrg');
 Route::get('/ajax/device', 'AjaxController@getDevice');
+Route::get('/ajax/courier', 'AjaxController@getCourier');
 Route::post('/ajax/confirmdata', 'AjaxController@postConfirmdata');
 Route::post('/ajax/canceldata', 'AjaxController@postCanceldata');
 

@@ -13,6 +13,7 @@ use App\Models\Geolog;
 use App\Models\Uploaded;
 use App\Models\Company;
 use App\Models\Device;
+use App\Models\Courier;
 use App\Models\History;
 use App\Models\Shipmentlog;
 
@@ -291,6 +292,26 @@ class AjaxController extends BaseController {
         print json_encode(array('result'=>'ok','locations'=>$locations,'paths'=>$paths, 'pathdummy'=>$pathdummy, 'q'=>'' ));
 
     }
+
+    public function getCourier()
+    {
+        $q = Request::input('term');
+
+        $q = '%'.$q.'%';
+
+        $couriers = Courier::where('fullname','like',$q)
+                            //->where('status','=','active')
+                            ->get();
+
+        $result = array();
+
+        foreach($couriers as $d){
+            $result[] = array('id'=>$d->id,'value'=>$d->fullname,'name'=>$d->fullname,'label'=>$d->fullname.' ( '.$d->id.' )');
+        }
+
+        return Response::json($result);
+    }
+
 
     public function getImages($delivery_id)
     {

@@ -161,7 +161,7 @@ class DispatchedController extends AdminController {
 
         $db = config('jayon.main_db');
 
-        $this->def_order_by = 'ordertime';
+        $this->def_order_by = 'assignment_date';
         $this->def_order_dir = 'desc';
         $this->place_action = 'first';
         $this->show_select = true;

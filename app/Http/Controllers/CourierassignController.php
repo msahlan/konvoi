@@ -22,6 +22,7 @@ use Input;
 use Request;
 use Response;
 use Mongomodel;
+use \MongoDate;
 use \MongoRegex;
 use DB;
 use HTML;
@@ -423,6 +424,68 @@ class CourierassignController extends AdminController {
         $aux = array();
         return $aux;
         //print_r($this->aux_data);
+
+    }
+
+
+    public function postAssigncourier()
+    {
+        //courier_name:Shia Le Beouf
+        //courier_id:5605512bccae5b64010041b6
+        //device_key:0f56deadbc6df60740ef5e2c576876b0e3310f7d
+        //device_name:JY-002
+        //pickup_date:28-09-2
+
+        $in = Request::input();
+
+        //$pickup_date = new MongoDate(strtotime($in['pickup_date']));
+
+        $shipments = Shipment::where('device_id','=', $in['device_key'] )
+                        ->where('assignment_date','like', $in['pickup_date'].'%' )
+                        ->where('status','=',config('jayon.trans_status_admin_zoned'))
+                        ->get();
+
+        //print_r($shipments->toArray());
+
+        $ts = new MongoDate();
+
+        foreach($shipments as $sh){
+            $pre = clone $sh;
+
+            $sh->bucket = config('jayon.bucket_tracker');
+            $sh->status = config('jayon.trans_status_admin_courierassigned');
+            $sh->courier_id = $in['courier_id'];
+            $sh->courier_name = $in['courier_name'];
+            $sh->save();
+
+
+                    $hdata = array();
+                    $hdata['historyTimestamp'] = $ts;
+                    $hdata['historyAction'] = 'assign_courier';
+                    $hdata['historySequence'] = 1;
+                    $hdata['historyObjectType'] = 'shipment';
+                    $hdata['actor'] = Auth::user()->fullname;
+                    $hdata['actor_id'] = Auth::user()->_id;
+
+                    $hdata = array_merge($sh->toArray(), $hdata );
+
+                    History::insert($hdata);
+
+                    $sdata = array();
+                    $sdata['timestamp'] = $ts;
+                    $sdata['action'] = 'assign_courier';
+                    $sdata['reason'] = 'initial';
+                    $sdata['objectType'] = 'shipment';
+                    $sdata['object'] = $sh->toArray();
+                    $sdata['preObject'] = $pre->toArray();
+                    $sdata['actor'] = Auth::user()->fullname;
+                    $sdata['actor_id'] = Auth::user()->_id;
+                    Shipmentlog::insert($sdata);
+
+            //print_r($sh);
+        }
+
+        return Response::json( array('result'=>'OK', 'shipment'=>$shipments ) );
 
     }
 
