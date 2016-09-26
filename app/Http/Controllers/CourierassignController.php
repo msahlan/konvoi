@@ -127,7 +127,7 @@ class CourierassignController extends AdminController {
         $this->crumb->addCrumb('Shipment Order',url( strtolower($this->controller_name) ));
 
 
-        //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
+        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
         $this->additional_filter .= '<br />';
         $this->additional_filter .= View::make('shared.markaction')->render();
 
