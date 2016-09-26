@@ -33,7 +33,7 @@ use App\Helpers\Prefs;
 <div id="set-pickup-date-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Set Pick Up Date</span></h3>
+        <h3 id="myModalLabel">Set Delivery Date</span></h3>
     </div>
     <div class="modal-body" >
         {!! Former::text('pickup_date', 'Set Pick Up Date' )->id('pickup-date')->class('form-control p-datepicker')  !!}
@@ -123,14 +123,6 @@ use App\Helpers\Prefs;
            'beforeSend': function(xhr) {
                 xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
             }
-        });
-
-
-
-        $('.p-datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            forceParse:false,
-            zIndexOffset:10000
         });
 
         $('#refresh_filter').on('click',function(){

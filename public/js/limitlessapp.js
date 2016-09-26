@@ -92,11 +92,20 @@
             timePickerSeconds: true
         });
 
+        /*
         $('.px-datepicker').pickadate({
             format:'yyyy-mm-dd',
             editable: true
         });
+        */
 
+        $('.p-datepicker').datepicker({
+            dateFormat: 'yy-mm-dd',
+            forceParse:true,
+            zIndexOffset:10000
+        });
+        
+        /*        
         $('.p-datepicker').daterangepicker({
             locale: {
                 format:'YYYY-MM-DD'
@@ -104,6 +113,10 @@
             singleDatePicker: true,
             showDropdowns: true
         });
+        */
+
+        
+
 
         $('.pop').click(function(){
             var _id = $(this).attr('id');
