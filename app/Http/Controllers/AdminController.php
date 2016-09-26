@@ -241,7 +241,7 @@ class AdminController extends Controller {
 
         $controller_name = strtolower($this->controller_name);
 
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+        $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
         Event::fire('log.a',array($controller_name, 'view list' ,$actor,'OK'));
 
         //$this->can_add = false;
@@ -255,7 +255,7 @@ class AdminController extends Controller {
         if($file){
             $body = file_get_contents($file->fullpath);
             $controller_name = strtolower($this->controller_name);
-            $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+            $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
             Event::fire('log.a',array($controller_name, 'print file content' ,$actor,'OK'));
             print $body;
         }else{
@@ -271,7 +271,7 @@ class AdminController extends Controller {
         if($file){
             $body = file_get_contents($file->fullpath);
             $controller_name = strtolower($this->controller_name);
-            $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+            $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
             Event::fire('log.a',array($controller_name, 'print file content' ,$actor,'OK'));
 
             return PDF::loadHTML($body)->setPaper('a4')
@@ -291,7 +291,7 @@ class AdminController extends Controller {
     public function getPrint()
     {
 
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+        $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
         Event::fire('log.a',array($controller_name, 'print page' ,$actor,'OK'));
 
         return $this->printPage();
@@ -325,7 +325,7 @@ class AdminController extends Controller {
             $table = $this->tableResponder();
         }
 
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+        $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
         Event::fire('log.a',array($controller_name, 'view static list' ,$actor,'OK'));
 
 
@@ -353,7 +353,7 @@ class AdminController extends Controller {
             $table = $this->tableResponder();
         }
 
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+        $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
         Event::fire('log.a',array($controller_name, 'view static list' ,$actor,'OK'));
 
 
@@ -372,7 +372,7 @@ class AdminController extends Controller {
         $doc = Document::find($_id);
 
 
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+        $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
         Event::fire('log.a',array($controller_name, 'print through document' ,$actor,'OK'));
 
         if($doc){
@@ -388,7 +388,7 @@ class AdminController extends Controller {
 
         $controller_name = strtolower($this->controller_name);
 
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+        $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
         Event::fire('log.a',array($controller_name, 'view static list' ,$actor,'OK'));
 
         $this->report_view = 'print.report';
@@ -656,7 +656,7 @@ class AdminController extends Controller {
             $sd->fullpath = $this->report_file_path.$this->report_file_name;
             $sd->filename = $this->report_file_name;
             $sd->creator_id = Auth::user()->_id;
-            $sd->creator_name = Auth::user()->fullname;
+            $sd->creator_name = Auth::user()->name;
             $sd->save();
 
         }
@@ -3239,7 +3239,7 @@ class AdminController extends Controller {
 
 	    $validation = Validator::make($input = $data, $this->validator);
 
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+        $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
 
 	    if($validation->fails()){
 
@@ -3257,7 +3257,7 @@ class AdminController extends Controller {
 			$data['lastUpdate'] = new MongoDate();
 
             $data['ownerId'] = Auth::user()->_id;
-            $data['ownerName'] = Auth::user()->fullname;
+            $data['ownerName'] = Auth::user()->name;
 
 
             // process tags by default

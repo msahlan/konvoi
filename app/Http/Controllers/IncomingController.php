@@ -250,7 +250,7 @@ class IncomingController extends AdminController {
                 $hdata['historySequence'] = 1;
                 $hdata['historyObjectType'] = 'shipment';
                 $hdata['historyObject'] = $r->toArray();
-                $hdata['actor'] = Auth::user()->fullname;
+                $hdata['actor'] = Auth::user()->name;
                 $hdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
 
                 History::insert($hdata);
@@ -262,7 +262,7 @@ class IncomingController extends AdminController {
                 $sdata['objectType'] = 'shipment';
                 $sdata['object'] = $r->toArray();
                 $sdata['preObject'] = $pre->toArray();
-                $sdata['actor'] = Auth::user()->fullname;
+                $sdata['actor'] = Auth::user()->name;
                 $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
                 Shipmentlog::insert($sdata);
 

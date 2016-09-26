@@ -92,7 +92,7 @@ class TemplatesController extends AdminController {
 
     public function beforeSave($data)
     {
-        $data['creatorName'] = Auth::user()->fullname;
+        $data['creatorName'] = Auth::user()->name;
 
         $data['status'] = 'inactive';
 
@@ -230,8 +230,8 @@ class TemplatesController extends AdminController {
         if(Auth::check() && ( isset(Auth::user()->showContact) && Auth::user()->showContact == 'yes') ){
             if(isset(Auth::user()->firstname)){
                 $contact['fullname'] = Auth::user()->firstname.' '.Auth::user()->lastname;
-            }else if( isset(Auth::user()->fullname)){
-                $contact['fullname'] = Auth::user()->fullname;
+            }else if( isset(Auth::user()->name)){
+                $contact['fullname'] = Auth::user()->name;
             }else{
                 $contact['fullname'] = '';
             }

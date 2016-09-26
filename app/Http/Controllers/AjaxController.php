@@ -547,7 +547,7 @@ class AjaxController extends BaseController {
             $hdata['historySequence'] = 1;
             $hdata['historyObjectType'] = 'shipment';
             $hdata['historyObject'] = $sh->toArray();
-            $hdata['actor'] = Auth::user()->fullname;
+            $hdata['actor'] = Auth::user()->name;
             $hdata['actor_id'] = Auth::user()->_id;
 
             //print_r($hdata);
@@ -560,7 +560,7 @@ class AjaxController extends BaseController {
             $sdata['reason'] = $in['reason'];
             $sdata['objectType'] = 'shipment';
             $sdata['object'] = $sh->toArray();
-            $sdata['actor'] = Auth::user()->fullname;
+            $sdata['actor'] = Auth::user()->name;
             $sdata['actor_id'] = Auth::user()->_id;
             Shipmentlog::insert($sdata);
             //print_r($sh);
@@ -622,7 +622,7 @@ class AjaxController extends BaseController {
             $hdata['historySequence'] = 1;
             $hdata['historyObjectType'] = 'shipment';
             $hdata['historyObject'] = $sh->toArray();
-            $hdata['actor'] = Auth::user()->fullname;
+            $hdata['actor'] = Auth::user()->name;
             $hdata['actor_id'] = Auth::user()->_id;
 
             //print_r($hdata);
@@ -635,7 +635,7 @@ class AjaxController extends BaseController {
             $sdata['reason'] = $in['reason'];
             $sdata['objectType'] = 'shipment';
             $sdata['object'] = $sh->toArray();
-            $sdata['actor'] = Auth::user()->fullname;
+            $sdata['actor'] = Auth::user()->name;
             $sdata['actor_id'] = Auth::user()->_id;
             Shipmentlog::insert($sdata);
             //print_r($sh);
@@ -675,7 +675,7 @@ class AjaxController extends BaseController {
                 $hdata['historySequence'] = 1;
                 $hdata['historyObjectType'] = 'shipment';
                 $hdata['historyObject'] = $sh->toArray();
-                $hdata['actor'] = Auth::user()->fullname;
+                $hdata['actor'] = Auth::user()->name;
                 $hdata['actor_id'] = Auth::user()->_id;
 
                 //print_r($hdata);
@@ -688,7 +688,7 @@ class AjaxController extends BaseController {
                 $sdata['reason'] = $in['reason'];
                 $sdata['objectType'] = 'shipment';
                 $sdata['object'] = $sh->toArray();
-                $sdata['actor'] = Auth::user()->fullname;
+                $sdata['actor'] = Auth::user()->name;
                 $sdata['actor_id'] = Auth::user()->_id;
                 Shipmentlog::insert($sdata);
 
@@ -747,7 +747,7 @@ class AjaxController extends BaseController {
                 $hdata['historySequence'] = 1;
                 $hdata['historyObjectType'] = 'shipment';
                 $hdata['historyObject'] = $sh->toArray();
-                $hdata['actor'] = Auth::user()->fullname;
+                $hdata['actor'] = Auth::user()->name;
                 $hdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
 
                 //print_r($hdata);
@@ -760,7 +760,7 @@ class AjaxController extends BaseController {
                 $sdata['reason'] = $in['reason'];
                 $sdata['objectType'] = 'shipment';
                 $sdata['object'] = $sh->toArray();
-                $sdata['actor'] = Auth::user()->fullname;
+                $sdata['actor'] = Auth::user()->name;
                 $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
                 Shipmentlog::insert($sdata);
                 */
@@ -831,7 +831,7 @@ class AjaxController extends BaseController {
                 $hdata['historySequence'] = 1;
                 $hdata['historyObjectType'] = 'shipment';
                 $hdata['historyObject'] = $sh->toArray();
-                $hdata['actor'] = Auth::user()->fullname;
+                $hdata['actor'] = Auth::user()->name;
                 $hdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
 
                 //print_r($hdata);
@@ -844,7 +844,7 @@ class AjaxController extends BaseController {
                 $sdata['reason'] = $in['reason'];
                 $sdata['objectType'] = 'shipment';
                 $sdata['object'] = $sh->toArray();
-                $sdata['actor'] = Auth::user()->fullname;
+                $sdata['actor'] = Auth::user()->name;
                 $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
                 Shipmentlog::insert($sdata);
 
@@ -892,7 +892,7 @@ class AjaxController extends BaseController {
                 $hdata['historySequence'] = 1;
                 $hdata['historyObjectType'] = 'shipment';
                 $hdata['historyObject'] = $sh->toArray();
-                $hdata['actor'] = Auth::user()->fullname;
+                $hdata['actor'] = Auth::user()->name;
                 $hdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
 
                 //print_r($hdata);
@@ -905,7 +905,7 @@ class AjaxController extends BaseController {
                 $sdata['reason'] = $in['reason'];
                 $sdata['objectType'] = 'shipment';
                 $sdata['object'] = $sh->toArray();
-                $sdata['actor'] = Auth::user()->fullname;
+                $sdata['actor'] = Auth::user()->name;
                 $sdata['actor_id'] = (isset(Auth::user()->_id))?Auth::user()->_id:Auth::user()->id;
                 Shipmentlog::insert($sdata);
 
@@ -1563,7 +1563,7 @@ class AjaxController extends BaseController {
             $approval->save();
 
             $p = json_encode($approval);
-            $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+            $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
 
             Event::fire('log.a',array('approval','change',$actor,$p));
 
