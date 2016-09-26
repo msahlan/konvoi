@@ -9,6 +9,7 @@ use App\Models\Codsurcharge;
 use App\Models\Printsession;
 use App\Models\Application;
 use App\Models\Buyer;
+use App\Models\Member;
 use App\Models\History;
 use App\Models\Shipmentlog;
 

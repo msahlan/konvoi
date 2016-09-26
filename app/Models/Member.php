@@ -1,10 +1,13 @@
 <?php
 namespace App\Models;
-use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
-use Illuminate\Auth\UserInterface;
-use Illuminate\Auth\Reminders\RemindableInterface;
 
-class Member extends Eloquent  implements UserInterface, RemindableInterface{
+use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
+
+class Member extends Eloquent implements Authenticatable
+{
+    use AuthenticatableTrait;
 
     protected $collection = 'merchants';
 

@@ -9,6 +9,7 @@ use App\Models\Codsurcharge;
 use App\Models\Box;
 use App\Models\Boxstatus;
 use App\Models\Printdefault;
+use App\Models\Generatedawb;
 
 use \Auth;
 

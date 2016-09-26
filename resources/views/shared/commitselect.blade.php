@@ -166,6 +166,8 @@
                                             <td>
                                                 @if( $d instanceof Carbon || $d instanceof MongoDate )
                                                     {!! $d->toRfc822String() !!}
+                                                @elseif(is_array($d))
+                                                    {!! print_r($d) !!}
                                                 @else
                                                     {!! $d !!}
                                                 @endif

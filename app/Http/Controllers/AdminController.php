@@ -4333,18 +4333,18 @@ class AdminController extends Controller {
             $ihead = array();
             $idata = array();
 
-            Excel::load($xlsfile,function($reader) use (&$imp,&$ihead, &$idata, $datalimit ){
+            Excel::load($xlsfile,function($reader) use (&$imp,&$ihead, &$idata, $datalimit, $headindex, $firstdata ){
                 //$reader->formatDates(true, 'Y-m-d H:i:s');
                 $reader->noHeading();
                 $reader->formatDates(true);
                 $reader->setDateFormat('Y-m-d');
-                $imp = $reader->skip(config('import.header_row'))->toArray();
-                $ihead = $reader->skip(config('import.header_row'))->take(1)->toArray();
+                $imp = $reader->skip($firstdata - 1)->toArray();
+                $ihead = $reader->skip($headindex - 1)->take(1)->toArray();
                 $idata = $reader->skip(config('import.data_row'))->take($datalimit)->toArray();
 
             })->get();
 
-            $headrow = $imp[0];
+            $headrow = $ihead[0];
 
             $htemp = [];
 
@@ -4363,7 +4363,7 @@ class AdminController extends Controller {
 
             //$headrow = $htemp;
 
-            $firstdata = 1;
+            $firstdata = 0;
 
             $imported = array();
 
@@ -4375,6 +4375,7 @@ class AdminController extends Controller {
             $sessobj->save();
 
             print "head";
+            //print_r($ihead);
             print_r($headrow);
             //print_r($imp);
 
@@ -4391,8 +4392,8 @@ class AdminController extends Controller {
 
                 $rowtemp = array();
 
-                print "item before clean up";
-                print_r($rowitem);
+                //print "item before clean up";
+                //print_r($rowitem);
 
                 foreach($rowitem as $k=>$v){
 
