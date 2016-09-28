@@ -63,7 +63,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'no id' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'no id' ));
         }
 
 
@@ -82,7 +82,7 @@ class SyncapiController extends Controller {
 
         $logIds = array_unique($logIds);
 
-        $exLogId = \Scanlog::whereIn('logId', $logIds )->get(array('logId'));
+        $exLogId = Scanlog::whereIn('logId', $logIds )->get(array('logId'));
 
         $existLog = array();
         foreach ($exLogId as $ex ) {
@@ -100,16 +100,16 @@ class SyncapiController extends Controller {
                 $j['deliveryDevId'] = $user->identifier;
 
                 if(isset($j['timestamp'])){
-                    $j['mtimestamp'] = new \MongoDate(strtotime($j['timestamp']));
+                    $j['mtimestamp'] = new MongoDate(strtotime($j['timestamp']));
                 }
 
-                //$log = \Scanlog::where('logId', $j['logId'] )->first();
+                //$log = Scanlog::where('logId', $j['logId'] )->first();
 
                 if( in_array($j['logId'], $existLog )){
                 //if($log){
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
                 }else{
-                    \Scanlog::insert($j);
+                    Scanlog::insert($j);
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
                 }
             }
@@ -138,7 +138,7 @@ class SyncapiController extends Controller {
 
         $appname = (Request::has('app'))?Request::input('app'):'app.name';
 
-        //$user = \Apiauth::user($key);
+        //$user = Apiauth::user($key);
 
         $user = Device::where('key','=',$key)->first();
 
@@ -146,7 +146,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
         }
 
         $json = Request::input();
@@ -159,10 +159,10 @@ class SyncapiController extends Controller {
 
             if(isset( $j['logId'] )){
                 if(isset($j['datetimestamp'])){
-                    $j['mtimestamp'] = new \MongoDate(strtotime($j['datetimestamp']));
+                    $j['mtimestamp'] = new MongoDate(strtotime($j['datetimestamp']));
                 }
 
-                $log = \Boxstatus::where('logId', $j['logId'] )->first();
+                $log = Boxstatus::where('logId', $j['logId'] )->first();
 
                 if($log){
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
@@ -173,7 +173,7 @@ class SyncapiController extends Controller {
                         $bs[$this->camel_to_underscore($k)] = $v;
                     }*/
                     $j['appname'] = $appname;
-                    \Boxstatus::insert($j);
+                    Boxstatus::insert($j);
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
                 }
             }
@@ -201,7 +201,7 @@ class SyncapiController extends Controller {
         $key = Request::input('key');
 
         $appname = (Request::has('app'))?Request::input('app'):'app.name';
-        //$user = \Apiauth::user($key);
+        //$user = Apiauth::user($key);
 
         $user = Device::where('key','=',$key)->first();
 
@@ -209,7 +209,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
         }
 
         $json = Request::input();
@@ -222,18 +222,18 @@ class SyncapiController extends Controller {
 
         foreach( $json as $j){
 
-            //$j['mtimestamp'] = new \MongoDate();
+            //$j['mtimestamp'] = new MongoDate();
 
             if(is_array($j)){
 
 
-                $olog = new \Orderstatuslog();
+                $olog = new Orderstatuslog();
 
                 foreach ($j as $k=>$v) {
                     $olog->{$k} = $v;
                 }
 
-                $olog->mtimestamp = new \MongoDate(time());
+                $olog->mtimestamp = new MongoDate(time());
 
                 if($olog->disposition == $key && isset($user->node_id)){
 
@@ -242,11 +242,11 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)->first();
 
                 if($shipment){
 
-                    $ts = new \MongoDate();
+                    $ts = new MongoDate();
                     $pre = clone $shipment;
 
                     //$shipment->status = $olog->status;
@@ -268,7 +268,7 @@ class SyncapiController extends Controller {
                     $hdata['actor'] = $user->identifier;
                     $hdata['actor_id'] = $user->key;
 
-                    \History::insert($hdata);
+                    History::insert($hdata);
 
                     $sdata = array();
                     $sdata['timestamp'] = $ts;
@@ -279,7 +279,7 @@ class SyncapiController extends Controller {
                     $sdata['preObject'] = $pre->toArray();
                     $sdata['actor'] = $user->identifier;
                     $sdata['actor_id'] = $user->key;
-                    //\Shipmentlog::insert($sdata);
+                    //Shipmentlog::insert($sdata);
 
 
                 }
@@ -293,7 +293,7 @@ class SyncapiController extends Controller {
             }
 
             /*
-            if( \Orderstatuslog::insert($j) ){
+            if( Orderstatuslog::insert($j) ){
                 $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
             }else{
                 $result[] = array('status'=>'NOK', 'timestamp'=>time(), 'message'=>'insertion failed' );
@@ -324,7 +324,7 @@ class SyncapiController extends Controller {
         $key = Request::input('key');
 
         $appname = (Request::has('app'))?Request::input('app'):'app.name';
-        //$user = \Apiauth::user($key);
+        //$user = Apiauth::user($key);
 
         $user = Device::where('key','=',$key)->first();
 
@@ -332,7 +332,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
         }
 
         $json = Request::input();
@@ -345,18 +345,18 @@ class SyncapiController extends Controller {
 
         foreach( $json as $j){
 
-            //$j['mtimestamp'] = new \MongoDate();
+            //$j['mtimestamp'] = new MongoDate();
 
             if(is_array($j)){
 
 
-                $olog = new \Orderstatuslog();
+                $olog = new Orderstatuslog();
 
                 foreach ($j as $k=>$v) {
                     $olog->{$k} = $v;
                 }
 
-                $olog->mtimestamp = new \MongoDate(time());
+                $olog->mtimestamp = new MongoDate(time());
 
                 if($olog->disposition == $key && isset($user->node_id)){
 
@@ -365,11 +365,11 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)->first();
 
                 if($shipment){
 
-                    $ts = new \MongoDate();
+                    $ts = new MongoDate();
                     $pre = clone $shipment;
 
                     $shipment->warehouse_status = $olog->warehouseStatus;
@@ -394,7 +394,7 @@ class SyncapiController extends Controller {
                     $hdata['actor'] = $user->identifier;
                     $hdata['actor_id'] = $user->key;
 
-                    \History::insert($hdata);
+                    History::insert($hdata);
 
                     $sdata = array();
                     $sdata['timestamp'] = $ts;
@@ -405,7 +405,7 @@ class SyncapiController extends Controller {
                     $sdata['preObject'] = $pre->toArray();
                     $sdata['actor'] = $user->identifier;
                     $sdata['actor_id'] = $user->key;
-                    //\Shipmentlog::insert($sdata);
+                    //Shipmentlog::insert($sdata);
 
 
                 }
@@ -419,7 +419,7 @@ class SyncapiController extends Controller {
             }
 
             /*
-            if( \Orderstatuslog::insert($j) ){
+            if( Orderstatuslog::insert($j) ){
                 $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
             }else{
                 $result[] = array('status'=>'NOK', 'timestamp'=>time(), 'message'=>'insertion failed' );
@@ -450,7 +450,7 @@ class SyncapiController extends Controller {
         $key = Request::input('key');
 
         $appname = (Request::has('app'))?Request::input('app'):'app.name';
-        //$user = \Apiauth::user($key);
+        //$user = Apiauth::user($key);
 
         $user = Device::where('key','=',$key)->first();
 
@@ -458,7 +458,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
         }
 
         $json = Request::input();
@@ -471,43 +471,43 @@ class SyncapiController extends Controller {
 
         foreach( $json as $j){
 
-            //$j['mtimestamp'] = new \MongoDate();
+            //$j['mtimestamp'] = new MongoDate();
 
             if(is_array($j)){
 
 
-                $olog = new \Orderstatuslog();
+                $olog = new Orderstatuslog();
 
                 foreach ($j as $k=>$v) {
                     $olog->{$k} = $v;
                 }
 
-                $olog->mtimestamp = new \MongoDate(time());
+                $olog->mtimestamp = new MongoDate(time());
 
                 $olog->appname = $appname;
 
                 $r = $olog->save();
 
-                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)
+                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)
                                 //->where('status','!=','delivered')
                                 ->first();
 
                 if($shipment){
 
-                    $ts = new \MongoDate();
+                    $ts = new MongoDate();
                     $pre = clone $shipment;
 
                     $changes = false;
 
-                    if($appname == \Config::get('jex.pickup_app')){
+                    if($appname == Config::get('jex.pickup_app')){
                         $shipment->pickup_status = $olog->pickupStatus;
                         $changes = true;
 
-                    }elseif($appname == \Config::get('jex.hub_app')){
+                    }elseif($appname == Config::get('jex.hub_app')){
                         $shipment->warehouse_status = $olog->warehouseStatus;
                         $changes = true;
 
-                    }elseif($appname == \Config::get('jex.tracker_app')){
+                    }elseif($appname == Config::get('jex.tracker_app')){
 
                         /*
                         if($shipment->status == 'delivered' || $shipment->status == 'returned'){
@@ -548,7 +548,7 @@ class SyncapiController extends Controller {
                     $hdata['actor'] = $user->identifier;
                     $hdata['actor_id'] = $user->key;
 
-                    \History::insert($hdata);
+                    History::insert($hdata);
 
                     $sdata = array();
                     $sdata['timestamp'] = $ts;
@@ -559,7 +559,7 @@ class SyncapiController extends Controller {
                     $sdata['preObject'] = $pre->toArray();
                     $sdata['actor'] = $user->identifier;
                     $sdata['actor_id'] = $user->key;
-                    //\Shipmentlog::insert($sdata);
+                    //Shipmentlog::insert($sdata);
 
                 }
 
@@ -572,7 +572,7 @@ class SyncapiController extends Controller {
             }
 
             /*
-            if( \Orderstatuslog::insert($j) ){
+            if( Orderstatuslog::insert($j) ){
                 $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>'log inserted' );
             }else{
                 $result[] = array('status'=>'NOK', 'timestamp'=>time(), 'message'=>'insertion failed' );
@@ -601,7 +601,7 @@ class SyncapiController extends Controller {
 
         $key = Request::input('key');
 
-        //$user = \Apiauth::user($key);
+        //$user = Apiauth::user($key);
 
         $user = Device::where('key','=',$key)->first();
 
@@ -611,7 +611,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image meta failed'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
         }
 
         $json = Request::input();
@@ -622,21 +622,21 @@ class SyncapiController extends Controller {
 
         foreach( $json as $j){
 
-            //$j['mtimestamp'] = new \MongoDate(time());
+            //$j['mtimestamp'] = new MongoDate(time());
 
             if(is_array($j)){
-                $blog = new \Imagemeta();
+                $blog = new Imagemeta();
 
                 foreach ($j as $k=>$v) {
                     $blog->{$k} = $v;
                 }
 
                 $blog->appname = $appname;
-                $blog->mtimestamp = new \MongoDate(time());
+                $blog->mtimestamp = new MongoDate(time());
 
                 $r = $blog->save();
 
-                $upl = \Uploaded::where('_id','=',new \MongoId($blog->extId))->first();
+                $upl = Uploaded::where('_id','=',new MongoId($blog->extId))->first();
 
                 if($upl){
                    $upl->is_signature = $blog->isSignature;
@@ -682,7 +682,7 @@ class SyncapiController extends Controller {
 
         $appname = (Request::has('app'))?Request::input('app'):'app.name';
 
-        //$user = \Apiauth::user($key);
+        //$user = Apiauth::user($key);
 
         $user = Device::where('key','=',$key)->first();
 
@@ -690,7 +690,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
         }
 
         $json = Request::input();
@@ -701,10 +701,10 @@ class SyncapiController extends Controller {
 
         foreach( $json as $j){
 
-            //$j['mtimestamp'] = new \MongoDate(time());
+            //$j['mtimestamp'] = new MongoDate(time());
 
             if(is_array($j)){
-                $blog = new \Boxid();
+                $blog = new Boxid();
 
                 foreach ($j as $k=>$v) {
                     $blog->{$k} = $v;
@@ -712,10 +712,10 @@ class SyncapiController extends Controller {
 
                 $blog->appname = $appname;
 
-                //$blog->mtimestamp = new \MongoDate(time());
+                //$blog->mtimestamp = new MongoDate(time());
                 $blog->mtimestamp = date('Y-m-d H:i:s',time());
 
-                $box = \Box::where('delivery_id','=',$blog->deliveryId)
+                $box = Box::where('delivery_id','=',$blog->deliveryId)
                         ->where('merchant_trans_id','=',$blog->merchantTransId)
                         ->where('fulfillment_code','=',$blog->fulfillmentCode)
                         ->where('box_id','=',$blog->boxId)
@@ -724,9 +724,9 @@ class SyncapiController extends Controller {
 
                 if($box){
 
-                    if($appname == \Config::get('jex.pickup_app')){
+                    if($appname == Config::get('jex.pickup_app')){
                         $box->pickupStatus = $blog->pickupStatus;
-                    }elseif($appname == \Config::get('jex.hub_app')){
+                    }elseif($appname == Config::get('jex.hub_app')){
                         $box->warehouseStatus = $blog->warehouseStatus;
                     }else{
                         $box->deliveryStatus = $blog->deliveryStatus;
@@ -773,7 +773,7 @@ class SyncapiController extends Controller {
         $key = Request::input('key');
 
         $appname = (Request::has('app'))?Request::input('app'):'app.name';
-        //$user = \Apiauth::user($key);
+        //$user = Apiauth::user($key);
 
         $user = Device::where('key','=',$key)->first();
 
@@ -781,7 +781,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
         }
 
         $json = Request::input();
@@ -792,10 +792,10 @@ class SyncapiController extends Controller {
 
         foreach( $json as $j){
 
-            //$j['mtimestamp'] = new \MongoDate(time());
+            //$j['mtimestamp'] = new MongoDate(time());
 
             if(is_array($j)){
-                $olog = new \Orderlog();
+                $olog = new Orderlog();
 
                 foreach ($j as $k=>$v) {
                     $olog->{$k} = $v;
@@ -805,11 +805,11 @@ class SyncapiController extends Controller {
 
                 $olog->deviceActor = (isset($user->identifier))?$user->identifier:'';
 
-                $olog->mtimestamp = new \MongoDate(time());
+                $olog->mtimestamp = new MongoDate(time());
 
                 $olog->warehouseDevId = $user->identifier;
 
-                if($olog->warehouseStatus == \Config::get('jayon.trans_status_pu2wh') ){
+                if($olog->warehouseStatus == Config::get('jayon.trans_status_pu2wh') ){
                     if($olog->warehouseIn == '' || $olog->warehouseIn == '0000-00-00 00:00:00'){
                         $olog->warehouseIn = date('Y-m-d H:i:s', time());
                     }
@@ -823,16 +823,16 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)->first();
 
                 if($shipment){
                     //$shipment->status = $olog->status;
 
-                    //$check = $this->checkPickedUp($olog->deliveryId, 'warehouseStatus' ,'   diterima di gudang' ,\Config::get('jex.hub_app') , $key  );
+                    //$check = $this->checkPickedUp($olog->deliveryId, 'warehouseStatus' ,'   diterima di gudang' ,Config::get('jex.hub_app') , $key  );
 
                     $shipment->warehouse_status = $olog->warehouseStatus;
 
-                    if($olog->warehouseStatus == \Config::get('jayon.trans_status_pu2wh') ){
+                    if($olog->warehouseStatus == Config::get('jayon.trans_status_pu2wh') ){
                         if($olog->warehouseIn == '' || $olog->warehouseIn == '0000-00-00 00:00:00'){
                             $shipment->warehouse_in = date('Y-m-d H:i:s', time());
                         }else{
@@ -846,11 +846,11 @@ class SyncapiController extends Controller {
                     }*/
 
                     /*
-                    $shipment->pending_count = new \MongoInt32($olog->pendingCount) ;
+                    $shipment->pending_count = new MongoInt32($olog->pendingCount) ;
 
-                    if($olog->courierStatus == \Config::get('jayon.trans_cr_oncr') || $olog->courierStatus == \Config::get('jayon.trans_cr_oncr_partial'))
+                    if($olog->courierStatus == Config::get('jayon.trans_cr_oncr') || $olog->courierStatus == Config::get('jayon.trans_cr_oncr_partial'))
                     {
-                        $shipment->pickup_status = \Config::get('jayon.trans_status_pickup');
+                        $shipment->pickup_status = Config::get('jayon.trans_status_pickup');
                     }
                     */
                     $shipment->save();
@@ -892,7 +892,7 @@ class SyncapiController extends Controller {
         $key = Request::input('key');
 
         $appname = (Request::has('app'))?Request::input('app'):'app.name';
-        //$user = \Apiauth::user($key);
+        //$user = Apiauth::user($key);
 
         $user = Device::where('key','=',$key)->first();
 
@@ -900,7 +900,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Device Unregistered' ));
         }
 
         $json = Request::input();
@@ -911,16 +911,16 @@ class SyncapiController extends Controller {
 
         foreach( $json as $j){
 
-            //$j['mtimestamp'] = new \MongoDate(time());
+            //$j['mtimestamp'] = new MongoDate(time());
 
             if(is_array($j)){
-                $olog = new \Orderlog();
+                $olog = new Orderlog();
 
                 foreach ($j as $k=>$v) {
                     $olog->{$k} = $v;
                 }
 
-                $olog->mtimestamp = new \MongoDate(time());
+                $olog->mtimestamp = new MongoDate(time());
 
                 $olog->appname = $appname;
 
@@ -935,11 +935,11 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)->first();
 
                 if($shipment){
 
-                    //$check = $this->checkPickedUp($olog->deliveryId, 'pickupStatus' ,'sudah diambil' ,\Config::get('jex.pickup_app') , $user->identifier  );
+                    //$check = $this->checkPickedUp($olog->deliveryId, 'pickupStatus' ,'sudah diambil' ,Config::get('jex.pickup_app') , $user->identifier  );
 
                     $changes = false;
 
@@ -957,9 +957,9 @@ class SyncapiController extends Controller {
                         $shipment->delivery_note = trim($olog->deliveryNote);
                     }
 
-                    if($olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
+                    if($olog->pickupStatus == Config::get('jayon.trans_status_pickup')){
                         $changes = true;
-                    }else if($olog->pickupStatus == \Config::get('jayon.trans_status_no_pickup')){
+                    }else if($olog->pickupStatus == Config::get('jayon.trans_status_no_pickup')){
                         if(trim($olog->deliveryNote) != ''){
                             $changes = true;
                         }
@@ -971,9 +971,9 @@ class SyncapiController extends Controller {
 
                     /*
                     //order currently already pick up
-                    if($shipment->pickup_status == \Config::get('jayon.trans_status_pickup')){
+                    if($shipment->pickup_status == Config::get('jayon.trans_status_pickup')){
 
-                        if($olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
+                        if($olog->pickupStatus == Config::get('jayon.trans_status_pickup')){
 
                             if(trim($olog->deliveryNote) != ''){
                                 $shipment->delivery_note = trim($olog->deliveryNote);
@@ -1003,7 +1003,7 @@ class SyncapiController extends Controller {
 
                     }else{
 
-                       if($olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
+                       if($olog->pickupStatus == Config::get('jayon.trans_status_pickup')){
                             if( trim($olog->deliveryNote) != '' ){
                                 $shipment->delivery_note = trim($olog->deliveryNote);
                             }
@@ -1020,17 +1020,17 @@ class SyncapiController extends Controller {
                     */
 
 
-                    //if($shipment->pickup_status != \Config::get('jayon.trans_status_pickup') ||
-                    //    ($olog->pickupStatus != \Config::get('jayon.trans_status_pickup') && trim($olog->deliveryNote) != '' )
+                    //if($shipment->pickup_status != Config::get('jayon.trans_status_pickup') ||
+                    //    ($olog->pickupStatus != Config::get('jayon.trans_status_pickup') && trim($olog->deliveryNote) != '' )
                     //){
                     /*
-                    if($olog->pickup_status == \Config::get('jayon.trans_status_pickup') ||
-                        ($olog->pickupStatus != \Config::get('jayon.trans_status_pickup') && trim($olog->deliveryNote) != '' )
+                    if($olog->pickup_status == Config::get('jayon.trans_status_pickup') ||
+                        ($olog->pickupStatus != Config::get('jayon.trans_status_pickup') && trim($olog->deliveryNote) != '' )
                      ){
 
                         $shipment->pickup_status = $olog->pickupStatus;
 
-                        if( $olog->pickupStatus == \Config::get('jayon.trans_status_pickup')){
+                        if( $olog->pickupStatus == Config::get('jayon.trans_status_pickup')){
 
                             if($olog->pickuptime == '' || $olog->pickuptime == '0000-00-00 00:00:00' ){
                                 $pickuptime = date('Y-m-d H:i:s',time());
@@ -1090,7 +1090,7 @@ class SyncapiController extends Controller {
         $key = Request::input('key');
 
         $appname = (Request::has('app'))?Request::input('app'):'app.name';
-        //$user = \Apiauth::user($key);
+        //$user = Apiauth::user($key);
 
         $user = Device::where('key','=',$key)->first();
 
@@ -1098,7 +1098,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
         }
 
         $json = Request::input();
@@ -1109,16 +1109,16 @@ class SyncapiController extends Controller {
 
         foreach( $json as $j){
 
-            //$j['mtimestamp'] = new \MongoDate(time());
+            //$j['mtimestamp'] = new MongoDate(time());
 
             if(is_array($j)){
-                $olog = new \Orderlog();
+                $olog = new Orderlog();
 
                 foreach ($j as $k=>$v) {
                     $olog->{$k} = $v;
                 }
 
-                $olog->mtimestamp = new \MongoDate(time());
+                $olog->mtimestamp = new MongoDate(time());
 
                 $olog->appname = $appname;
 
@@ -1128,7 +1128,7 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = \Shipment::where('delivery_id','=',$olog->deliveryId)
+                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)
                                 //->where('status','!=','delivered')
                                 ->first();
 
@@ -1214,18 +1214,18 @@ class SyncapiController extends Controller {
                     }*/
 
                     /*
-                    $shipment->pending_count = new \MongoInt32($olog->pendingCount) ;
+                    $shipment->pending_count = new MongoInt32($olog->pendingCount) ;
 
-                    if($olog->courierStatus == \Config::get('jayon.trans_cr_oncr') || $olog->courierStatus == \Config::get('jayon.trans_cr_oncr_partial'))
+                    if($olog->courierStatus == Config::get('jayon.trans_cr_oncr') || $olog->courierStatus == Config::get('jayon.trans_cr_oncr_partial'))
                     {
-                        $shipment->pickup_status = \Config::get('jayon.trans_status_pickup');
+                        $shipment->pickup_status = Config::get('jayon.trans_status_pickup');
                     }
                     */
                     if($changes == true){
                         $shipment->save();
                     }
 
-                    $is_there = \Geolog::where('datetimestamp','=',$shipment->deliverytime)
+                    $is_there = Geolog::where('datetimestamp','=',$shipment->deliverytime)
                                         ->where('deliveryId' ,'=',  $shipment->delivery_id)
                                         ->where('deviceId' ,'=',  $user->identifier)
                                         ->where('appname','=', $appname )
@@ -1248,10 +1248,10 @@ class SyncapiController extends Controller {
                                 'timestamp' => strval( strtotime($shipment->deliverytime)),
                                 'uploaded' => 1,
                                 'appname'=>$appname,
-                                'mtimestamp' => new \MongoDate( strtotime($shipment->deliverytime) )
+                                'mtimestamp' => new MongoDate( strtotime($shipment->deliverytime) )
                             );
 
-                        \Geolog::insert($geolog);
+                        Geolog::insert($geolog);
 
                     }
 
@@ -1292,7 +1292,7 @@ class SyncapiController extends Controller {
         $key = Request::input('key');
 
         $appname = (Request::has('app'))?Request::input('app'):'app.name';
-        //$user = \Apiauth::user($key);
+        //$user = Apiauth::user($key);
 
         $user = Device::where('key','=',$key)->first();
 
@@ -1300,7 +1300,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
         }
 
         $json = Request::input();
@@ -1360,10 +1360,10 @@ class SyncapiController extends Controller {
                 }
 
                 if(isset($j['datetimestamp'])){
-                    $j['mtimestamp'] = new \MongoDate(strtotime($j['datetimestamp']));
+                    $j['mtimestamp'] = new MongoDate(strtotime($j['datetimestamp']));
                 }
 
-                //$log = \Geolog::where('logId', $j['logId'] )->first();
+                //$log = Geolog::where('logId', $j['logId'] )->first();
 
                 if( in_array($j['logId'], $existLog )){
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'], 'insert'=>'0' );
@@ -1396,7 +1396,7 @@ class SyncapiController extends Controller {
         $key = Request::input('key');
 
         $appname = (Request::has('app'))?Request::input('app'):'app.name';
-        //$user = \Apiauth::user($key);
+        //$user = Apiauth::user($key);
 
         $user = Device::where('key','=',$key)->first();
 
@@ -1404,7 +1404,7 @@ class SyncapiController extends Controller {
             $actor = 'no id : no name';
             Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found, upload image failed'));
 
-            return \Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'Unauthorized Device' ));
         }
 
 
@@ -1421,24 +1421,24 @@ class SyncapiController extends Controller {
                 $j['appname'] = $appname;
 
                 if(isset($j['datetimestamp'])){
-                    $j['mtimestamp'] = new \MongoDate(strtotime($j['datetimestamp']));
+                    $j['mtimestamp'] = new MongoDate(strtotime($j['datetimestamp']));
                 }
 
-                $log = \Deliverynote::where('logId', $j['logId'] )->first();
+                $log = Deliverynote::where('logId', $j['logId'] )->first();
 
                 if($log){
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
                 }else{
-                    \Deliverynote::insert($j);
+                    Deliverynote::insert($j);
                     $result[] = array('status'=>'OK', 'timestamp'=>time(), 'message'=>$j['logId'] );
                 }
 
-                $pending = \Deliverynote::where('deliveryId','=',$j['deliveryId'])
+                $pending = Deliverynote::where('deliveryId','=',$j['deliveryId'])
                                 ->where('status','=','pending')
                                 ->count();
 
                 if($pending > 0){
-                    $ord = \Shipment::where('delivery_id','=',$j['deliveryId'])->first();
+                    $ord = Shipment::where('delivery_id','=',$j['deliveryId'])->first();
                     $ord->pending_count = $pending;
                     $ord->save();
                 }
@@ -1473,7 +1473,7 @@ class SyncapiController extends Controller {
 
         $batch = Request::input('batch');
 
-        \Dumper::insert($json);
+        Dumper::insert($json);
 
     }
 
@@ -1493,7 +1493,7 @@ class SyncapiController extends Controller {
 
         $batch = Request::input('batch');
 
-        \Dumper::insert($json);
+        Dumper::insert($json);
 
     }
 
@@ -1513,7 +1513,7 @@ class SyncapiController extends Controller {
 
         $batch = Request::input('batch');
 
-        \Dumper::insert($json);
+        Dumper::insert($json);
 
     }
 
@@ -1526,7 +1526,7 @@ class SyncapiController extends Controller {
 
     public function checkPickedUp($delivery_id, $status_field ,$status ,$appname, $devicename  )
     {
-        $exist = \Orderlog::where('deliveryId','=',$delivery_id)
+        $exist = Orderlog::where('deliveryId','=',$delivery_id)
                         ->where($status_field,'=',$status)
                         ->where('appname','=', $appname)
                         ->where('pickupDevId','!=',$devicename)
