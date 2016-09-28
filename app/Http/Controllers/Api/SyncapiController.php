@@ -12,6 +12,7 @@ use App\Models\Shipment;
 use App\Models\Orderstatuslog;
 use App\Models\Orderlog;
 use App\Models\Imagemeta;
+use App\Models\Uploaded;
 
 
 use App\Models\Deliverydetail;
