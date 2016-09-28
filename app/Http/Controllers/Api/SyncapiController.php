@@ -6,6 +6,7 @@ use App\Models\Device;
 use App\Models\Scanlog;
 use App\Models\Geolog;
 use App\Models\Boxstatus;
+use App\Models\Box;
 use App\Models\Boxid;
 use App\Models\Shipment;
 
