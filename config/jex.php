@@ -315,6 +315,7 @@ return array(
 
         'default_delivered_heads'=>array(
             array('Delivery Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
+            array('POD',array('search'=>true,'sort'=>true)),
             array('Device',array('search'=>true,'sort'=>true)),
             array('Courier',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
             array('Type',array('search'=>true,'sort'=>true,'select'=>config('jayon.deliverytype_selector_legacy') )),
@@ -346,6 +347,7 @@ return array(
 
         'default_delivered_fields'=>array(
             array('deliverytime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('delivery_id',array('kind'=>'text', 'callback'=>'picList','query'=>'like','pos'=>'both','show'=>true)),
             array(config('jayon.jayon_devices_table').'.identifier',array('kind'=>'text', 'alias'=>'device', 'query'=>'like','pos'=>'both','show'=>true)),
             array(config('jayon.jayon_couriers_table').'.fullname',array('kind'=>'text', 'alias'=>'courier' ,'query'=>'like','pos'=>'both','show'=>true )),
             array('delivery_type',array('kind'=>'text','callback'=>'colorizetype' ,'query'=>'like','pos'=>'both','show'=>true)),

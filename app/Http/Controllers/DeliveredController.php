@@ -1080,6 +1080,64 @@ class DeliveredController extends AdminController {
     }
 
 
+    public function picList($data)
+    {
+        $data = $data->toArray();
+
+        $pics = Uploaded::where('parent_id','=', $data['delivery_id'] )
+                    //->whereIn('_id', $data['fileid'])
+                    ->where('deleted','=',0)
+                    ->get();
+
+                    //print_r($pics->toArray());
+
+        $glinks = '';
+
+        $thumbnail_url = '';
+
+        $img_cnt = 0;
+        $total_cnt = 0;
+        $sign_cnt = 0;
+
+        if($pics){
+            if(count($pics) > 0){
+                foreach($pics as $g){
+                    if($g->is_image == 1){
+                        $thumbnail_url = $g->square_url;
+                        $glinks .= '<input type="hidden" class="g_'.$data['_id'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
+                        $img_cnt++;
+                    }
+
+                    if($g->is_signature == strval(1) ){
+                        $sign_cnt++;
+                    }
+
+                    $total_cnt++;
+                }
+
+                //$stat = $img_cnt.' pics, '.( $total_cnt - $img_cnt ).' docs';
+                $stat = $img_cnt.' pics, '.$sign_cnt.' signature';
+
+                if($img_cnt > 0){
+                    $display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['_id'])).$glinks.'<br />'.$stat;
+                }else{
+
+                    $display = '<span class="fa-stack fa-2x">
+                          <i class="fa fa-circle fa-stack-2x"></i>
+                          <i class="fa fa-file fa-stack-1x fa-inverse"></i>
+                        </span><br />'.$stat;
+                }
+
+                return $display;
+            }else{
+                return 'No Picture';
+            }
+        }else{
+            return 'No Picture';
+        }
+    }
+
+
     public function pics($data)
     {
         $name = HTML::link('products/view/'.$data['_id'],$data['productName']);
