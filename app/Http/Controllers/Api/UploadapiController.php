@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\User;
 use App\Models\Deliverydetail;
+use App\Models\Uploaded;
 
 use App\Helpers\Prefs;
 
@@ -210,7 +211,7 @@ class UploadapiController extends Controller {
 
             $item['_id'] = new \MongoId($image_id);
 
-            $im = \Uploaded::find($image_id);
+            $im = Uploaded::find($image_id);
             if($im){
 
                 foreach($item as $k=>$v){
@@ -222,21 +223,21 @@ class UploadapiController extends Controller {
                 $im->save();
 
             }else{
-                \Uploaded::insertGetId($item);
+                Uploaded::insertGetId($item);
             }
 
             $actor = $user->identifier.' : '.$user->devname;
-            \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'upload image'));
+            Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'upload image'));
 
-            return \Response::json(array('status'=>'OK', 'timestamp'=>time(), 'message'=>$image_id ));
+            return Response::json(array('status'=>'OK', 'timestamp'=>time(), 'message'=>$image_id ));
 
 
         }
 
         $actor = $user->identifier.' : '.$user->devname;
-        \Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'upload image failed'));
+        Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'upload image failed'));
 
-        return \Response::json(array('status'=>'ERR:NOFILE', 'timestamp'=>time(), 'message'=>$image_id ));
+        return Response::json(array('status'=>'ERR:NOFILE', 'timestamp'=>time(), 'message'=>$image_id ));
 
     }
 
