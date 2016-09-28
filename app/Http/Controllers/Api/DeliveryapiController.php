@@ -3,6 +3,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Device;
+use App\Models\Box;
+use App\Models\Boxstatus;
+
 use App\Models\Deliverydetail;
 
 use App\Helpers\Prefs;
