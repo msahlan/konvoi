@@ -238,7 +238,7 @@ class DeliveryapiController extends BaseController {
             $or->extId = $or->id;
             unset($or->id);
 
-            $bc = \Box::where('delivery_id','=',$or->deliveryId)->count();
+            $bc = Box::where('delivery_id','=',$or->deliveryId)->count();
 
             if($bc == 0){
                 $this->createBox($or->deliveryId,$or->merchantTransId, $or->fulfillmentCode, $or->boxCount );
@@ -263,11 +263,11 @@ class DeliveryapiController extends BaseController {
             $dc = (is_nan($dc))?0:$dc;
             $cod = (is_nan($cod))?0:$cod;
 
-            //print $total.' '.$dsc.' '.$tax.' '.$dc.' '.$cod."\r\n";
+            //print $total.' '.$dsc.' '.$tax.' '.$dc.' '.$cod."rn";
 
             $payable = 0;
 
-            $details = \Deliverydetail::where('delivery_id','=',$or->deliveryId)->orderBy('unit_sequence','asc')->get();
+            $details = Deliverydetail::where('delivery_id','=',$or->deliveryId)->orderBy('unit_sequence','asc')->get();
 
             $details = $details->toArray();
 
@@ -328,7 +328,7 @@ class DeliveryapiController extends BaseController {
 
 
         $actor = $key;
-        \Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'logged out'));
+        Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'logged out'));
 
         return $orders;
         //
