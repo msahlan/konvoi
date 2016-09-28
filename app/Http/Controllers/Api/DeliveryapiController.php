@@ -477,7 +477,7 @@ class DeliveryapiController extends BaseController {
 
     public function boxList($field,$val, $device_key , $merchant_id ,$obj = false){
 
-        $boxes = \Box::where($field,'=',$val)
+        $boxes = Box::where($field,'=',$val)
                         //->where('deliveryStatus','!=','delivered')
                         //->where('deliveryStatus','!=','returned')
                         ->get();
@@ -530,7 +530,7 @@ class DeliveryapiController extends BaseController {
     }
 
     public function lastBoxStatus($device_key, $delivery_id, $fulfillment_code ,$box_id){
-        $last = \Boxstatus::where('deliveryId','=',$delivery_id)
+        $last = Boxstatus::where('deliveryId','=',$delivery_id)
                                 ->where('deviceKey','=',$device_key)
                                 ->where('appname','=',config('jex.pickup_app'))
                                 //->where('fulfillmentCode'.'=',$fulfillment_code)
