@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\User;
 use App\Models\Deliverydetail;
@@ -27,7 +28,7 @@ use HTML;
 use Excel;
 use Validator;
 
-class UploadapiController extends \Controller {
+class UploadapiController extends Controller {
     public $controller_name = '';
 
     public function  __construct()
