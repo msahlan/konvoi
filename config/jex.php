@@ -140,7 +140,7 @@ return array(
             array('assignment_date',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
             array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('buyerdeliveryzone',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('pickup_dev_id','pickup_person'), 'multirel'=>'OR' )),
-            array('delivery_id',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('pickup_dev_id','pickup_person'), 'multirel'=>'OR' )),
+            array('delivery_id',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true )),
             array('delivery_type',array('kind'=>'text','callback'=>'colorizetype', 'query'=>'like','pos'=>'both','show'=>true)),
             array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('width',array('kind'=>'text' ,'query'=>'like','callback'=>'showWHL' ,'pos'=>'both','show'=>true)),

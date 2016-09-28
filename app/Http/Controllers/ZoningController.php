@@ -378,7 +378,8 @@ class ZoningController extends AdminController {
     {
         $in = Request::input();
 
-        $device = Device::where('key','=', $in['device'] )->first();
+        //better use device key to alleviate mysql dependency
+        $device = Device::where('id','=', $in['device'] )->first();
 
         $shipments = Shipment::whereIn('delivery_id', $in['ship_ids'] )->get();
 
@@ -390,10 +391,12 @@ class ZoningController extends AdminController {
 
             $pre = clone $sh;
 
-            $sh->status = Config::get('jayon.trans_status_admin_zoned');
+
+            //$sh->status = Config::get('jayon.trans_status_admin_zoned');
+            $sh->status = config('jayon.trans_status_admin_devassigned');
             $sh->device_key = $device->key;
             $sh->device_name = $device->identifier;
-            $sh->device_id = $device->_id;
+            $sh->device_id = $device->id;
             $sh->save();
 
 

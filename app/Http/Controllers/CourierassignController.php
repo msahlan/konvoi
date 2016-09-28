@@ -438,11 +438,11 @@ class CourierassignController extends AdminController {
 
         $in = Request::input();
 
-        //$pickup_date = new MongoDate(strtotime($in['pickup_date']));
+        $pickup_date = date('Y-m-d',strtotime($in['pickup_date']));
 
         $shipments = Shipment::where('device_id','=', $in['device_key'] )
-                        ->where('assignment_date','like', $in['pickup_date'].'%' )
-                        ->where('status','=',config('jayon.trans_status_admin_zoned'))
+                        ->where('assignment_date','like', $pickup_date.'%' )
+                        ->where('status','=',config('jayon.trans_status_admin_devassigned'))
                         ->get();
 
         //print_r($shipments->toArray());
