@@ -402,7 +402,7 @@ class ZoningController extends AdminController {
             $hdata['historyAction'] = 'assign_device';
             $hdata['historySequence'] = 1;
             $hdata['historyObjectType'] = 'shipment';
-            $hdata['actor'] = Auth::user()->fullname;
+            $hdata['actor'] = Auth::user()->name;
             $hdata['actor_id'] = Auth::user()->_id;
 
             $hdata = array_merge($sh->toArray(), $hdata );
@@ -416,7 +416,7 @@ class ZoningController extends AdminController {
             $sdata['objectType'] = 'shipment';
             $sdata['object'] = $sh->toArray();
             $sdata['preObject'] = $pre->toArray();
-            $sdata['actor'] = Auth::user()->fullname;
+            $sdata['actor'] = Auth::user()->name;
             $sdata['actor_id'] = Auth::user()->_id;
             Shipmentlog::insert($sdata);
 

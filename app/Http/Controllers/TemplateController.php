@@ -90,7 +90,7 @@ class TemplateController extends AdminController {
 
     public function beforeSave($data)
     {
-        $data['creatorName'] = Auth::user()->fullname;
+        $data['creatorName'] = Auth::user()->name;
 
         return $data;
     }

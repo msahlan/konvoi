@@ -146,7 +146,7 @@ class BaseReportController extends Controller {
 
         $controller_name = strtolower($this->controller_name);
 
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+        $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
         Event::fire('log.a',array($this->controller_name, 'view report' ,$actor,'OK'));
 
         return View::make($this->report_view)
@@ -682,7 +682,7 @@ class BaseReportController extends Controller {
 
         $validation = Validator::make($input = $data, $this->validator);
 
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+        $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
 
         if($validation->fails()){
 
@@ -778,7 +778,7 @@ class BaseReportController extends Controller {
 
         $validation = Validator::make($input = Input::all(), $this->validator);
 
-        $actor = (isset(Auth::user()->email))?Auth::user()->fullname.' - '.Auth::user()->email:'guest';
+        $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
 
         if($validation->fails()){
 
