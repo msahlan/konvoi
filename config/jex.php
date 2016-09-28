@@ -1,6 +1,6 @@
 <?php
 return array(
-    
+
         'api_page_size'=>50,
 
         'tracker_app'=>'com.kickstartlab.android.jexdelivery',
@@ -57,9 +57,9 @@ return array(
         'default_incoming_heads'=>array(
             array('Timestamp',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
             array('Pick Up Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
-            array('Pick Up Picture',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
-            array('Pick Up Person',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
-            array('Pick Up Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
+            array('Pick Up Detail',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
+            //array('Pick Up Person',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
+            //array('Pick Up Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
             array('Requested Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
             array('Requested Time Slot',array('search'=>true,'sort'=>true)),
             array('Zone',array('search'=>true,'sort'=>true)),
@@ -89,9 +89,9 @@ return array(
         'default_incoming_fields'=>array(
             array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
             array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('pickup_dev_id','pickup_person'), 'multirel'=>'OR' )),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('pickup_dev_id','pickup_person'), 'multirel'=>'OR' )),
-            array('pickup_device',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('pickup_dev_id','pickup_person'), 'multirel'=>'OR' )),
+            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'callback'=>'puDisp' ,'multi'=>array('pickup_dev_id','pickup_person'), 'multirel'=>'OR' )),
+            //array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('pickup_dev_id','pickup_person'), 'multirel'=>'OR' )),
+            //array('pickup_device',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true, 'multi'=>array('pickup_dev_id','pickup_person'), 'multirel'=>'OR' )),
             array('buyerdeliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
             array('buyerdeliveryslot',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
             array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),

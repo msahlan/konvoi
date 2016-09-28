@@ -854,30 +854,36 @@ class AdminController extends Controller {
 							$row[] = $this->$callback($doc, $field[0]);
 						}else{
 							if($field[1]['kind'] == 'datetime' || $field[1]['kind'] == 'datetimerange'){
-                                if($doc[$field[0]] instanceof MongoDate){
-                                    $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]->sec);
-                                }elseif ($doc[$field[0]] instanceof Date) {
-                                    $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]);
-                                }else{
-                                    //$rowitem = $doc[$field[0]];
-                                    if(is_array($doc[$field[0]])){
-                                        $rowitem = date('d-m-Y H:i:s', time() );
+                                if($doc[$field[0]] != ''){
+                                    //print_r($doc[$field[0]]);
+                                    if($doc[$field[0]] instanceof MongoDate){
+                                        $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]->sec);
+                                    }elseif ($doc[$field[0]] instanceof Date) {
+                                        $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]);
                                     }else{
-                                        $rowitem = date('d-m-Y H:i:s',strtotime($doc[$field[0]]) );
+                                        //$rowitem = $doc[$field[0]];
+                                        if(is_array($doc[$field[0]])){
+                                            $rowitem = date('d-m-Y H:i:s', time() );
+                                        }else{
+                                            $rowitem = date('d-m-Y H:i:s',strtotime($doc[$field[0]]) );
+                                        }
                                     }
                                 }
 							}elseif($field[1]['kind'] == 'date' || $field[1]['kind'] == 'daterange'){
-                                if($doc[$field[0]] instanceof MongoDate){
-                                    $rowitem = date('d-m-Y',$doc[$field[0]]->sec);
-                                }elseif ($doc[$field[0]] instanceof Date) {
-                                    $rowitem = date('d-m-Y',$doc[$field[0]]);
-                                }else{
-                                    if(is_array($doc[$field[0]])){
-                                        if(isset( $doc[$field[0]]['sec'])){
-                                            $rowitem = date('d-m-Y',$doc[$field[0]]['sec'] );
-                                        }
+                                if($doc[$field[0]] != ''){
+                                    //print_r($doc[$field[0]]);
+                                    if($doc[$field[0]] instanceof MongoDate){
+                                        $rowitem = date('d-m-Y',$doc[$field[0]]->sec);
+                                    }elseif ($doc[$field[0]] instanceof Date) {
+                                        $rowitem = date('d-m-Y',$doc[$field[0]]);
                                     }else{
-                                        $rowitem = date('d-m-Y',strtotime($doc[$field[0]]) );
+                                        if(is_array($doc[$field[0]])){
+                                            if(isset( $doc[$field[0]]['sec'])){
+                                                $rowitem = date('d-m-Y',$doc[$field[0]]['sec'] );
+                                            }
+                                        }else{
+                                            $rowitem = date('d-m-Y',strtotime($doc[$field[0]]) );
+                                        }
                                     }
                                 }
 							}elseif($field[1]['kind'] == 'currency'){
@@ -1603,27 +1609,36 @@ class AdminController extends Controller {
                             $row[] = $doc[$field[1]['alias']];
                         }else{
                             if($field[1]['kind'] == 'datetime' || $field[1]['kind'] == 'datetimerange'){
-                                if($doc[$field[0]] instanceof MongoDate){
-                                    $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]->sec);
-                                }elseif ($doc[$field[0]] instanceof Date) {
-                                    $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]);
-                                }else{
-                                    //$rowitem = $doc[$field[0]];
-                                    if(is_array($doc[$field[0]])){
-                                        $rowitem = date('d-m-Y H:i:s', time() );
+
+                                if( !($doc[$field[0]] == '' || $doc[$field[0]] == '0000-00-00 00:00:00')){
+
+                                    if($doc[$field[0]] instanceof MongoDate){
+                                        $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]->sec);
+                                    }elseif ($doc[$field[0]] instanceof Date) {
+                                        $rowitem = date('d-m-Y H:i:s',$doc[$field[0]]);
                                     }else{
-                                        $rowitem = date('d-m-Y H:i:s',strtotime($doc[$field[0]]) );
+                                        //$rowitem = $doc[$field[0]];
+                                        if(is_array($doc[$field[0]])){
+                                            $rowitem = date('d-m-Y H:i:s', time() );
+                                        }else{
+                                            $rowitem = date('d-m-Y H:i:s',strtotime($doc[$field[0]]) );
+                                        }
                                     }
+
                                 }
                             }elseif($field[1]['kind'] == 'date' || $field[1]['kind'] == 'daterange'){
-                                if($doc[$field[0]] instanceof MongoDate){
-                                    $rowitem = date('d-m-Y',$doc[$field[0]]->sec);
-                                }elseif ($doc[$field[0]] instanceof Date) {
-                                    $rowitem = date('d-m-Y',$doc[$field[0]]);
-                                }else{
-                                    //$rowitem = $doc[$field[0]];
-                                    $rowitem = date('d-m-Y',strtotime($doc[$field[0]]) );
+                                //print_r($doc[$field[0]]);
+                                if( !($doc[$field[0]] == '' || $doc[$field[0]] == '0000-00-00 00:00:00')){
+                                    if($doc[$field[0]] instanceof MongoDate){
+                                        $rowitem = date('d-m-Y',$doc[$field[0]]->sec);
+                                    }elseif ($doc[$field[0]] instanceof Date) {
+                                        $rowitem = date('d-m-Y',$doc[$field[0]]);
+                                    }else{
+                                        //$rowitem = $doc[$field[0]];
+                                        $rowitem = date('d-m-Y',strtotime($doc[$field[0]]) );
+                                    }
                                 }
+
                             }elseif($field[1]['kind'] == 'currency'){
                                 $num = (double) $doc[$field[0]];
                                 $rowitem = number_format($num,2,',','.');
