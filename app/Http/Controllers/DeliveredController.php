@@ -1082,7 +1082,7 @@ class DeliveredController extends AdminController {
 
     public function picList($data)
     {
-        $data = $data->toArray();
+        //$data = $data->toArray();
 
         $pics = Uploaded::where('parent_id','=', $data['delivery_id'] )
                     //->whereIn('_id', $data['fileid'])
