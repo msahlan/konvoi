@@ -9,6 +9,9 @@ use App\Models\Boxstatus;
 use App\Models\Box;
 use App\Models\Boxid;
 use App\Models\Shipment;
+use App\Models\Orderstatuslog;
+use App\Models\Orderlog;
+
 
 use App\Models\Deliverydetail;
 use App\Models\Deliverynote;
