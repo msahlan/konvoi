@@ -8,6 +8,7 @@ use App\Models\Geolog;
 use App\Models\Boxstatus;
 use App\Models\Boxid;
 use App\Models\Box;
+use App\Models\Merchant;
 use App\Models\Shipment;
 
 use App\Models\Deliverydetail;
@@ -436,7 +437,7 @@ class DeliveryapiController extends BaseController {
 
     public function merchantObject($merchant_id)
     {
-        $merchant = \Merchant::where('id','=',$merchant_id)->first();
+        $merchant = Merchant::where('id','=',$merchant_id)->first();
         if($merchant){
 
             $merchant = $merchant->toArray();
