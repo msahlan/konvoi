@@ -3,8 +3,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
 use App\Models\Device;
-use App\Models\Box;
+use App\Models\Scanlog;
+use App\Models\Geolog;
 use App\Models\Boxstatus;
+use App\Models\Boxid;
+use App\Models\Shipment;
 
 use App\Models\Deliverydetail;
 
