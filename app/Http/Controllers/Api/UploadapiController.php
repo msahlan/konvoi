@@ -100,7 +100,7 @@ class UploadapiController extends Controller {
 
             $file = Request::file('imagefile');
 
-            $destinationPath = realpath('storage/media2').'/'.$timepath.'/'.$rstring;
+            $destinationPath = realpath('storage/media').'/'.$timepath.'/'.$rstring;
 
             $filename = $file->getClientOriginalName();
             $filemime = $file->getMimeType();
@@ -150,10 +150,10 @@ class UploadapiController extends Controller {
                     ->save($destinationPath.'/full_'.$filename);
 
                 $image_size_array = array(
-                    'thumbnail_url'=> URL::to('storage/media2/'.$timepath.'/'.$rstring.'/'.$ps['thumbnail']['prefix'].$filename),
-                    'large_url'=> URL::to('storage/media2/'.$timepath.'/'.$rstring.'/'.$ps['large']['prefix'].$filename),
-                    'medium_url'=> URL::to('storage/media2/'.$timepath.'/'.$rstring.'/'.$ps['medium']['prefix'].$filename),
-                    'full_url'=> URL::to('storage/media2/'.$timepath.'/'.$rstring.'/'.$ps['full']['prefix'].$filename),
+                    'thumbnail_url'=> url('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['thumbnail']['prefix'].$filename),
+                    'large_url'=> url('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['large']['prefix'].$filename),
+                    'medium_url'=> url('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['medium']['prefix'].$filename),
+                    'full_url'=> url('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['full']['prefix'].$filename),
                 );
 
                 $exif = Image::make($destinationPath.'/'.$filename)
@@ -162,11 +162,11 @@ class UploadapiController extends Controller {
             }else{
 
                 if($is_audio){
-                    $thumbnail_url = URL::to('images/audio.png');
+                    $thumbnail_url = url('images/audio.png');
                 }elseif($is_video){
-                    $thumbnail_url = URL::to('images/video.png');
+                    $thumbnail_url = url('images/video.png');
                 }else{
-                    $thumbnail_url = URL::to('images/media.png');
+                    $thumbnail_url = url('images/media.png');
                 }
 
                 $image_size_array = array(
@@ -182,7 +182,7 @@ class UploadapiController extends Controller {
                     'ns'=>$ns,
                     'parent_id'=> $parent_id,
                     'parent_class'=> $parent_class,
-                    'url'=> URL::to('storage/media/'.$rstring.'/'.$filename),
+                    'url'=> url('storage/media/'.$rstring.'/'.$filename),
                     'temp_dir'=> $destinationPath,
                     'file_id'=> $rstring,
                     'is_image'=>$is_image,
@@ -324,20 +324,20 @@ class UploadapiController extends Controller {
                     ->save($destinationPath.'/full_'.$filename);
 
                 $image_size_array = array(
-                    'thumbnail_url'=> URL::to('storage/media/'.$rstring.'/'.$ps['thumbnail']['prefix'].$filename),
-                    'large_url'=> URL::to('storage/media/'.$rstring.'/'.$ps['large']['prefix'].$filename),
-                    'medium_url'=> URL::to('storage/media/'.$rstring.'/'.$ps['medium']['prefix'].$filename),
-                    'full_url'=> URL::to('storage/media/'.$rstring.'/'.$ps['full']['prefix'].$filename),
+                    'thumbnail_url'=> url('storage/media/'.$rstring.'/'.$ps['thumbnail']['prefix'].$filename),
+                    'large_url'=> url('storage/media/'.$rstring.'/'.$ps['large']['prefix'].$filename),
+                    'medium_url'=> url('storage/media/'.$rstring.'/'.$ps['medium']['prefix'].$filename),
+                    'full_url'=> url('storage/media/'.$rstring.'/'.$ps['full']['prefix'].$filename),
                 );
 
             }else{
 
                 if($is_audio){
-                    $thumbnail_url = URL::to('images/audio.png');
+                    $thumbnail_url = url('images/audio.png');
                 }elseif($is_video){
-                    $thumbnail_url = URL::to('images/video.png');
+                    $thumbnail_url = url('images/video.png');
                 }else{
-                    $thumbnail_url = URL::to('images/media.png');
+                    $thumbnail_url = url('images/media.png');
                 }
 
                 $image_size_array = array(
@@ -353,7 +353,7 @@ class UploadapiController extends Controller {
                     'ns'=>$ns,
                     'parent_id'=> $parent_id,
                     'parent_class'=> $parent_class,
-                    'url'=> URL::to('storage/media/'.$rstring.'/'.$filename),
+                    'url'=> url('storage/media/'.$rstring.'/'.$filename),
                     'temp_dir'=> $destinationPath,
                     'file_id'=> $rstring,
                     'is_image'=>$is_image,
