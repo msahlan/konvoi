@@ -11,6 +11,7 @@ use App\Models\Boxid;
 use App\Models\Shipment;
 
 use App\Models\Deliverydetail;
+use App\Models\Deliverynote;
 
 use App\Helpers\Prefs;
 
