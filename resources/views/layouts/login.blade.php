@@ -30,6 +30,10 @@
 	<script type="text/javascript" src="{{ url('limitless')}}/assets/js/core/app.js"></script>
 
 	<script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/ui/ripple.min.js"></script>
+
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/selects/bootstrap_select.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/pages/form_bootstrap_select.js"></script>
+
 	<!-- /theme JS files -->
 
 </head>

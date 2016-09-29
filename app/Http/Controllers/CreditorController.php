@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\AdminController;
 
-use App\Models\User;
+use App\Models\Creditor;
 use App\Models\Uploaded;
 use App\Models\Role;
 
@@ -39,7 +39,7 @@ class CreditorController extends AdminController {
         //$this->crumb->append('Home','left',true);
         //$this->crumb->append(strtolower($this->controller_name));
 
-        $this->model = new User();
+        $this->model = new Creditor();
         //$this->model = DB::collection('documents');
 
     }
@@ -57,11 +57,13 @@ class CreditorController extends AdminController {
 
         $this->heads = array(
             array('Photo',array('search'=>false,'sort'=>false)),
-            array('Full Name',array('search'=>true,'sort'=>true)),
-            array('Role',array('search'=>true,'sort'=>false, 'select'=>Prefs::getRole()->RoleToSelection('_id','rolename' )  )),
-            array('Email',array('search'=>true,'sort'=>true)),
-            array('Mobile',array('search'=>true,'sort'=>true)),
-            array('Address',array('search'=>true,'sort'=>true)),
+            array('Company Name',array('search'=>true,'sort'=>true)),
+            array('PIC Name',array('search'=>true,'sort'=>true)),
+            array('Address',array('search'=>true,'sort'=>false, 'select'=>Prefs::getRole()->RoleToSelection('_id','rolename' )  )),
+            array('Address 2',array('search'=>true,'sort'=>true)),
+            array('Phone',array('search'=>true,'sort'=>true)),
+            array('Fax',array('search'=>true,'sort'=>true)),
+            array('City',array('search'=>true,'sort'=>true)),
             array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
             array('Last Update',array('search'=>true,'sort'=>true,'date'=>true)),
         );
@@ -82,12 +84,14 @@ class CreditorController extends AdminController {
     {
 
         $this->fields = array(
-            array('name',array('kind'=>'text', 'callback'=>'namePic' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('roleId',array('kind'=>'text', 'callback'=>'idRole' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('email',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
-            array('mobile',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('address_1',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('coName',array('kind'=>'text', 'callback'=>'namePic' ,'query'=>'like','pos'=>'both','show'=>true)),
+            array('coName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('picName',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('address_1',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
+            array('address_2',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('fax',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('city',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
         );
@@ -99,9 +103,9 @@ class CreditorController extends AdminController {
     {
 
         $this->validator = array(
-            'name' => 'required',
-            'email'=> 'required|unique:users',
-            'password'=>'required|same:repass'
+            'coName' => 'required',
+            'address_1'=> 'required',
+            'phone'=>'required'
         );
 
         return parent::postAdd($data);
@@ -109,24 +113,21 @@ class CreditorController extends AdminController {
 
     public function beforeSave($data)
     {
-        unset($data['repass']);
-        $data['password'] = bcrypt($data['password']);
+        $photo = array();
+        $avatar = '';
 
-            $photo = array();
-            $avatar = '';
+        if( isset($data['fileid'])){
 
-            if( isset($data['fileid'])){
-
-                $avfile = Uploaded::find($data['fileid']);
-                if($avfile){
-                    $avatar = $avfile->square_url;
-                    $photo[] = $avfile->toArray();
-                }
-
+            $avfile = Uploaded::find($data['fileid']);
+            if($avfile){
+                $avatar = $avfile->square_url;
+                $photo[] = $avfile->toArray();
             }
 
-            $data['photo']= $photo;
-            $data['avatar'] = $avatar;
+        }
+
+        $data['photo']= $photo;
+        $data['logo'] = $avatar;
 
         return $data;
     }
@@ -145,15 +146,6 @@ class CreditorController extends AdminController {
     public function beforeUpdate($id,$data)
     {
 
-        if(isset($data['password']) && $data['password'] != ''){
-            unset($data['repass']);
-            $data['password'] = bcrypt($data['pass']);
-
-        }else{
-            unset($data['password']);
-            unset($data['repass']);
-        }
-
         $photo = array();
         $avatar = '';
 
@@ -167,7 +159,7 @@ class CreditorController extends AdminController {
         }
 
         $data['photo']= $photo;
-        $data['avatar'] = $avatar;
+        $data['logo'] = $avatar;
 
 
         return $data;
@@ -176,16 +168,10 @@ class CreditorController extends AdminController {
     public function postEdit($id,$data = null)
     {
         $this->validator = array(
-            'name' => 'required',
-            'email'=> 'required'
+            'coName' => 'required',
+            'address_1'=> 'required',
+            'phone'=>'required'
         );
-
-        if($data['password'] == ''){
-            unset($data['password']);
-            unset($data['repass']);
-        }else{
-            $this->validator['password'] = 'required|same:repass';
-        }
 
         return parent::postEdit($id,$data);
     }
@@ -193,7 +179,7 @@ class CreditorController extends AdminController {
     public function makeActions($data)
     {
         $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i>Delete</span>';
-        $edit = '<a href="'.url('user/edit/'.$data['_id']).'"><i class="fa fa-edit"></i>Update</a>';
+        $edit = '<a href="'.url('creditor/edit/'.$data['_id']).'"><i class="fa fa-edit"></i>Update</a>';
 
         $actions = $edit.'<br />'.$delete;
         return $actions;
@@ -230,9 +216,9 @@ class CreditorController extends AdminController {
     public function namePic($data)
     {
         $display = '<span style="display:block;text-align:center;color:green;"><i style="font-size:48px;" class="icon-user"></i></span>';
-        if(isset($data['avatar']) && $data['avatar'] != ''){
-            if(Prefs::checkUrl($data['avatar'])){
-                $display = '<span style="display:block;text-align:center;color:green;">'.HTML::image($data['avatar'].'?'.time(), $data['fullname'], array('id' => $data['_id'],'class'=>'img-circle avatar')).'</span>';
+        if(isset($data['logo']) && $data['logo'] != ''){
+            if(Prefs::checkUrl($data['logo'])){
+                $display = '<span style="display:block;text-align:center;color:green;">'.HTML::image($data['logo'].'?'.time(), $data['fullname'], array('id' => $data['_id'],'class'=>'img-circle avatar')).'</span>';
             }
         }else{
             //$display = HTML::image(url('images/no-photo.png').'?'.time(), $data['fullname'], array('id' => $data['_id']));

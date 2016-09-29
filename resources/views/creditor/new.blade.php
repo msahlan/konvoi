@@ -19,7 +19,7 @@
         {!! Former::text('address_2','Address line 2')  !!}
         {!! Former::text('city','City')  !!}
 
-        {!! Former::text('state','State / Province')  !!}
+        {!! Former::text('province','State / Province')  !!}
 
         {!! Former::select('countryOfOrigin')->id('country')->options(config('country.countries'))->label('Country of Origin')  !!}
 
@@ -33,9 +33,7 @@
 
         <h4>PIC Info</h4>
 
-        {!! Former::select('salutation')->options(config('kickstart.salutation'))->label('Salutation')  !!}
-        {!! Former::text('name','Full Name')  !!}
-        {!! Former::text('mobile','Mobile')  !!}
+        {!! Former::text('picName','Full Name')  !!}
 
         <h4>Logo</h4>
 
@@ -45,7 +43,7 @@
             ->label('Upload Photo')
             ->url('upload/logo')
             ->singlefile(true)
-            ->prefix('organization')
+            ->prefix('creditor')
             ->multi(false)->make() !!}
 
 @endsection

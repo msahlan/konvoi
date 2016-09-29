@@ -204,7 +204,9 @@ class AdminController extends Controller {
 
 		Former::framework($this->form_framework);
 
-		//$this->beforeFilter('jauth', array('on'=>'get', 'only'=>array('getIndex','getAdd','getEdit') ));
+        $this->middleware('auth');
+
+        //$this->beforeFilter('jauth', array('on'=>'get', 'only'=>array('getIndex','getAdd','getEdit') ));
 
         $this->backlink = strtolower($this->controller_name);
 
