@@ -50,7 +50,9 @@
 
 			<div class="navbar-right">
 				<ul class="nav navbar-nav navbar-right">
-                    <li><a href="#">Help center</a></li>
+                    <li><a href="{{url('member/register')}}">Register Member</a></li>
+                    <li><a href="{{url('creditor/register')}}">Register Creditor</a></li>
+                    <li><a href="#">Help Center</a></li>
 				</ul>
 			</div>
 		</div>

@@ -902,7 +902,7 @@ class Prefs {
     }
 
     public static function getRoleId($rolename){
-        $role = Role::where('rolename',$rolename)->first();
+        $role = Role::where('rolename','=',$rolename)->first();
         if($role){
             return $role->_id;
         }else{

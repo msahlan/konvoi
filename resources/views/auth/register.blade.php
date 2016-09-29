@@ -1,6 +1,9 @@
 @extends('layouts.login')
 
 @section('content')
+    <?php
+        use App\Helpers\Prefs;
+    ?>
     <form class="form-horizontal login-form" role="form" method="POST" action="{{ url('/register') }}">
         {{ csrf_field() }}
 
@@ -63,7 +66,7 @@
                         <strong>{{ $errors->first('password_confirmation') }}</strong>
                     </span>
                 @endif
-
+                <input type="hidden" name="roleId" value="{!! Prefs::getRoleId('Member') !!}" />
             </div>
 
             <div class="form-group">

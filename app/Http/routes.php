@@ -15,6 +15,9 @@ Route::get('/', env('MENU_HOME','IncomingController@getIndex'))->middleware('aut
 
 Route::auth();
 
+Route::get('member/register', 'Auth\AuthController@showRegistrationForm');
+Route::get('creditor/register', 'Auth\AuthController@showRegistrationForm');
+
 Route::post('/upload', 'UploadController@postIndex');
 Route::post('/upload/avatar', 'UploadController@postAvatar');
 Route::post('/upload/logo', 'UploadController@postLogo');
@@ -28,6 +31,23 @@ Route::post('/user/add', 'UserController@postAdd');
 Route::get('/user/edit/{id}', 'UserController@getEdit');
 Route::post('/user/edit/{id}', 'UserController@postEdit');
 Route::post('/user/del', 'UserController@postDel');
+
+Route::get('/member', 'MemberController@getIndex');
+Route::post('/member', 'MemberController@postIndex');
+Route::get('/member/add', 'MemberController@getAdd');
+Route::post('/member/add', 'MemberController@postAdd');
+Route::get('/member/edit/{id}', 'MemberController@getEdit');
+Route::post('/member/edit/{id}', 'MemberController@postEdit');
+Route::post('/member/del', 'MemberController@postDel');
+
+Route::get('/creditor', 'CreditorController@getIndex');
+Route::post('/creditor', 'CreditorController@postIndex');
+Route::get('/creditor/add', 'CreditorController@getAdd');
+Route::post('/creditor/add', 'CreditorController@postAdd');
+Route::get('/creditor/edit/{id}', 'CreditorController@getEdit');
+Route::post('/creditor/edit/{id}', 'CreditorController@postEdit');
+Route::post('/creditor/del', 'CreditorController@postDel');
+
 
 Route::get('/usergroup', 'UsergroupController@getIndex');
 Route::post('/usergroup', 'UsergroupController@postIndex');

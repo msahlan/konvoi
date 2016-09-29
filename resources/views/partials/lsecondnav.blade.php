@@ -180,6 +180,25 @@
                     </ul>
                 </li>
 
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="icon-users position-left"></i> Users <span class="caret"></span>
+                    </a>
+
+                    <ul class="dropdown-menu width-200">
+                        <li>
+                            <a href="{{ url('user') }}"><i class="icon-users"></i> Admins</a>
+                        </li>
+                        <li>
+                            <a href="{{ url('member') }}"><i class="icon-users"></i> Members</a>
+                        </li>
+                        <li>
+                            <a href="{{ url('creditor') }}"><i class="icon-users"></i> Creditors</a>
+                        </li>
+                    </ul>
+                </li>
+
+
             </ul>
 
                 <ul class="nav navbar-nav navbar-nav-material navbar-right">
