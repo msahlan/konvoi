@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use App\Models\Creditor;
+
+use App\Helpers\Prefs;
+
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -109,5 +112,20 @@ class AuthController extends Controller
 
         return $new_user;
 
+    }
+
+    protected function authenticated($user)
+    {
+        print_r($user->toArray());
+        //die();
+        if($user->roleId == Prefs::getRoleId('Member')) {
+            return redirect('/member/profile');
+        }
+
+        if($user->roleId == Prefs::getRoleId('Creditor')) {
+            return redirect('/creditor/profile');
+        }
+
+        return redirect('/');
     }
 }

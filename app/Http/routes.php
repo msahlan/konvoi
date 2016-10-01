@@ -218,6 +218,10 @@ Route::post('/assetlocation/add', 'AssetlocationController@postAdd');
 Route::get('/assetlocation/edit/{id}', 'AssetlocationController@getEdit');
 Route::post('/assetlocation/edit/{id}', 'AssetlocationController@postEdit');
 
+Route::group( [ 'prefix'=>'member', 'middleware'=>['web'] ] , function(){
+    Route::get('/profile', 'Member\ProfileController@getIndex');
+});
+
 Route::group(array('prefix' => 'api/v1/mobile','middleware'=>array('api') ), function (){
     Route::get('/auth', 'Api\AuthController@index');
     Route::post('/auth/login', 'Api\AuthController@login');
