@@ -222,6 +222,10 @@ Route::group( [ 'prefix'=>'member', 'middleware'=>['web'] ] , function(){
     Route::get('/profile', 'Member\ProfileController@getIndex');
 });
 
+Route::group( [ 'prefix'=>'creditor', 'middleware'=>['web'] ] , function(){
+    Route::get('/profile', 'Creditor\ProfileController@getIndex');
+});
+
 Route::group(array('prefix' => 'api/v1/mobile','middleware'=>array('api') ), function (){
     Route::get('/auth', 'Api\AuthController@index');
     Route::post('/auth/login', 'Api\AuthController@login');

@@ -8,6 +8,7 @@ use App\Models\Creditor;
 use App\Helpers\Prefs;
 
 use Validator;
+use Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -56,7 +57,8 @@ class AuthController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
-            'agreeToTerms' => 'required|present'
+            'agreeToTerms' => 'required|present',
+            'bankCard'=>'required'
         ];
 
         if(isset($data['coName'])){
@@ -92,6 +94,7 @@ class AuthController extends Controller
             'email' => $data['email'],
             'roleId' => $data['roleId'],
             'password' => bcrypt($data['password']),
+            'bankCard' => $data['bankCard']
         ]);
 
         if(isset($data['coName']) && $new_user){
@@ -116,8 +119,14 @@ class AuthController extends Controller
 
     protected function authenticated($user)
     {
-        print_r($user->toArray());
+        //print_r($user->toArray());
         //die();
+        $user = Auth::user();
+
+        //print_r($user->toArray());
+
+
+
         if($user->roleId == Prefs::getRoleId('Member')) {
             return redirect('/member/profile');
         }

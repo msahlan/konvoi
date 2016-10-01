@@ -17,11 +17,11 @@
 
                     <div class="text-center">
                         <div class="icon-object border-slate-300 text-slate-300"><i class="icon-user-plus"></i></div>
-                        <h5 class="content-group">Personal Information <small class="display-block">Enter your personal informations below</small></h5>
+                        <h5 class="content-group">Account Login Information <small class="display-block">Enter your account login informations below</small></h5>
                     </div>
 
                     <div class="form-group has-feedback has-feedback-left">
-                        <input id="name" type="name" class="form-control" placeholder="Full Name" name="name" value="{{ old('name') }}">
+                        <input id="name" type="name" class="form-control" placeholder="Person In Charge Name" name="name" value="{{ old('name') }}">
 
                         <div class="form-control-feedback">
                             <i class="icon-user text-muted"></i>
@@ -74,22 +74,6 @@
                             </span>
                         @endif
                         <input type="hidden" name="roleId" value="{!! Prefs::getRoleId($regrole) !!}" />
-                    </div>
-
-                    <div class="form-group has-feedback has-feedback-left">
-
-
-                        <div class="form-control-feedback">
-                            <i class="icon-credit-card text-muted"></i>
-                        </div>
-                        {{ Form::select('bankCard', array_merge([''=>'Select Debit Card used'] ,config('card.issuer') ) ,null,['class'=>'bootstrap-select'] ) }}
-
-                        @if ($errors->has('bankCard'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('bankCard') }}</strong>
-                            </span>
-                        @endif
-
                     </div>
 
 
