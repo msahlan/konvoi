@@ -161,6 +161,10 @@
                                 <li class="{{ sa('cashier') }}" ><a href="{{ url('cashier') }}"> Cashier</a></li>
                                 <li class="{{ sa('datatool') }}" ><a href="{{ url('datatool') }}"> Data Tool</a></li>
 
+                                <li class="dropdown-header">Document Archives</li>
+                                <li class="{{ sa('docs') }}" ><a href="{{ url('docs') }}"> Manifests</a></li>
+
+
                             </ul>
                         </li>
 
@@ -186,16 +190,6 @@
                                 <li class="{{ sa('notelog') }}" ><a href="{{ url('notelog') }}"> Note Log</a></li>
                                 <li class="{{ sa('photolog') }}" ><a href="{{ url('photolog') }}"> Photo Log</a></li>
 
-                            </ul>
-                        </li>
-
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="icon-strategy position-left"></i> Released Documents <span class="caret"></span>
-                            </a>
-
-                            <ul class="dropdown-menu width-200">
-                                <li class="{{ sa('docs') }}" ><a href="{{ url('docs') }}"> Manifests</a></li>
                             </ul>
                         </li>
 
