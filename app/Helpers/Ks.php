@@ -1,6 +1,9 @@
 <?php
 namespace App\Helpers;
 
+use App\Models\Role;
+use Auth;
+
 class Ks {
 
     public static function normalphone($number){
@@ -61,6 +64,13 @@ class Ks {
     public static function roi($prop){
         $roi = ((12*$prop['monthlyRental']) - $prop['tax'] - $prop['insurance'] - ( (12*$prop['monthlyRental']) / 10 )) / $prop['listingPrice'];
         return number_format( $roi * 100, 1,'.',',');
+    }
+
+    public static function is($role)
+    {
+        $roleId = Prefs::getRoleId($role);
+
+        return ( Auth::user()->roleId == $roleId);
     }
 
     public static function can($action, $entity){

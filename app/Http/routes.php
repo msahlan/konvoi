@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', env('MENU_HOME','IncomingController@getIndex'))->middleware('auth');
+Route::get('/', env('MENU_HOME','DashboardController@getIndex'))->middleware('auth');
 
 Route::auth();
 
@@ -220,10 +220,23 @@ Route::post('/assetlocation/edit/{id}', 'AssetlocationController@postEdit');
 
 Route::group( [ 'prefix'=>'member', 'middleware'=>['web'] ] , function(){
     Route::get('/profile', 'Member\ProfileController@getIndex');
+
+    Route::get('/account', 'Member\AccountController@getIndex');
+    Route::post('/account', 'Member\AccountController@postIndex');
+
+    Route::get('/transaction', 'Member\TransactionController@getIndex');
+    Route::post('/transaction', 'Member\TransactionController@postIndex');
+
 });
 
 Route::group( [ 'prefix'=>'creditor', 'middleware'=>['web'] ] , function(){
+    Route::get('/', 'DashboardController@getIndex');
+
     Route::get('/profile', 'Creditor\ProfileController@getIndex');
+
+    Route::get('/transaction', 'Creditor\TransactionController@getIndex');
+    Route::post('/transaction', 'Creditor\TransactionController@postIndex');
+
 });
 
 Route::group(array('prefix' => 'api/v1/mobile','middleware'=>array('api') ), function (){
