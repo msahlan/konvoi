@@ -219,6 +219,8 @@ Route::get('/assetlocation/edit/{id}', 'AssetlocationController@getEdit');
 Route::post('/assetlocation/edit/{id}', 'AssetlocationController@postEdit');
 
 Route::group( [ 'prefix'=>'member', 'middleware'=>['web'] ] , function(){
+    Route::get('/', 'DashboardController@getIndex');
+
     Route::get('/profile', 'Member\ProfileController@getIndex');
 
     Route::get('/account', 'Member\AccountController@getIndex');

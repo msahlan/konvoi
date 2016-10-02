@@ -146,11 +146,11 @@ class AuthController extends Controller
 
 
         if($user->roleId == Prefs::getRoleId('Member')) {
-            return redirect('/member/profile');
+            return redirect('member');
         }
 
         if($user->roleId == Prefs::getRoleId('Creditor')) {
-            return redirect('/creditor/profile');
+            return redirect('creditor');
         }
 
         return redirect('/');
