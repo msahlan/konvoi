@@ -70,6 +70,8 @@ class AuthController extends Controller
                 'province' => 'required|max:255',
             ];
 
+            unset($validator['bankCard']);
+
             $validator = array_merge($validator, $co_validator);
 
         }
