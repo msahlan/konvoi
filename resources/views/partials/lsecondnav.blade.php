@@ -19,11 +19,8 @@
 
                 @endif
 
-                @if($menu == 'DOCUMENT')
+                @if($menu == 'DOCUMENT' || $menu == 'ASSET' || $menu == 'FINANCE')
                 <li><a href="{{ url('docs')}}"><i class="icon-archive position-left"></i> Documents</a></li>
-                @endif
-                @if($menu == 'ASSET' || $menu == 'FINANCE')
-
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="icon-cube3 position-left"></i> Finance <span class="caret"></span>
