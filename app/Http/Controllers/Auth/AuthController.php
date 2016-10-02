@@ -91,13 +91,29 @@ class AuthController extends Controller
     {
         //print_r($data);
         //die();
-        $new_user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'roleId' => $data['roleId'],
-            'password' => bcrypt($data['password']),
-            'bankCard' => $data['bankCard']
-        ]);
+
+
+        if(isset($data['coName'])){
+
+            $nu = [
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'roleId' => $data['roleId'],
+                'password' => bcrypt($data['password'])
+            ];
+
+        }else{
+            $nu = [
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'roleId' => $data['roleId'],
+                'password' => bcrypt($data['password']),
+                'bankCard' => $data['bankCard']
+            ];
+
+        }
+
+        $new_user = User::create($nu);
 
         if(isset($data['coName']) && $new_user){
             Creditor::create([
