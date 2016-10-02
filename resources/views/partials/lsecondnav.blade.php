@@ -10,10 +10,13 @@
 
             <div class="navbar-collapse collapse" id="navbar-second-toggle">
             <ul class="nav navbar-nav navbar-nav-material">
-                @if( Ks::is('Member') )
+                @if( Ks::is('Member') || Ks::is('Employee') || Ks::is('Manager') )
                     <li><a href="{{ url('/')}}"><i class="icon-display4 position-left"></i> Dashboard</a></li>
                 @elseif(Ks::is('Creditor'))
                     <li><a href="{{ url('/')}}"><i class="icon-display4 position-left"></i> Dashboard</a></li>
+                @elseif(Ks::is('Admin') || Ks::is('Superuser') || Ks::is('Administrator') || Ks::is('Root'))
+                    <li><a href="{{ url('/')}}"><i class="icon-display4 position-left"></i> Dashboard</a></li>
+
                 @endif
 
                 @if($menu == 'DOCUMENT')
