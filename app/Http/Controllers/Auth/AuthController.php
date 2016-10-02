@@ -70,6 +70,8 @@ class AuthController extends Controller
                 'province' => 'required|max:255',
             ];
 
+            unset($validator['bankCard']);
+
             $validator = array_merge($validator, $co_validator);
 
         }
@@ -89,13 +91,29 @@ class AuthController extends Controller
     {
         //print_r($data);
         //die();
-        $new_user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'roleId' => $data['roleId'],
-            'password' => bcrypt($data['password']),
-            'bankCard' => $data['bankCard']
-        ]);
+
+
+        if(isset($data['coName'])){
+
+            $nu = [
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'roleId' => $data['roleId'],
+                'password' => bcrypt($data['password'])
+            ];
+
+        }else{
+            $nu = [
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'roleId' => $data['roleId'],
+                'password' => bcrypt($data['password']),
+                'bankCard' => $data['bankCard']
+            ];
+
+        }
+
+        $new_user = User::create($nu);
 
         if(isset($data['coName']) && $new_user){
             Creditor::create([
@@ -128,11 +146,11 @@ class AuthController extends Controller
 
 
         if($user->roleId == Prefs::getRoleId('Member')) {
-            return redirect('/member/profile');
+            return redirect('member');
         }
 
         if($user->roleId == Prefs::getRoleId('Creditor')) {
-            return redirect('/creditor/profile');
+            return redirect('creditor');
         }
 
         return redirect('/');
