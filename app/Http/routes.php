@@ -225,6 +225,10 @@ Route::group( [ 'prefix'=>'member', 'middleware'=>['web'] ] , function(){
 
     Route::get('/account', 'Member\AccountController@getIndex');
     Route::post('/account', 'Member\AccountController@postIndex');
+    Route::get('/account/add', 'Member\AccountController@getAdd');
+    Route::post('/account/add', 'Member\AccountController@postAdd');
+    Route::get('/account/edit/{id}', 'Member\AccountController@getEdit');
+    Route::post('/account/edit/{id}', 'Member\AccountController@postEdit');
 
     Route::get('/transaction', 'Member\TransactionController@getIndex');
     Route::post('/transaction', 'Member\TransactionController@postIndex');
@@ -235,6 +239,13 @@ Route::group( [ 'prefix'=>'creditor', 'middleware'=>['web'] ] , function(){
     Route::get('/', 'DashboardController@getIndex');
 
     Route::get('/profile', 'Creditor\ProfileController@getIndex');
+
+    Route::get('/account', 'Creditor\AccountController@getIndex');
+    Route::post('/account', 'Creditor\AccountController@postIndex');
+    Route::get('/account/add', 'Creditor\AccountController@getAdd');
+    Route::post('/account/add', 'Creditor\AccountController@postAdd');
+    Route::get('/account/edit/{id}', 'Creditor\AccountController@getEdit');
+    Route::post('/account/edit/{id}', 'Creditor\AccountController@postEdit');
 
     Route::get('/transaction', 'Creditor\TransactionController@getIndex');
     Route::post('/transaction', 'Creditor\TransactionController@postIndex');

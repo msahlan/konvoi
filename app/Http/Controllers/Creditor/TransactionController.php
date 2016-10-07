@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Member;
+namespace App\Http\Controllers\Creditor;
 
 use App\Http\Controllers\AdminController;
 

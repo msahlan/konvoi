@@ -1,7 +1,7 @@
 <?php
     $menu = env('MENU_SET','LOGISTIC');
     use App\Helpers\Ks;
-?> 
+?>
        <!-- Second navbar -->
         <div class="navbar navbar-inverse navbar-transparent" id="navbar-second">
             <ul class="nav navbar-nav visible-xs-block">
@@ -11,9 +11,9 @@
             <div class="navbar-collapse collapse" id="navbar-second-toggle">
             <ul class="nav navbar-nav navbar-nav-material">
                 @if( Ks::is('Member') || Ks::is('Employee') || Ks::is('Manager') )
-                    <li><a href="{{ url('/')}}"><i class="icon-display4 position-left"></i> Dashboard</a></li>
+                    <li><a href="{{ url('member')}}"><i class="icon-display4 position-left"></i> Dashboard</a></li>
                 @elseif(Ks::is('Creditor'))
-                    <li><a href="{{ url('/')}}"><i class="icon-display4 position-left"></i> Dashboard</a></li>
+                    <li><a href="{{ url('creditor')}}"><i class="icon-display4 position-left"></i> Dashboard</a></li>
                 @elseif(Ks::is('Admin') || Ks::is('Superuser') || Ks::is('Administrator') || Ks::is('Root'))
                     <li><a href="{{ url('/')}}"><i class="icon-display4 position-left"></i> Dashboard</a></li>
 
@@ -84,6 +84,9 @@
                         <li><a href="{{ url('member/transaction')}}"><i class="icon-display4 position-left"></i> Transactions</a></li>
 
                     @elseif( Ks::is('Creditor') )
+                        <li><a href="{{ url('creditor/account')}}"><i class="icon-display4 position-left"></i> Accounts</a></li>
+
+                        <li><a href="{{ url('creditor/transaction')}}"><i class="icon-display4 position-left"></i> Transactions</a></li>
 
                     @else
 

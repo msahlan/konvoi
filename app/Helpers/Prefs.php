@@ -10,6 +10,8 @@ use App\Models\Box;
 use App\Models\Boxstatus;
 use App\Models\Printdefault;
 use App\Models\Generatedawb;
+use App\Models\Creditor;
+
 
 use \Auth;
 
@@ -1248,6 +1250,38 @@ class Prefs {
     }
 
 //company
+
+//creditor
+    public static function getCreditor(){
+        $c = Creditor::get();
+
+        self::$role = $c;
+        return new self;
+    }
+
+    public function CreditorToSelection($value, $label, $all = true)
+    {
+        if($all){
+            $ret = array(''=>'Select Creditor');
+        }else{
+            $ret = array();
+        }
+
+        foreach (self::$role as $c) {
+            $ret[$c->{$value}] = $c->{$label};
+        }
+
+
+        return $ret;
+    }
+
+    public function CreditorToArray()
+    {
+        return self::$role;
+    }
+
+//creditor
+
     public static function getCoa(){
         $c = Coa::get();
 

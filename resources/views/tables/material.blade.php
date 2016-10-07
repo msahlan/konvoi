@@ -39,6 +39,7 @@
 
         .table-wrapper{
             display: table !important;
+            min-width: 100%;
         }
 
         .command-bar{

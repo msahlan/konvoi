@@ -26,6 +26,7 @@ use DB;
 use HTML;
 use Excel;
 use Validator;
+use Route;
 
 class AdminController extends Controller {
 
@@ -405,9 +406,12 @@ class AdminController extends Controller {
 		$heads = $this->heads;
         $fields = $this->fields;
 
-        $this->ajaxsource = (is_null($this->ajaxsource))? strtolower($this->controller_name): $this->ajaxsource;
+        $route = Route::current();
+        $ajaxsource = $route->getPrefix().'/'.strtolower($this->controller_name);
 
-        $this->addurl = (is_null($this->addurl))? strtolower($this->controller_name).'/add': $this->addurl;
+        $this->ajaxsource = (is_null($this->ajaxsource))? $ajaxsource : $this->ajaxsource;
+
+        $this->addurl = (is_null($this->addurl))? $route->getPrefix().'/'.strtolower($this->controller_name).'/add': $this->addurl;
 
         $this->importurl = (is_null($this->importurl))? strtolower($this->controller_name).'/import': $this->importurl;
 
@@ -3209,7 +3213,7 @@ class AdminController extends Controller {
 
         Former::framework($this->form_framework);
 
-
+        $route = Route::current();
 		//$this->crumb->add($controller_name.'/add','New '.str_singular($this->controller_name));
         $data = $this->beforeAddForm();
 
@@ -3225,13 +3229,15 @@ class AdminController extends Controller {
 
         $fupload = new Wupload();
 
+        $backlink = ( $this->backlink == '' )?$route->getPrefix().'/'.$controller_name:$this->backlink  ;
+
 		return View::make($controller_name.'.'.$this->form_add)
                     ->with('validator',$this->validator)
-					->with('back',$controller_name)
+					->with('back',$backlink)
                     ->with('auxdata',$data)
 					->with('form',$form)
                     ->with('fupload',$fupload)
-					->with('submit',$controller_name.'/add')
+					->with('submit',$route->getPrefix().'/'.$controller_name.'/add')
 					->with('crumb',$this->crumb)
 					->with('title','New '.$this->title);
 
@@ -3248,6 +3254,8 @@ class AdminController extends Controller {
 
 		//print_r($data);
 
+        $route = Route::current();
+
 		$data = $this->beforeValidateAdd($data);
 
 		$controller_name = strtolower($this->controller_name);
@@ -3257,6 +3265,8 @@ class AdminController extends Controller {
 	    $validation = Validator::make($input = $data, $this->validator);
 
         $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
+
+        $backlink = ( $this->backlink == '' )?$route->getPrefix().'/'.$controller_name:$this->backlink  ;
 
 	    if($validation->fails()){
 
@@ -3295,12 +3305,12 @@ class AdminController extends Controller {
 
                 Event::fire('log.a',array($controller_name, 'add' ,$actor,json_encode($obj)));
 				//Event::fire('product.createformadmin',array($obj['_id'],$passwordRandom,$obj['conventionPaymentStatus']));
-		    	return redirect($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saved successfully');
+		    	return redirect($backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saved successfully');
 			}else{
 
                 Event::fire('log.a',array($controller_name, 'add' ,$actor,'saving failed'));
 
-    	    	return redirect($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saving failed');
+    	    	return redirect($backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saving failed');
 			}
 
 	    }
