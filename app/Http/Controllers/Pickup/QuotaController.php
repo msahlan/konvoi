@@ -1,9 +1,9 @@
 <?php
-namespace App\Http\Controllers\Creditor;
+namespace App\Http\Controllers\Pickup;
 
 use App\Http\Controllers\AdminController;
 
-use App\Models\Creditaccount;
+use App\Models\Coverage;
 use App\Models\Uploaded;
 use App\Models\Role;
 
@@ -23,7 +23,7 @@ use DB;
 use HTML;
 use Route;
 
-class AccountController extends AdminController {
+class QuotaController extends AdminController {
 
     public function __construct()
     {
@@ -40,7 +40,7 @@ class AccountController extends AdminController {
         //$this->crumb->append('Home','left',true);
         //$this->crumb->append(strtolower($this->controller_name));
 
-        $this->model = new Creditaccount();
+        $this->model = new Coverage();
         //$this->model = DB::collection('documents');
 
     }
@@ -59,14 +59,13 @@ class AccountController extends AdminController {
         print Route::currentRouteName();
 
         $this->heads = array(
-            array('Active',array('search'=>true,'sort'=>true, 'select'=>[''=>'All',true=>'Yes',false=>'No'] )),
-            array('Nomor Kontrak',array('search'=>true,'sort'=>true)),
-            array('Atas Nama',array('search'=>true,'sort'=>true)),
-            array('Tipe',array('search'=>true,'sort'=>true,  'select'=> array_merge([''=>'All'], config('jc.credit_type' ) ) ) ),
-            array('Jatuh Tempo',array('search'=>true,'sort'=>false  )),
-            array('Jumlah Cicilan',array('search'=>true,'sort'=>true)),
-            array('Tgl Bayar via JC',array('search'=>true,'sort'=>true)),
-            array('Alamat Pengambilan',array('search'=>true,'sort'=>true)),
+            array('Province',array('search'=>true,'sort'=>true)),
+            array('Quota',array('search'=>true,'sort'=>true)),
+            array('City',array('search'=>true,'sort'=>true)),
+            array('Quota',array('search'=>true,'sort'=>true)),
+            array('District',array('search'=>true,'sort'=>true)),
+            array('Quota',array('search'=>true,'sort'=>true)),
+            array('ZIP',array('search'=>true,'sort'=>true ) ),
             //array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
             //array('Last Update',array('search'=>true,'sort'=>true,'date'=>true)),
         );
@@ -87,14 +86,13 @@ class AccountController extends AdminController {
     {
 
         $this->fields = array(
-            array('active',array('kind'=>'boolean' ,'callback'=>'statusToggle','query'=>'like','pos'=>'both','show'=>true)),
-            array('contractNumber',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('contractName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('Type',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('dueDate',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
-            array('installmentAmt',array('kind'=>'currency','query'=>'like','pos'=>'both','show'=>true)),
-            array('pickupDate',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('pickupAddress',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('province',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
+            array('provinceQuota',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
+            array('city',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('cityQuota',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('district',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('districtQuota',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('zip',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             //array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             //array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
         );
@@ -106,9 +104,9 @@ class AccountController extends AdminController {
     {
 
         $this->validator = array(
-            'name' => 'required',
-            'email'=> 'required|unique:users',
-            'password'=>'required|same:repass'
+            'province' => 'required',
+            'city'=> 'required',
+            'district'=>'required'
         );
 
         return parent::postAdd($data);
@@ -116,66 +114,17 @@ class AccountController extends AdminController {
 
     public function beforeSave($data)
     {
-        unset($data['repass']);
-        $data['password'] = bcrypt($data['password']);
-
-            $photo = array();
-            $avatar = '';
-
-            if( isset($data['fileid'])){
-
-                $avfile = Uploaded::find($data['fileid']);
-                if($avfile){
-                    $avatar = $avfile->square_url;
-                    $photo[] = $avfile->toArray();
-                }
-
-            }
-
-            $data['photo']= $photo;
-            $data['avatar'] = $avatar;
 
         return $data;
     }
 
     public function afterSave($data)
     {
-        foreach($data['photo'] as $p) {
-            $up = Uploaded::find($p['_id']);
-            if($up){
-                $up->parent_id = $data['_id'];
-                $up->save();
-            }
-        }
+        return $data;
     }
 
     public function beforeUpdate($id,$data)
     {
-
-        if(isset($data['password']) && $data['password'] != ''){
-            unset($data['repass']);
-            $data['password'] = bcrypt($data['pass']);
-
-        }else{
-            unset($data['password']);
-            unset($data['repass']);
-        }
-
-        $photo = array();
-        $avatar = '';
-
-        if( isset($data['fileid'])){
-
-            $avfile = Uploaded::find($data['fileid']);
-            if($avfile){
-                $avatar = $avfile->square_url;
-            }
-
-        }
-
-        $data['photo']= $photo;
-        $data['avatar'] = $avatar;
-
 
         return $data;
     }
@@ -183,40 +132,78 @@ class AccountController extends AdminController {
     public function postEdit($id,$data = null)
     {
         $this->validator = array(
-            'name' => 'required',
-            'email'=> 'required'
+            'province' => 'required',
+            'city'=> 'required',
+            'district'=>'required'
         );
-
-        if($data['password'] == ''){
-            unset($data['password']);
-            unset($data['repass']);
-        }else{
-            $this->validator['password'] = 'required|same:repass';
-        }
 
         return parent::postEdit($id,$data);
     }
 
     public function makeActions($data)
     {
-        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i>Delete</span>';
-        $edit = '<a href="'.url('user/edit/'.$data['_id']).'"><i class="fa fa-edit"></i>Update</a>';
+
+        $edit = '<a href="'.url('pickup/account/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
+
+        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i> Del</span>';
 
         $actions = $edit.'<br />'.$delete;
-        $actions = '';
+
         return $actions;
     }
 
-    public function statusToggle($data)
+    public function SQL_additional_query($model)
     {
-        if($data['active']){
-            $toggle = '<span class="" id="'.$data['_id'].'" ><i class="fa fa-toggle-on"></i> Yes</span>';
-        }else{
-            $toggle = '<span class="" id="'.$data['_id'].'" ><i class="fa fa-toggle-off"></i> No</span>';
+
+        $model = $model->orderBy('province','asc')
+            ->orderBy('city','asc')
+            ->orderBy('district','asc');
+
+        return $model;
+
+    }
+
+    public function rows_post_process($rows, $aux = null){
+
+        $province = '';
+        $city = '';
+
+        //print_r($rows);
+
+        if(count($rows) > 0){
+
+            for($i = 0; $i < count($rows); $i++){
+                if($rows[$i][3] != $province){
+                    $city = '';
+                    $province = $rows[$i][3];
+                    $rows[$i][3] = $rows[$i][3];
+                    $rows[$i][4] = '<a href="#" id="provinceQuota" data-type="text" data-pk="'.$rows[$i][4].'" data-title="Update Quota" class="provinceQuota editable editable-click" data-original-title="" title="">'.$rows[$i][4].'</a>';
+                }else{
+                    $rows[$i][3] = '';
+                    $rows[$i][4] = '';
+                }
+
+
+                if($rows[$i][5] != $city){
+                    $city = $rows[$i][5];
+                    $rows[$i][5] = $rows[$i][5];
+                    $rows[$i][6] = '<a href="#" id="cityQuota" data-type="text" data-pk="'.$rows[$i][6].'" data-title="Update Quota" class="cityQuota editable editable-click" data-original-title="" title="">'.$rows[$i][6].'</a>';
+                }else{
+                    $rows[$i][5] = '';
+                    $rows[$i][6] = '';
+                }
+
+            }
+
+
         }
 
-        return $toggle;
+
+
+        return $rows;
+
     }
+
 
     public function splitTag($data){
         $tags = explode(',',$data['docTag']);
@@ -246,6 +233,17 @@ class AccountController extends AdminController {
         }
     }
 
+    public function statusToggle($data)
+    {
+        if($data['active']){
+            $toggle = '<span class="toggle" id="'.$data['_id'].'" ><i class="fa fa-toggle-on"></i> Yes</span>';
+        }else{
+            $toggle = '<span class="toggle" id="'.$data['_id'].'" ><i class="fa fa-toggle-off"></i> No</span>';
+        }
+
+        return $toggle;
+    }
+
     public function namePic($data)
     {
         $display = '<span style="display:block;text-align:center;color:green;"><i style="font-size:48px;" class="icon-user"></i></span>';
@@ -259,6 +257,10 @@ class AccountController extends AdminController {
 
         return $display;
 
+    }
+
+    public function dlActive($data){
+        return ( isset($data['active']) && $data['active'])?'Yes':'No';
     }
 
     public function idRole($data)
@@ -287,10 +289,6 @@ class AccountController extends AdminController {
 
     }
 
-    public function dlActive($data){
-        return ( isset($data['active']) && $data['active'])?'Yes':'No';
-    }
-
     public function postDlxl()
     {
 
@@ -313,7 +311,7 @@ class AccountController extends AdminController {
         );
 
         $this->fields = array(
-            array('active',array('kind'=>'text' ,'query'=>'like','callback'=>'dlActive','pos'=>'both','show'=>true)),
+            array('contractNumber',array('kind'=>'text' ,'query'=>'like','callback'=>'dlActive','pos'=>'both','show'=>true)),
             array('contractNumber',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
             array('contractName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('creditorName',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),

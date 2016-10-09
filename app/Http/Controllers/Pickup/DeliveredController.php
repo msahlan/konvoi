@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Creditor;
+namespace App\Http\Controllers\Pickup;
 
 use App\Http\Controllers\AdminController;
 
@@ -7,7 +7,6 @@ use App\Models\Shipment;
 use App\Models\Uploaded;
 
 use App\Helpers\Prefs;
-use App\Helpers\Ks;
 
 use Creitive\Breadcrumbs\Breadcrumbs;
 
@@ -25,7 +24,7 @@ use DB;
 use HTML;
 
 
-class TransactionController extends AdminController {
+class DeliveredController extends AdminController {
 
     public function __construct()
     {
@@ -41,7 +40,7 @@ class TransactionController extends AdminController {
 
         $this->model = new Shipment();
         //$this->model = DB::collection('documents');
-        $this->title = 'Transactions';
+        $this->title = 'Delivery Status';
 
     }
 
@@ -113,12 +112,12 @@ class TransactionController extends AdminController {
     {
 
 
-        $this->heads = config('jc.default_delivered_heads');
+        $this->heads = config('jex.default_delivered_heads');
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Transactions';
+        $this->title = 'Delivery Status';
 
-        $this->place_action = 'none';
+        $this->place_action = 'first';
 
         $this->show_select = true;
 
@@ -144,7 +143,7 @@ class TransactionController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = config('jc.default_delivered_fields');
+        $this->fields = config('jex.default_delivered_fields');
 
         /*
         $categoryFilter = Request::input('categoryFilter');
@@ -157,7 +156,7 @@ class TransactionController extends AdminController {
 
         $this->def_order_by = 'ordertime';
         $this->def_order_dir = 'desc';
-        $this->place_action = 'none';
+        $this->place_action = 'first';
         $this->show_select = true;
 
         $this->sql_key = 'delivery_id';
@@ -289,7 +288,7 @@ class TransactionController extends AdminController {
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Transactions';
+        $this->title = 'Delivery Status';
 
         $this->crumb->addCrumb('Cost Report',url( strtolower($this->controller_name) ));
 
@@ -865,14 +864,10 @@ class TransactionController extends AdminController {
 
     public function shipAddr($data)
     {
-        if(Ks::is('Member') || ks::is('Creditor')){
-            return $data['shipping_address'];
+        if($data['latitude'] != 0 && $data['longitude'] != 0){
+            return $data['shipping_address'].'<hr />'.$data['latitude'].','.$data['longitude'];
         }else{
-            if($data['latitude'] != 0 && $data['longitude'] != 0){
-                return $data['shipping_address'].'<hr />'.$data['latitude'].','.$data['longitude'];
-            }else{
-                return $data['shipping_address'];
-            }
+            return $data['shipping_address'];
         }
     }
 
@@ -1016,7 +1011,7 @@ class TransactionController extends AdminController {
 
     public function allNotes($data)
     {
-        $notes = ($data['delivery_note'] != '')?'<span class="green">Transaction Note:</span><br />'.$data['delivery_note']:'';
+        $notes = ($data['delivery_note'] != '')?'<span class="green">Delivery Note:</span><br />'.$data['delivery_note']:'';
         $notes .= ($data['pickup_note'] != '')?'<br /><span class="brown">PU Note:</span><br />'.$data['pickup_note']:'';
         $notes .= ($data['warehouse_note'] != '')?'<br /><span class="orange">WH Note:</span><br />'.$data['warehouse_note']:'';
 

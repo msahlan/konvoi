@@ -1,5 +1,5 @@
 <?php
-
+use App\Helpers\Prefs;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -11,9 +11,23 @@
 |
 */
 
-Route::get('/', env('MENU_HOME','DashboardController@getIndex'))->middleware('auth');
+Route::get('/', function(){
+    if(Auth::check()){
+        $role = strtolower( Prefs::getRoleById(Auth::user()->roleId ));
+        if($role == 'member' || $role == 'creditor'){
+            return redirect( $role.'/dashboard');
+        }else{
+            return redirect( 'dashboard');
+        }
+    }else{
+        return view('front.index');
+    }
+});
+
 
 Route::auth();
+
+Route::get('dashboard', 'DashboardController@getIndex');
 
 Route::get('member/register', 'Auth\AuthController@showRegistrationForm');
 Route::get('creditor/register', 'Auth\AuthController@showRegistrationForm');
@@ -78,7 +92,6 @@ Route::get('/incoming/dl/{filename}', 'IncomingController@getDl');
 Route::get('/incoming/csv/{filename}', 'IncomingController@getCsv');
 Route::get('/incoming/add', 'IncomingController@getAdd');
 Route::post('/incoming/add', 'IncomingController@postAdd');
-
 Route::post('/incoming/assigndate', 'IncomingController@postAssigndate');
 
 
@@ -108,6 +121,9 @@ Route::post('/orderarchive', 'OrderarchiveController@postIndex');
 Route::get('/deliverylog', 'DeliverylogController@getIndex');
 Route::post('/deliverylog', 'DeliverylogController@postIndex');
 
+Route::get('/coverage', 'CoverageController@getIndex');
+Route::post('/coverage', 'CoverageController@postIndex');
+
 Route::get('/device', 'DeviceController@getIndex');
 Route::post('/device', 'DeviceController@postIndex');
 
@@ -131,6 +147,7 @@ Route::get('/ajax/device', 'AjaxController@getDevice');
 Route::get('/ajax/courier', 'AjaxController@getCourier');
 Route::post('/ajax/confirmdata', 'AjaxController@postConfirmdata');
 Route::post('/ajax/canceldata', 'AjaxController@postCanceldata');
+Route::post('/ajax/generatedata', 'AjaxController@postGeneratedata');
 
 
 Route::get('/profile', 'ProfileController@getIndex');
@@ -150,75 +167,92 @@ Route::post('/locationlog', 'LocationlogController@postIndex');
 Route::get('/route', 'RouteController@getIndex');
 Route::post('/route', 'RouteController@postIndex');
 
-Route::get('/docs', 'DocsController@getIndex');
-Route::post('/docs', 'DocsController@postIndex');
-Route::get('/docs/printlabel/{sessionname}/{printparam}/{format?}', 'DocsController@getPrintlabel');
-Route::get('/docs/import', 'DocsController@getImport');
-Route::post('/docs/uploadimport', 'DocsController@postUploadimport');
-Route::get('/docs/commit/{sessid}', 'DocsController@getCommit');
-Route::post('/docs/commit/{sessid}', 'DocsController@postCommit');
-Route::post('/docs/dlxl', 'DocsController@postDlxl');
-Route::get('/docs/dl/{filename}', 'DocsController@getDl');
-Route::get('/docs/csv/{filename}', 'DocsController@getCsv');
-Route::get('/docs/add', 'DocsController@getAdd');
-Route::post('/docs/add', 'DocsController@postAdd');
 
-Route::get('/docs/edit/{id}', 'DocsController@getEdit');
-Route::post('/docs/edit/{id}', 'DocsController@postEdit');
+Route::group( [ 'prefix'=>'document', 'middlewareGroup'=>['web'] ] , function(){
 
-Route::post('/docs/dirscan', 'DocsController@postDirscan');
+    Route::get('/docs', 'DocsController@getIndex');
+    Route::post('/docs', 'DocsController@postIndex');
+    Route::get('/docs/printlabel/{sessionname}/{printparam}/{format?}', 'DocsController@getPrintlabel');
+    Route::get('/docs/import', 'DocsController@getImport');
+    Route::post('/docs/uploadimport', 'DocsController@postUploadimport');
+    Route::get('/docs/commit/{sessid}', 'DocsController@getCommit');
+    Route::post('/docs/commit/{sessid}', 'DocsController@postCommit');
+    Route::post('/docs/dlxl', 'DocsController@postDlxl');
+    Route::get('/docs/dl/{filename}', 'DocsController@getDl');
+    Route::get('/docs/csv/{filename}', 'DocsController@getCsv');
+    Route::get('/docs/add', 'DocsController@getAdd');
+    Route::post('/docs/add', 'DocsController@postAdd');
 
-Route::get('/invoice', 'InvoiceController@getIndex');
-Route::post('/invoice', 'InvoiceController@postIndex');
-Route::get('/invoice/printlabel/{sessionname}/{printparam}/{format?}', 'InvoiceController@getPrintlabel');
-Route::get('/invoice/import', 'InvoiceController@getImport');
-Route::post('/invoice/uploadimport', 'InvoiceController@postUploadimport');
-Route::get('/invoice/commit/{sessid}', 'InvoiceController@getCommit');
-Route::post('/invoice/commit/{sessid}', 'InvoiceController@postCommit');
-Route::post('/invoice/dlxl', 'InvoiceController@postDlxl');
-Route::get('/invoice/dl/{filename}', 'InvoiceController@getDl');
-Route::get('/invoice/csv/{filename}', 'InvoiceController@getCsv');
-Route::get('/invoice/add', 'InvoiceController@getAdd');
-Route::post('/invoice/add', 'InvoiceController@postAdd');
+    Route::get('/docs/edit/{id}', 'DocsController@getEdit');
+    Route::post('/docs/edit/{id}', 'DocsController@postEdit');
 
-Route::get('/invoice/edit/{id}', 'InvoiceController@getEdit');
-Route::post('/invoice/edit/{id}', 'InvoiceController@postEdit');
+    Route::post('/docs/dirscan', 'DocsController@postDirscan');
 
-Route::post('/invoice/dirscan', 'InvoiceController@postDirscan');
+});
 
 
-Route::get('/asset', 'AssetController@getIndex');
-Route::post('/asset', 'AssetController@postIndex');
-Route::get('/asset/printlabel/{sessionname}/{printparam}/{format?}', 'AssetController@getPrintlabel');
-Route::get('/asset/import', 'AssetController@getImport');
-Route::post('/asset/uploadimport', 'AssetController@postUploadimport');
-Route::get('/asset/commit/{sessid}', 'AssetController@getCommit');
-Route::post('/asset/commit/{sessid}', 'AssetController@postCommit');
-Route::post('/asset/dlxl', 'AssetController@postDlxl');
-Route::get('/asset/dl/{filename}', 'AssetController@getDl');
-Route::get('/asset/csv/{filename}', 'AssetController@getCsv');
-Route::get('/asset/add', 'AssetController@getAdd');
-Route::post('/asset/add', 'AssetController@postAdd');
-Route::get('/asset/edit/{id}', 'AssetController@getEdit');
-Route::post('/asset/edit/{id}', 'AssetController@postEdit');
-Route::post('/asset/dirscan', 'AssetController@postDirscan');
+Route::group( [ 'prefix'=>'finance', 'middlewareGroup'=>['web'] ] , function(){
 
-Route::get('/assetlocation', 'AssetlocationController@getIndex');
-Route::post('/assetlocation', 'AssetlocationController@postIndex');
-Route::get('/assetlocation/printlabel/{sessionname}/{printparam}/{format?}', 'AssetlocationController@getPrintlabel');
-Route::get('/assetlocation/import', 'AssetlocationController@getImport');
-Route::post('/assetlocation/uploadimport', 'AssetlocationController@postUploadimport');
-Route::get('/assetlocation/commit/{sessid}', 'AssetlocationController@getCommit');
-Route::post('/assetlocation/commit/{sessid}', 'AssetlocationController@postCommit');
-Route::post('/assetlocation/dlxl', 'AssetlocationController@postDlxl');
-Route::get('/assetlocation/dl/{filename}', 'AssetlocationController@getDl');
-Route::get('/assetlocation/csv/{filename}', 'AssetlocationController@getCsv');
-Route::get('/assetlocation/add', 'AssetlocationController@getAdd');
-Route::post('/assetlocation/add', 'AssetlocationController@postAdd');
-Route::get('/assetlocation/edit/{id}', 'AssetlocationController@getEdit');
-Route::post('/assetlocation/edit/{id}', 'AssetlocationController@postEdit');
+    Route::get('/invoice', 'InvoiceController@getIndex');
+    Route::post('/invoice', 'InvoiceController@postIndex');
+    Route::get('/invoice/printlabel/{sessionname}/{printparam}/{format?}', 'InvoiceController@getPrintlabel');
+    Route::get('/invoice/import', 'InvoiceController@getImport');
+    Route::post('/invoice/uploadimport', 'InvoiceController@postUploadimport');
+    Route::get('/invoice/commit/{sessid}', 'InvoiceController@getCommit');
+    Route::post('/invoice/commit/{sessid}', 'InvoiceController@postCommit');
+    Route::post('/invoice/dlxl', 'InvoiceController@postDlxl');
+    Route::get('/invoice/dl/{filename}', 'InvoiceController@getDl');
+    Route::get('/invoice/csv/{filename}', 'InvoiceController@getCsv');
+    Route::get('/invoice/add', 'InvoiceController@getAdd');
+    Route::post('/invoice/add', 'InvoiceController@postAdd');
 
-Route::group( [ 'prefix'=>'member', 'middleware'=>['web'] ] , function(){
+    Route::get('/invoice/edit/{id}', 'InvoiceController@getEdit');
+    Route::post('/invoice/edit/{id}', 'InvoiceController@postEdit');
+
+    Route::post('/invoice/dirscan', 'InvoiceController@postDirscan');
+
+
+});
+
+
+Route::group( [ 'prefix'=>'asset', 'middlewareGroup'=>['web'] ] , function(){
+
+    Route::get('/asset', 'Asset\AssetController@getIndex');
+    Route::post('/asset', 'Asset\AssetController@postIndex');
+    Route::get('/asset/printlabel/{sessionname}/{printparam}/{format?}', 'Asset\AssetController@getPrintlabel');
+    Route::get('/asset/import', 'Asset\AssetController@getImport');
+    Route::post('/asset/uploadimport', 'Asset\AssetController@postUploadimport');
+    Route::get('/asset/commit/{sessid}', 'Asset\AssetController@getCommit');
+    Route::post('/asset/commit/{sessid}', 'Asset\AssetController@postCommit');
+    Route::post('/asset/dlxl', 'Asset\AssetController@postDlxl');
+    Route::get('/asset/dl/{filename}', 'Asset\AssetController@getDl');
+    Route::get('/asset/csv/{filename}', 'Asset\AssetController@getCsv');
+    Route::get('/asset/add', 'Asset\AssetController@getAdd');
+    Route::post('/asset/add', 'Asset\AssetController@postAdd');
+    Route::get('/asset/edit/{id}', 'Asset\AssetController@getEdit');
+    Route::post('/asset/edit/{id}', 'Asset\AssetController@postEdit');
+    Route::post('/asset/dirscan', 'Asset\AssetController@postDirscan');
+
+    Route::get('/assetlocation', 'Asset\AssetlocationController@getIndex');
+    Route::post('/assetlocation', 'Asset\AssetlocationController@postIndex');
+    Route::get('/assetlocation/printlabel/{sessionname}/{printparam}/{format?}', 'Asset\AssetlocationController@getPrintlabel');
+    Route::get('/assetlocation/import', 'Asset\AssetlocationController@getImport');
+    Route::post('/assetlocation/uploadimport', 'Asset\AssetlocationController@postUploadimport');
+    Route::get('/assetlocation/commit/{sessid}', 'Asset\AssetlocationController@getCommit');
+    Route::post('/assetlocation/commit/{sessid}', 'Asset\AssetlocationController@postCommit');
+    Route::post('/assetlocation/dlxl', 'Asset\AssetlocationController@postDlxl');
+    Route::get('/assetlocation/dl/{filename}', 'Asset\AssetlocationController@getDl');
+    Route::get('/assetlocation/csv/{filename}', 'Asset\AssetlocationController@getCsv');
+    Route::get('/assetlocation/add', 'Asset\AssetlocationController@getAdd');
+    Route::post('/assetlocation/add', 'Asset\AssetlocationController@postAdd');
+    Route::get('/assetlocation/edit/{id}', 'Asset\AssetlocationController@getEdit');
+    Route::post('/assetlocation/edit/{id}', 'Asset\AssetlocationController@postEdit');
+
+
+});
+
+
+Route::group( [ 'prefix'=>'member', 'middlewareGroup'=>['web'] ] , function(){
     Route::get('/', 'DashboardController@getIndex');
 
     Route::get('/profile', 'Member\ProfileController@getIndex');
@@ -229,13 +263,15 @@ Route::group( [ 'prefix'=>'member', 'middleware'=>['web'] ] , function(){
     Route::post('/account/add', 'Member\AccountController@postAdd');
     Route::get('/account/edit/{id}', 'Member\AccountController@getEdit');
     Route::post('/account/edit/{id}', 'Member\AccountController@postEdit');
+    Route::post('/account/toggle', 'Member\AccountController@postToggle');
+    Route::post('/account/del', 'Member\AccountController@postDel');
 
     Route::get('/transaction', 'Member\TransactionController@getIndex');
     Route::post('/transaction', 'Member\TransactionController@postIndex');
 
 });
 
-Route::group( [ 'prefix'=>'creditor', 'middleware'=>['web'] ] , function(){
+Route::group( [ 'prefix'=>'creditor', 'middlewareGroup'=>['web'] ] , function(){
     Route::get('/', 'DashboardController@getIndex');
 
     Route::get('/profile', 'Creditor\ProfileController@getIndex');
@@ -246,9 +282,79 @@ Route::group( [ 'prefix'=>'creditor', 'middleware'=>['web'] ] , function(){
     Route::post('/account/add', 'Creditor\AccountController@postAdd');
     Route::get('/account/edit/{id}', 'Creditor\AccountController@getEdit');
     Route::post('/account/edit/{id}', 'Creditor\AccountController@postEdit');
+    Route::get('/account/printlabel/{sessionname}/{printparam}/{format?}', 'Creditor\AccountController@getPrintlabel');
+    Route::get('/account/import', 'Creditor\AccountController@getImport');
+    Route::post('/account/uploadimport', 'Creditor\AccountController@postUploadimport');
+    Route::get('/account/commit/{sessid}', 'Creditor\AccountController@getCommit');
+    Route::post('/account/commit/{sessid}', 'Creditor\AccountController@postCommit');
+    Route::post('/account/dlxl', 'Creditor\AccountController@postDlxl');
+    Route::get('/account/dl/{filename}', 'Creditor\AccountController@getDl');
+    Route::get('/account/csv/{filename}', 'Creditor\AccountController@getCsv');
 
     Route::get('/transaction', 'Creditor\TransactionController@getIndex');
     Route::post('/transaction', 'Creditor\TransactionController@postIndex');
+
+});
+
+Route::group( [ 'prefix'=>'pickup', 'middlewareGroup'=>['web'] ] , function(){
+    Route::get('/', 'DashboardController@getIndex');
+
+    Route::get('/account', 'Pickup\AccountController@getIndex');
+    Route::post('/account', 'Pickup\AccountController@postIndex');
+    Route::get('/account/add', 'Pickup\AccountController@getAdd');
+    Route::post('/account/add', 'Pickup\AccountController@postAdd');
+    Route::get('/account/edit/{id}', 'Pickup\AccountController@getEdit');
+    Route::post('/account/edit/{id}', 'Pickup\AccountController@postEdit');
+    Route::post('/account/toggle', 'Pickup\AccountController@postToggle');
+    Route::post('/account/del', 'Pickup\AccountController@postDel');
+    Route::get('/account/printlabel/{sessionname}/{printparam}/{format?}', 'Pickup\AccountController@getPrintlabel');
+    Route::get('/account/import', 'Pickup\AccountController@getImport');
+    Route::post('/account/uploadimport', 'Pickup\AccountController@postUploadimport');
+    Route::get('/account/commit/{sessid}', 'Pickup\AccountController@getCommit');
+    Route::post('/account/commit/{sessid}', 'Pickup\AccountController@postCommit');
+    Route::post('/account/dlxl', 'Pickup\AccountController@postDlxl');
+    Route::get('/account/dl/{filename}', 'Pickup\AccountController@getDl');
+    Route::get('/account/csv/{filename}', 'Pickup\AccountController@getCsv');
+
+
+
+    Route::get('/incoming', 'Pickup\IncomingController@getIndex');
+    Route::post('/incoming', 'Pickup\IncomingController@postIndex');
+    Route::get('/incoming/printlabel/{sessionname}/{printparam}/{format?}', 'Pickup\IncomingController@getPrintlabel');
+    Route::get('/incoming/import', 'Pickup\IncomingController@getImport');
+    Route::post('/incoming/uploadimport', 'Pickup\IncomingController@postUploadimport');
+    Route::get('/incoming/commit/{sessid}', 'Pickup\IncomingController@getCommit');
+    Route::post('/incoming/commit/{sessid}', 'Pickup\IncomingController@postCommit');
+    Route::post('/incoming/dlxl', 'Pickup\IncomingController@postDlxl');
+    Route::get('/incoming/dl/{filename}', 'Pickup\IncomingController@getDl');
+    Route::get('/incoming/csv/{filename}', 'Pickup\IncomingController@getCsv');
+    Route::get('/incoming/add', 'Pickup\IncomingController@getAdd');
+    Route::post('/incoming/add', 'Pickup\IncomingController@postAdd');
+    Route::post('/incoming/assigndate', 'Pickup\IncomingController@postAssigndate');
+
+
+    Route::get('/zoning', 'Pickup\ZoningController@getIndex');
+    Route::post('/zoning', 'Pickup\ZoningController@postIndex');
+    Route::post('/zoning/shipmentlist', 'Pickup\ZoningController@postShipmentlist');
+    Route::post('/zoning/assigndevice', 'Pickup\ZoningController@postAssigndevice');
+    Route::post('/zoning/deviceavail', 'Pickup\ZoningController@postDeviceavail');
+
+
+    Route::get('/courierassign', 'Pickup\CourierassignController@getIndex');
+    Route::post('/courierassign', 'Pickup\CourierassignController@postIndex');
+    Route::post('/courierassign/assigncourier', 'Pickup\CourierassignController@postAssigncourier');
+
+    Route::get('/dispatched', 'Pickup\DispatchedController@getIndex');
+    Route::post('/dispatched', 'Pickup\DispatchedController@postIndex');
+
+    Route::get('/delivered', 'Pickup\DeliveredController@getIndex');
+    Route::post('/delivered', 'Pickup\DeliveredController@postIndex');
+
+    Route::get('/canceled', 'Pickup\CanceledController@getIndex');
+    Route::post('/canceled', 'Pickup\CanceledController@postIndex');
+
+    Route::get('/quota', 'Pickup\QuotaController@getIndex');
+    Route::post('/quota', 'Pickup\QuotaController@postIndex');
 
 });
 

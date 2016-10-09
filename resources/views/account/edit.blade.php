@@ -3,76 +3,53 @@
 
 @section('left')
         @inject('prefs','App\Helpers\Prefs')
-
+        <?php use App\Helpers\Prefs; ?>
 
     {{--
 
-        <h4>Employee Info</h4>
-
-        {{ Former::text('employeeId','Employee ID') }}
-
-        {{ Former::select('department')->options(Config::get('kickstart.salutation'))->label('Salutation') }}
-
-        {{ Former::text('position','Position') }}
-
-        {{ Former::select('type')->options(array('Staff'=>'Staff','Non Staff'=>'Non Staff'))->label('Employee Type') }}
-
-        {{ Former::text('costControl','Cost Control')->class('form-control form-white') }}
-        {{ Former::text('allocControl','Alloc. Control') }}
+contractNumber
+creditor',
+Type',
+dueDate
+installmentAmt
+pickupDate
 
 
     --}}
 
 
-        <h4>User Info</h4>
+        <h4>Informasi Akun</h4>
 
-        {!! Former::select('salutation')->options(config('kickstart.salutation'))->label('Salutation')  !!}
-        {!! Former::text('name','Full Name')  !!}
-        {!! Former::text('mobile','Mobile')  !!}
+        {!! Former::text('contractNumber','Nomor Kontrak')  !!}
+        {!! Former::text('contractName','Atas Nama')  !!}
+        {!! Former::select('creditor')->options(Prefs::getCreditor()->CreditorToSelection( 'id','coName',true ) )->label('Perusahaan Penyedia Kredit')->class('form-control bootstrap-select')  !!}
 
-        {!! Former::text('address_1','Address line 1')  !!}
-        {!! Former::text('address_2','Address line 2')  !!}
-        {!! Former::text('city','City')  !!}
+        {!! Former::select('Type')->options( array_merge([''=>'Select Credit Type'] ,config('jc.credit_type')) )->label('Jenis Kredit')->class('form-control bootstrap-select')  !!}
+        {!! Former::text('dueDate','Tanggal Jatuh Tempo ( setiap bulan )')  !!}
+        {!! Former::text('installmentAmt','Jumlah Tagihan')  !!}
+        {!! Former::text('pickupDate','Tanggal Pembayaran Yang Diinginkan ( min. 2 hari sebelum Jatuh Tempo) ')  !!}
 
-        {!! Former::text('state','State / Province')  !!}
-
-        {!! Former::select('countryOfOrigin')->id('country')->options(config('country.countries'))->label('Country of Origin')  !!}
-
-        <h4>Company Info</h4>
-
-        {!! Former::text('companyName','Company Name')  !!}
-        {!! Former::text('companyAddress','Address')  !!}
-
-
-        {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary')) !!}&nbsp;&nbsp;
-        {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
 
 @stop
 
 @section('right')
 
+        <h4>Alamat Pengambilan Pembayaran</h4>
+        <p>Mohon diisi sebenar-benarnya untuk mempermudah kunjungan</p>
 
-        <h4>Login Info</h4>
+        {!! Former::textarea('pickupAddress','Alamat Pengambilan Pembayaran')  !!}
 
-        {!! Former::text('email','Email') !!}
+        {!! Former::select('pickupProvince','Propinsi')->options( Prefs::getProvince()->ProvinceToSelection('province','province') )  !!}
 
-        {!! Former::password('password','Password')->help('Leave blank for no changes') !!}
-        {!! Former::password('repass','Repeat Password') !!}
+        {!! Former::text('pickupCity','Kota')  !!}
 
-        {!! Former::select('roleId')->options($prefs->getRole()->RoleToSelection('_id','rolename' ) )->label('Role')!!}
+        {!! Former::text('pickupDistrict','Kecamatan')  !!}
 
-        <h4>Avatar</h4>
+        {!! Former::text('pickupZIP','Kode Pos')  !!}
 
-        {!! $fupload->id('photoupload')
-            ->parentid($formdata['_id'])
-            ->ns('avatar')
-            ->title('Select Photo')
-            ->label('Upload Photo')
-            ->url('upload/avatar')
-            ->singlefile(true)
-            ->prefix('photo') // this will try to get $prefix.wdetail item template
-            ->multi(false)
-            ->make($formdata) !!}
+
+        {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary')) !!}&nbsp;&nbsp;
+        {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
 
 @endsection
 

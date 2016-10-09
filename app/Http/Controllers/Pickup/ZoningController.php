@@ -1,13 +1,14 @@
 <?php
-namespace App\Http\Controllers\Creditor;
+namespace App\Http\Controllers\Pickup;
 
 use App\Http\Controllers\AdminController;
 
 use App\Models\Shipment;
-use App\Models\Uploaded;
+use App\Models\Device;
+use App\Models\History;
+use App\Models\Shipmentlog;
 
 use App\Helpers\Prefs;
-use App\Helpers\Ks;
 
 use Creitive\Breadcrumbs\Breadcrumbs;
 
@@ -21,17 +22,17 @@ use Request;
 use Response;
 use Mongomodel;
 use \MongoRegex;
+use \MongoDate;
 use DB;
 use HTML;
 
-
-class TransactionController extends AdminController {
+class ZoningController extends AdminController {
 
     public function __construct()
     {
         parent::__construct();
 
-                $cname = substr(strrchr(get_class($this), '\\'), 1);
+        $cname = substr(strrchr(get_class($this), '\\'), 1);
         $this->controller_name = str_replace('Controller', '', $cname);
 
 
@@ -41,101 +42,55 @@ class TransactionController extends AdminController {
 
         $this->model = new Shipment();
         //$this->model = DB::collection('documents');
-        $this->title = 'Transactions';
+        $this->title = 'Device Zone Assignment';
 
-    }
-
-    public function getDetail($id)
-    {
-        $_id = new MongoId($id);
-        $history = History::where('historyObject._id',$_id)->where('historyObjectType','asset')
-                        ->orderBy('historyTimestamp','desc')
-                        ->orderBy('historySequence','desc')
-                        ->get();
-        $diffs = array();
-
-        foreach($history as $h){
-            $h->date = date( 'Y-m-d H:i:s', $h->historyTimestamp->sec );
-            $diffs[$h->date][$h->historySequence] = $h->historyObject;
-        }
-
-        $history = History::where('historyObject._id',$_id)->where('historyObjectType','asset')
-                        ->where('historySequence',0)
-                        ->orderBy('historyTimestamp','desc')
-                        ->get();
-
-        $tab_data = array();
-        foreach($history as $h){
-                $apv_status = Assets::getApprovalStatus($h->approvalTicket);
-                if($apv_status == 'pending'){
-                    $bt_apv = '<span class="btn btn-info change-approval '.$h->approvalTicket.'" data-id="'.$h->approvalTicket.'" >'.$apv_status.'</span>';
-                }else if($apv_status == 'verified'){
-                    $bt_apv = '<span class="btn btn-success" >'.$apv_status.'</span>';
-                }else{
-                    $bt_apv = '';
-                }
-
-                $d = date( 'Y-m-d H:i:s', $h->historyTimestamp->sec );
-                $tab_data[] = array(
-                    $d,
-                    $h->historyAction,
-                    $h->historyObject['itemDescription'],
-                    ($h->historyAction == 'new')?'NA':$this->objdiff( $diffs[$d] ),
-                    $bt_apv
-                );
-        }
-
-        $header = array(
-            'Modified',
-            'Event',
-            'Name',
-            'Diff',
-            'Approval'
-            );
-
-        $attr = array('class'=>'table', 'id'=>'transTab', 'style'=>'width:100%;', 'border'=>'0');
-        $t = new HtmlTable($tab_data, $attr, $header);
-        $itemtable = $t->build();
-
-        $asset = Asset::find($id);
-
-        $this->crumb->addCrumb('Ad Assets',url( strtolower($this->controller_name) ));
-        $this->crumb->addCrumb('Detail',url( strtolower($this->controller_name).'/detail/'.$asset->_id ));
-        $this->crumb->addCrumb($asset->SKU,url( strtolower($this->controller_name) ));
-
-        return View::make('history.table')
-                    ->with('a',$asset)
-                    ->with('title','Asset Detail '.$asset->itemDescription )
-                    ->with('table',$itemtable);
     }
 
     public function getIndex()
     {
 
 
-        $this->heads = config('jc.default_delivered_heads');
+        $this->heads = config('jex.default_zoning_heads');
+
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Transactions';
+        $this->title = 'Device Zone Assignment';
 
-        $this->place_action = 'none';
+        $this->place_action = 'first';
 
         $this->show_select = true;
 
         $this->crumb->addCrumb('Shipment Order',url( strtolower($this->controller_name) ));
 
-        //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
 
-        //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
+        //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
+        $this->additional_filter = View::make('incoming.addfilter')
+                        ->with('submit_url','gl')
+                        ->with('ajaxawbdlxl','incoming/awbdlxl')
+                        ->with('importawburl','incoming/importawb')
+                        ->render();
+
+        $this->additional_filter .= View::make(strtolower($this->controller_name).'.addfilter')
+            ->with('ajaxdeviceurl',strtolower($this->controller_name).'/shipmentlist')->render();
+
+        $this->additional_filter .= View::make('shared.cancelaction')->render();
+
+        //$this->additional_filter .= View::make('shared.confirmaction')->render();
 
         $this->additional_filter .= '<br />';
         $this->additional_filter .= View::make('shared.markaction')->render();
+
+        //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
 
         $this->product_info_url = strtolower($this->controller_name).'/info';
 
         $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 8 ] },
                     { "sClass": "column-amt", "aTargets": [ 9 ] },
                     { "sClass": "column-amt", "aTargets": [ 10 ] }';
+
+        $this->can_add = false;
+        $this->can_import = false;
+        $this->can_export = false;
 
         return parent::getIndex();
 
@@ -144,7 +99,7 @@ class TransactionController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = config('jc.default_delivered_fields');
+        $this->fields = config('jex.default_zoning_fields');
 
         /*
         $categoryFilter = Request::input('categoryFilter');
@@ -157,7 +112,7 @@ class TransactionController extends AdminController {
 
         $this->def_order_by = 'ordertime';
         $this->def_order_dir = 'desc';
-        $this->place_action = 'none';
+        $this->place_action = 'first';
         $this->show_select = true;
 
         $this->sql_key = 'delivery_id';
@@ -289,7 +244,7 @@ class TransactionController extends AdminController {
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Transactions';
+        $this->title = 'Device Zone Assignment';
 
         $this->crumb->addCrumb('Cost Report',url( strtolower($this->controller_name) ));
 
@@ -346,6 +301,140 @@ class TransactionController extends AdminController {
         return parent::printPage();
     }
 
+    public function postShipmentlist()
+    {
+        $in = Request::input();
+
+        $city = $in['city'];
+
+        $date = $in['date'];
+
+        //$pick_up_date = new MongoDate(strtotime($date));
+
+        $pick_up_date = date('Y-m-d', strtotime($date));
+
+        $shipments = Shipment::where('assignment_date','like', $pick_up_date.'%' )
+                        ->where('status','=', config('jayon.trans_status_admin_dated'))
+                        ->where('buyerdeliverycity','=',$city)->get();
+
+        $shipments = $shipments->toArray();
+
+        for($i = 0; $i < count($shipments); $i++){
+            $shipments[$i]['assignmentdate'] = date('Y-m-d', strtotime($shipments[$i]['assignment_date']) );
+            //$shipments[$i]['assignmentdate'] = date('Y-m-d', $shipments[$i]['assignmentdate']->sec );
+        }
+
+        $city = trim($city);
+        /*
+        $devices = Device::where('city','regex', new MongoRegex('/'.$city.'/i'))
+                                ->where(function($on){
+                                        $on->where('is_on','=',1)
+                                            ->orWhere('is_on','=',strval(1));
+                                })
+                                ->get();
+        */
+        $devices = Device::where('city','like', '%'.$city.'%')
+                                ->where(function($on){
+                                        $on->where('is_on','=',1)
+                                            ->orWhere('is_on','=',strval(1));
+                                })
+                                ->get();
+
+        $caps = array();
+
+        $dids = array();
+        foreach($devices as $d){
+            $dids[] = $d->id;
+        }
+
+        $qloads = Shipment::select(DB::raw('device_id, count(*) as cnt'))
+                    ->where('assignment_date',$pick_up_date)
+                    ->where('device_id','!=','')
+                    ->groupBy('device_id')->get();
+
+        $loads = array();
+
+        foreach($qloads as $ld){
+            $loads[$ld->device_id] = $ld['cnt'];
+        }
+
+
+
+        foreach($devices as $d){
+            $caps[$d->key]['identifier'] = $d->identifier;
+            $caps[$d->key]['id'] = $d->id;
+            $caps[$d->key]['key'] = $d->key;
+            $caps[$d->key]['city'] = $d->city;
+            $caps[$d->key]['count'] = (isset( $loads[$d->id] ))?$loads[$d->id]:0;
+
+        }
+
+        return Response::json( array('result'=>'OK', 'shipment'=>$shipments, 'device'=>$caps ) );
+        //print_r($caps);
+
+    }
+
+    public function postAssigndevice()
+    {
+        $in = Request::input();
+
+        //better use device key to alleviate mysql dependency
+        $device = Device::where('id','=', $in['device'] )->first();
+
+        $shipments = Shipment::whereIn('delivery_id', $in['ship_ids'] )->get();
+
+        //print_r($shipments->toArray());
+
+        $ts = new MongoDate();
+
+        foreach($shipments as $sh){
+
+            $pre = clone $sh;
+
+
+            //$sh->status = Config::get('jayon.trans_status_admin_zoned');
+            $sh->status = config('jayon.trans_status_admin_devassigned');
+            $sh->device_key = $device->key;
+            $sh->device_name = $device->identifier;
+            $sh->device_id = $device->id;
+            $sh->save();
+
+
+            $hdata = array();
+            $hdata['historyTimestamp'] = $ts;
+            $hdata['historyAction'] = 'assign_device';
+            $hdata['historySequence'] = 1;
+            $hdata['historyObjectType'] = 'shipment';
+            $hdata['actor'] = Auth::user()->name;
+            $hdata['actor_id'] = Auth::user()->_id;
+
+            $hdata = array_merge($sh->toArray(), $hdata );
+
+            History::insert($hdata);
+
+            $sdata = array();
+            $sdata['timestamp'] = $ts;
+            $sdata['action'] = 'assign_device';
+            $sdata['reason'] = 'initial';
+            $sdata['objectType'] = 'shipment';
+            $sdata['object'] = $sh->toArray();
+            $sdata['preObject'] = $pre->toArray();
+            $sdata['actor'] = Auth::user()->name;
+            $sdata['actor_id'] = Auth::user()->_id;
+            Shipmentlog::insert($sdata);
+
+        }
+
+        return Response::json( array('result'=>'OK', 'shipment'=>$shipments ) );
+
+    }
+
+    public function postDeviceavail()
+    {
+
+    }
+
+
     public function SQL_make_join($model)
     {
         //$model->with('coa');
@@ -393,26 +482,16 @@ class TransactionController extends AdminController {
         $model = $model->select(
                 DB::raw(
                     config('jayon.incoming_delivery_table').'.* ,'.
-                    config('jayon.jayon_couriers_table').'.fullname as courier ,'.
-                    config('jayon.jayon_devices_table').'.identifier as device ,'.
                     config('jayon.jayon_members_table').'.merchantname as merchant_name ,'.
                     config('jayon.applications_table').'.application_name as app_name ,'.
                     '('.$txtab.'.width * '.$txtab.'.height * '.$txtab.'.length ) as volume'
                 )
             )
-            ->leftJoin(config('jayon.jayon_couriers_table'), config('jayon.incoming_delivery_table').'.courier_id', '=', config('jayon.jayon_couriers_table').'.id' )
-            ->leftJoin(config('jayon.jayon_devices_table'), config('jayon.incoming_delivery_table').'.device_id', '=', config('jayon.jayon_devices_table').'.id' )
             ->leftJoin(config('jayon.jayon_members_table'), config('jayon.incoming_delivery_table').'.merchant_id', '=', config('jayon.jayon_members_table').'.id' )
             ->leftJoin(config('jayon.applications_table'), config('jayon.incoming_delivery_table').'.application_id', '=', config('jayon.applications_table').'.id' )
-            ->where(function($query){
-
-                $query->where('status','=', config('jayon.trans_status_mobile_delivered') )
-                    ->orWhere('status','=', config('jayon.trans_status_mobile_revoked') )
-                    ->orWhere('status','=', config('jayon.trans_status_mobile_noshow') )
-                    ->orWhere('status','=', config('jayon.trans_status_mobile_return') );
-
-            } )
-            ->orderBy('deliverytime','desc');
+            ->where('status','=', config('jayon.trans_status_admin_dated') )
+            ->orderBy('buyerdeliverycity','desc')
+            ->orderBy('buyerdeliveryzone','desc');
 
         //print_r($in);
 
@@ -442,8 +521,39 @@ class TransactionController extends AdminController {
 
     public function rows_post_process($rows, $aux = null){
 
+        $date = '';
+        $city = '';
+
+        //print_r($rows);
+
+        if(count($rows) > 0){
+
+            for($i = 0; $i < count($rows); $i++){
+                if($rows[$i][3] != $date){
+                    $city = '';
+                    $date = $rows[$i][3];
+                    $rows[$i][3] = '<input type="radio" name="date_select" value="'.$rows[$i][3].'" class="date_select form-control" /> '.$rows[$i][3];
+                }else{
+                    $rows[$i][3] = '';
+                }
+
+
+                if($rows[$i][4] != $city){
+                    $city = $rows[$i][4];
+                    $rows[$i][4] = '<input type="radio" name="city_select" value="'.$rows[$i][4].'" class="city_select form-control" /> '.$rows[$i][4];
+                }else{
+                    $rows[$i][4] = '';
+                }
+
+            }
+
+
+        }
+
+
         //print_r($this->aux_data);
         /*
+
         $total_base = 0;
         $total_converted = 0;
         $end = 0;
@@ -805,7 +915,6 @@ class TransactionController extends AdminController {
         return $data;
     }
 
-
     public function accountDesc($data)
     {
 
@@ -861,19 +970,6 @@ class TransactionController extends AdminController {
             return '';
         }
 
-    }
-
-    public function shipAddr($data)
-    {
-        if(Ks::is('Member') || ks::is('Creditor')){
-            return $data['shipping_address'];
-        }else{
-            if($data['latitude'] != 0 && $data['longitude'] != 0){
-                return $data['shipping_address'].'<hr />'.$data['latitude'].','.$data['longitude'];
-            }else{
-                return $data['shipping_address'];
-            }
-        }
     }
 
     public function merchantInfo($data)
@@ -1007,22 +1103,6 @@ class TransactionController extends AdminController {
         }
     }
 
-    public function picStats($data)
-    {
-        $pic_stat = Prefs::getPicStat($data['delivery_id']);
-
-        return $pic_stat['pic'].' pictures, '.$pic_stat['sign'].' signature <span class="badge">'.$pic_stat['app'].'</span>';
-    }
-
-    public function allNotes($data)
-    {
-        $notes = ($data['delivery_note'] != '')?'<span class="green">Transaction Note:</span><br />'.$data['delivery_note']:'';
-        $notes .= ($data['pickup_note'] != '')?'<br /><span class="brown">PU Note:</span><br />'.$data['pickup_note']:'';
-        $notes .= ($data['warehouse_note'] != '')?'<br /><span class="orange">WH Note:</span><br />'.$data['warehouse_note']:'';
-
-        return $notes;
-    }
-
     public function weightRange($data)
     {
         return Prefs::getWeightRange($data['weight'],$data['application_id']);
@@ -1055,15 +1135,6 @@ class TransactionController extends AdminController {
         }
     }
 
-    public function dispFBar($data)
-
-    {
-        $display = HTML::image(url('qr/'.urlencode(base64_encode($data['delivery_id'].'|'.$data['merchant_trans_id'].'|'.$data['fulfillment_code'].'|box:1' ))), $data['merchant_trans_id'], array('id' => $data['delivery_id'], 'style'=>'width:100px;height:auto;' ));
-        //$display = '<a href="'.url('barcode/dl/'.urlencode($data['SKU'])).'">'.$display.'</a>';
-        return $display.'<br />'. '<a href="'.url('incoming/detail/'.$data['delivery_id']).'" >'.$data['fulfillment_code'].' ('.$data['box_count'].' box)</a>';
-    }
-
-
     public function dispBar($data)
 
     {
@@ -1082,64 +1153,6 @@ class TransactionController extends AdminController {
     public function colorizetype($data)
     {
         return Prefs::colorizetype($data['delivery_type']);
-    }
-
-
-    public function picList($data)
-    {
-        //$data = $data->toArray();
-
-        $pics = Uploaded::where('parent_id','=', $data['delivery_id'] )
-                    //->whereIn('_id', $data['fileid'])
-                    ->where('deleted','=',0)
-                    ->get();
-
-                    //print_r($pics->toArray());
-
-        $glinks = '';
-
-        $thumbnail_url = '';
-
-        $img_cnt = 0;
-        $total_cnt = 0;
-        $sign_cnt = 0;
-
-        if($pics){
-            if(count($pics) > 0){
-                foreach($pics as $g){
-                    if($g->is_image == 1){
-                        $thumbnail_url = $g->square_url;
-                        $glinks .= '<input type="hidden" class="g_'.$data['delivery_id'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
-                        $img_cnt++;
-                    }
-
-                    if($g->is_signature == strval(1) ){
-                        $sign_cnt++;
-                    }
-
-                    $total_cnt++;
-                }
-
-                //$stat = $img_cnt.' pics, '.( $total_cnt - $img_cnt ).' docs';
-                $stat = $img_cnt.' pics, '.$sign_cnt.' signature';
-
-                if($img_cnt > 0){
-                    $display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['delivery_id'])).$glinks.'<br />'.$stat;
-                }else{
-
-                    $display = '<span class="fa-stack fa-2x">
-                          <i class="fa fa-circle fa-stack-2x"></i>
-                          <i class="fa fa-file fa-stack-1x fa-inverse"></i>
-                        </span><br />'.$stat;
-                }
-
-                return $display;
-            }else{
-                return 'No Picture';
-            }
-        }else{
-            return 'No Picture';
-        }
     }
 
 

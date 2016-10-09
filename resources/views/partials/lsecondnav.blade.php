@@ -76,7 +76,7 @@
                 </li>
                 @endif
 
-                @if($menu == 'LOGISTIC')
+                @if($menu == 'LOGISTIC' || $menu == 'PICKUP')
 
                     @if( Ks::is('Member') )
                         <li><a href="{{ url('member/account')}}"><i class="icon-display4 position-left"></i> Accounts</a></li>
@@ -90,40 +90,82 @@
 
                     @else
 
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="icon-stack2 position-left"></i> Orders <span class="caret"></span>
-                            </a>
+                        @if($menu == 'PICKUP')
 
-                            <ul class="dropdown-menu width-200">
-                                   <li class="{{ sa('incoming') }}" >
-                                        <a href="{{ url('incoming') }}"><i class="icon-inbox-alt"></i> Incoming Order</a>
-                                    </li>
-                                    <li class="{{ sa('zoning') }}" >
-                                        <a href="{{ url('zoning') }}"><i class="icon-map"></i> Device Zone Assignment</a>
-                                    </li>
-                                    <li class="{{ sa('courierassign') }}" >
-                                        <a href="{{ url('courierassign') }}"><i class="icon-person"></i> Courier Assignment</a>
-                                    </li>
-                                    <li class="{{ sa('dispatched') }}" >
-                                        <a href="{{ url('dispatched') }}"><i class="icon-paperplane"></i> In Progress</a>
-                                    </li>
+                            <li><a href="{{ url('pickup/account')}}"><i class="icon-display4 position-left"></i> Accounts</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-stack2 position-left"></i> Payment Pickup Orders <span class="caret"></span>
+                                </a>
 
-                                <li class="dropdown-header">Archives</li>
-                                    <li class="{{ sa('delivered') }}" ><a href="{{ url('delivered') }}"><i class="icon-clippy"></i> Delivery Status</a></li>
+                                <ul class="dropdown-menu width-200">
+                                       <li class="{{ sa('incoming') }}" >
+                                            <a href="{{ url('pickup/incoming') }}"><i class="icon-inbox-alt"></i> Payment Pickup Order</a>
+                                        </li>
+                                        <li class="{{ sa('zoning') }}" >
+                                            <a href="{{ url('pickup/zoning') }}"><i class="icon-map"></i> Device Zone Assignment</a>
+                                        </li>
+                                        <li class="{{ sa('courierassign') }}" >
+                                            <a href="{{ url('pickup/courierassign') }}"><i class="icon-person"></i> Rider Assignment</a>
+                                        </li>
+                                        <li class="{{ sa('dispatched') }}" >
+                                            <a href="{{ url('pickup/dispatched') }}"><i class="icon-paperplane"></i> In Progress</a>
+                                        </li>
 
-                                    <li class="{{ sa('canceled') }}" ><a href="{{ url('canceled') }}"><i class="icon-stack-cancel"></i> Canceled</a></li>
+                                        <li class="dropdown-header">Archives</li>
+    
+                                        <li class="{{ sa('delivered') }}" ><a href="{{ url('pickup/delivered') }}"><i class="icon-clippy"></i> Payment Status</a></li>
 
-                                    <li class="{{ sa('orderarchive') }}" >
-                                        <a href="{{ url('orderarchive') }}"><i class="icon-archive"></i> Order Archive</a>
-                                    </li>
+                                        <li class="{{ sa('canceled') }}" ><a href="{{ url('pickup/canceled') }}"><i class="icon-stack-cancel"></i> Canceled</a></li>
 
-                                    <li>
-                                        <a href="{{ url('deliverylog') }}"><i class="icon-database-time2"></i> Delivery Log</a>
-                                    </li>
+                                        <li class="dropdown-header">Manage</li>
+                                        <li>
+                                            <a href="{{ url('pickup/quota') }}"><i class="icon-database-time2"></i> Quota Management</a>
+                                        </li>
 
-                            </ul>
-                        </li>
+                                </ul>
+                            </li>
+
+
+                        @else
+
+
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="icon-stack2 position-left"></i> Orders <span class="caret"></span>
+                                </a>
+
+                                <ul class="dropdown-menu width-200">
+                                       <li class="{{ sa('incoming') }}" >
+                                            <a href="{{ url('incoming') }}"><i class="icon-inbox-alt"></i> Incoming Order</a>
+                                        </li>
+                                        <li class="{{ sa('zoning') }}" >
+                                            <a href="{{ url('zoning') }}"><i class="icon-map"></i> Device Zone Assignment</a>
+                                        </li>
+                                        <li class="{{ sa('courierassign') }}" >
+                                            <a href="{{ url('courierassign') }}"><i class="icon-person"></i> Courier Assignment</a>
+                                        </li>
+                                        <li class="{{ sa('dispatched') }}" >
+                                            <a href="{{ url('dispatched') }}"><i class="icon-paperplane"></i> In Progress</a>
+                                        </li>
+
+                                    <li class="dropdown-header">Archives</li>
+                                        <li class="{{ sa('delivered') }}" ><a href="{{ url('delivered') }}"><i class="icon-clippy"></i> Delivery Status</a></li>
+
+                                        <li class="{{ sa('canceled') }}" ><a href="{{ url('canceled') }}"><i class="icon-stack-cancel"></i> Canceled</a></li>
+
+                                        <li class="{{ sa('orderarchive') }}" >
+                                            <a href="{{ url('orderarchive') }}"><i class="icon-archive"></i> Order Archive</a>
+                                        </li>
+
+                                        <li>
+                                            <a href="{{ url('deliverylog') }}"><i class="icon-database-time2"></i> Delivery Log</a>
+                                        </li>
+
+                                </ul>
+                            </li>
+
+                        @endif
 
                     @endif
 

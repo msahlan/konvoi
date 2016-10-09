@@ -1,13 +1,11 @@
 <?php
-namespace App\Http\Controllers\Creditor;
+namespace App\Http\Controllers\Pickup;
 
 use App\Http\Controllers\AdminController;
 
 use App\Models\Shipment;
-use App\Models\Uploaded;
 
 use App\Helpers\Prefs;
-use App\Helpers\Ks;
 
 use Creitive\Breadcrumbs\Breadcrumbs;
 
@@ -24,8 +22,7 @@ use \MongoRegex;
 use DB;
 use HTML;
 
-
-class TransactionController extends AdminController {
+class CanceledController extends AdminController {
 
     public function __construct()
     {
@@ -41,7 +38,7 @@ class TransactionController extends AdminController {
 
         $this->model = new Shipment();
         //$this->model = DB::collection('documents');
-        $this->title = 'Transactions';
+        $this->title = 'Canceled Order';
 
     }
 
@@ -113,12 +110,13 @@ class TransactionController extends AdminController {
     {
 
 
-        $this->heads = config('jc.default_delivered_heads');
+        $this->heads = config('jex.default_incoming_heads');
+
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Transactions';
+        $this->title = 'Canceled Order';
 
-        $this->place_action = 'none';
+        $this->place_action = 'first';
 
         $this->show_select = true;
 
@@ -128,14 +126,11 @@ class TransactionController extends AdminController {
 
         //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
 
-        $this->additional_filter .= '<br />';
-        $this->additional_filter .= View::make('shared.markaction')->render();
-
         $this->product_info_url = strtolower($this->controller_name).'/info';
 
-        $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 8 ] },
-                    { "sClass": "column-amt", "aTargets": [ 9 ] },
-                    { "sClass": "column-amt", "aTargets": [ 10 ] }';
+        $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 21 ] },
+                    { "sClass": "column-amt", "aTargets": [ 22 ] },
+                    { "sClass": "column-amt", "aTargets": [ 23 ] }';
 
         return parent::getIndex();
 
@@ -144,7 +139,7 @@ class TransactionController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = config('jc.default_delivered_fields');
+        $this->fields = config('jex.default_incoming_fields');
 
         /*
         $categoryFilter = Request::input('categoryFilter');
@@ -157,7 +152,7 @@ class TransactionController extends AdminController {
 
         $this->def_order_by = 'ordertime';
         $this->def_order_dir = 'desc';
-        $this->place_action = 'none';
+        $this->place_action = 'first';
         $this->show_select = true;
 
         $this->sql_key = 'delivery_id';
@@ -289,7 +284,7 @@ class TransactionController extends AdminController {
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Transactions';
+        $this->title = 'Canceled Order';
 
         $this->crumb->addCrumb('Cost Report',url( strtolower($this->controller_name) ));
 
@@ -393,26 +388,18 @@ class TransactionController extends AdminController {
         $model = $model->select(
                 DB::raw(
                     config('jayon.incoming_delivery_table').'.* ,'.
-                    config('jayon.jayon_couriers_table').'.fullname as courier ,'.
-                    config('jayon.jayon_devices_table').'.identifier as device ,'.
                     config('jayon.jayon_members_table').'.merchantname as merchant_name ,'.
                     config('jayon.applications_table').'.application_name as app_name ,'.
                     '('.$txtab.'.width * '.$txtab.'.height * '.$txtab.'.length ) as volume'
                 )
             )
-            ->leftJoin(config('jayon.jayon_couriers_table'), config('jayon.incoming_delivery_table').'.courier_id', '=', config('jayon.jayon_couriers_table').'.id' )
-            ->leftJoin(config('jayon.jayon_devices_table'), config('jayon.incoming_delivery_table').'.device_id', '=', config('jayon.jayon_devices_table').'.id' )
             ->leftJoin(config('jayon.jayon_members_table'), config('jayon.incoming_delivery_table').'.merchant_id', '=', config('jayon.jayon_members_table').'.id' )
             ->leftJoin(config('jayon.applications_table'), config('jayon.incoming_delivery_table').'.application_id', '=', config('jayon.applications_table').'.id' )
-            ->where(function($query){
 
-                $query->where('status','=', config('jayon.trans_status_mobile_delivered') )
-                    ->orWhere('status','=', config('jayon.trans_status_mobile_revoked') )
-                    ->orWhere('status','=', config('jayon.trans_status_mobile_noshow') )
-                    ->orWhere('status','=', config('jayon.trans_status_mobile_return') );
+            ->where('status','=', config('jayon.trans_status_canceled') )
+            ->where('status','not like', 'assigned' )
 
-            } )
-            ->orderBy('deliverytime','desc');
+            ->orderBy('ordertime','desc');
 
         //print_r($in);
 
@@ -863,19 +850,6 @@ class TransactionController extends AdminController {
 
     }
 
-    public function shipAddr($data)
-    {
-        if(Ks::is('Member') || ks::is('Creditor')){
-            return $data['shipping_address'];
-        }else{
-            if($data['latitude'] != 0 && $data['longitude'] != 0){
-                return $data['shipping_address'].'<hr />'.$data['latitude'].','.$data['longitude'];
-            }else{
-                return $data['shipping_address'];
-            }
-        }
-    }
-
     public function merchantInfo($data)
     {
         return $data['merchant_name'].'<hr />'.$data['app_name'];
@@ -1007,22 +981,6 @@ class TransactionController extends AdminController {
         }
     }
 
-    public function picStats($data)
-    {
-        $pic_stat = Prefs::getPicStat($data['delivery_id']);
-
-        return $pic_stat['pic'].' pictures, '.$pic_stat['sign'].' signature <span class="badge">'.$pic_stat['app'].'</span>';
-    }
-
-    public function allNotes($data)
-    {
-        $notes = ($data['delivery_note'] != '')?'<span class="green">Transaction Note:</span><br />'.$data['delivery_note']:'';
-        $notes .= ($data['pickup_note'] != '')?'<br /><span class="brown">PU Note:</span><br />'.$data['pickup_note']:'';
-        $notes .= ($data['warehouse_note'] != '')?'<br /><span class="orange">WH Note:</span><br />'.$data['warehouse_note']:'';
-
-        return $notes;
-    }
-
     public function weightRange($data)
     {
         return Prefs::getWeightRange($data['weight'],$data['application_id']);
@@ -1063,7 +1021,6 @@ class TransactionController extends AdminController {
         return $display.'<br />'. '<a href="'.url('incoming/detail/'.$data['delivery_id']).'" >'.$data['fulfillment_code'].' ('.$data['box_count'].' box)</a>';
     }
 
-
     public function dispBar($data)
 
     {
@@ -1082,64 +1039,6 @@ class TransactionController extends AdminController {
     public function colorizetype($data)
     {
         return Prefs::colorizetype($data['delivery_type']);
-    }
-
-
-    public function picList($data)
-    {
-        //$data = $data->toArray();
-
-        $pics = Uploaded::where('parent_id','=', $data['delivery_id'] )
-                    //->whereIn('_id', $data['fileid'])
-                    ->where('deleted','=',0)
-                    ->get();
-
-                    //print_r($pics->toArray());
-
-        $glinks = '';
-
-        $thumbnail_url = '';
-
-        $img_cnt = 0;
-        $total_cnt = 0;
-        $sign_cnt = 0;
-
-        if($pics){
-            if(count($pics) > 0){
-                foreach($pics as $g){
-                    if($g->is_image == 1){
-                        $thumbnail_url = $g->square_url;
-                        $glinks .= '<input type="hidden" class="g_'.$data['delivery_id'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
-                        $img_cnt++;
-                    }
-
-                    if($g->is_signature == strval(1) ){
-                        $sign_cnt++;
-                    }
-
-                    $total_cnt++;
-                }
-
-                //$stat = $img_cnt.' pics, '.( $total_cnt - $img_cnt ).' docs';
-                $stat = $img_cnt.' pics, '.$sign_cnt.' signature';
-
-                if($img_cnt > 0){
-                    $display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['delivery_id'])).$glinks.'<br />'.$stat;
-                }else{
-
-                    $display = '<span class="fa-stack fa-2x">
-                          <i class="fa fa-circle fa-stack-2x"></i>
-                          <i class="fa fa-file fa-stack-1x fa-inverse"></i>
-                        </span><br />'.$stat;
-                }
-
-                return $display;
-            }else{
-                return 'No Picture';
-            }
-        }else{
-            return 'No Picture';
-        }
     }
 
 

@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Creditor;
+namespace App\Http\Controllers\Pickup;
 
 use App\Http\Controllers\AdminController;
 
@@ -62,11 +62,14 @@ class AccountController extends AdminController {
             array('Active',array('search'=>true,'sort'=>true, 'select'=>[''=>'All',true=>'Yes',false=>'No'] )),
             array('Nomor Kontrak',array('search'=>true,'sort'=>true)),
             array('Atas Nama',array('search'=>true,'sort'=>true)),
+            array('Perusahaan Kreditor',array('search'=>true,'sort'=>true)),
             array('Tipe',array('search'=>true,'sort'=>true,  'select'=> array_merge([''=>'All'], config('jc.credit_type' ) ) ) ),
             array('Jatuh Tempo',array('search'=>true,'sort'=>false  )),
             array('Jumlah Cicilan',array('search'=>true,'sort'=>true)),
-            array('Tgl Bayar via JC',array('search'=>true,'sort'=>true)),
+            array('Tgl Bayar',array('search'=>true,'sort'=>true)),
             array('Alamat Pengambilan',array('search'=>true,'sort'=>true)),
+            array('Kecamatan',array('search'=>true,'sort'=>true)),
+            array('Kota',array('search'=>true,'sort'=>true)),
             //array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
             //array('Last Update',array('search'=>true,'sort'=>true,'date'=>true)),
         );
@@ -90,11 +93,14 @@ class AccountController extends AdminController {
             array('active',array('kind'=>'boolean' ,'callback'=>'statusToggle','query'=>'like','pos'=>'both','show'=>true)),
             array('contractNumber',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
             array('contractName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('creditorName',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('Type',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('dueDate',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
             array('installmentAmt',array('kind'=>'currency','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupDate',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupAddress',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('pickupDistrict',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('pickupCity',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             //array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             //array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
         );
@@ -199,23 +205,14 @@ class AccountController extends AdminController {
 
     public function makeActions($data)
     {
-        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i>Delete</span>';
-        $edit = '<a href="'.url('user/edit/'.$data['_id']).'"><i class="fa fa-edit"></i>Update</a>';
+
+        $edit = '<a href="'.url('pickup/account/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
+
+        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i> Del</span>';
 
         $actions = $edit.'<br />'.$delete;
-        $actions = '';
+
         return $actions;
-    }
-
-    public function statusToggle($data)
-    {
-        if($data['active']){
-            $toggle = '<span class="" id="'.$data['_id'].'" ><i class="fa fa-toggle-on"></i> Yes</span>';
-        }else{
-            $toggle = '<span class="" id="'.$data['_id'].'" ><i class="fa fa-toggle-off"></i> No</span>';
-        }
-
-        return $toggle;
     }
 
     public function splitTag($data){
@@ -246,6 +243,17 @@ class AccountController extends AdminController {
         }
     }
 
+    public function statusToggle($data)
+    {
+        if($data['active']){
+            $toggle = '<span class="toggle" id="'.$data['_id'].'" ><i class="fa fa-toggle-on"></i> Yes</span>';
+        }else{
+            $toggle = '<span class="toggle" id="'.$data['_id'].'" ><i class="fa fa-toggle-off"></i> No</span>';
+        }
+
+        return $toggle;
+    }
+
     public function namePic($data)
     {
         $display = '<span style="display:block;text-align:center;color:green;"><i style="font-size:48px;" class="icon-user"></i></span>';
@@ -259,6 +267,10 @@ class AccountController extends AdminController {
 
         return $display;
 
+    }
+
+    public function dlActive($data){
+        return ( isset($data['active']) && $data['active'])?'Yes':'No';
     }
 
     public function idRole($data)
@@ -287,10 +299,6 @@ class AccountController extends AdminController {
 
     }
 
-    public function dlActive($data){
-        return ( isset($data['active']) && $data['active'])?'Yes':'No';
-    }
-
     public function postDlxl()
     {
 
@@ -313,7 +321,7 @@ class AccountController extends AdminController {
         );
 
         $this->fields = array(
-            array('active',array('kind'=>'text' ,'query'=>'like','callback'=>'dlActive','pos'=>'both','show'=>true)),
+            array('contractNumber',array('kind'=>'text' ,'query'=>'like','callback'=>'dlActive','pos'=>'both','show'=>true)),
             array('contractNumber',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
             array('contractName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('creditorName',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),

@@ -91,10 +91,15 @@
             position:relative;
         }
 
-        .del,.upload{
+        .del,.upload,.toggle{
             cursor:pointer;
             padding:4px;
         }
+
+        .del .fa,.upload .fa,.toggle .fa{
+            font-size: 1.4em;
+        }
+
 
     </style>
 
@@ -750,6 +755,28 @@
 
                     }else{
                         alert("Deletion cancelled");
+                    }
+                }
+
+                if ($(e.target).is('.toggle')) {
+                    var _id = e.target.id;
+                    var answer = confirm("Activate / deactivate item ?");
+
+                    console.log(answer);
+
+                    if (answer == true){
+
+                        $.post('{{ url($ajaxtoggle) }}',{'id':_id}, function(data) {
+                            if(data.status == 'OK'){
+                                //redraw table
+
+                                oTable.draw();
+                                alert("Item id : " + _id + " toggled");
+                            }
+                        },'json');
+
+                    }else{
+                        alert("Toggle cancelled");
                     }
                 }
 

@@ -108,6 +108,18 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'contractNumber' => 'required',
+        'creditor'=> 'Perusahaan Kredit',
+        'Type'=>'Jenis Kredit',
+        'dueDate'=>'Jatuh Tempo',
+        'installmentAmt'=>'Jumlah Tagihan',
+        'pickupDate'=>'Tanggal Pembayaran',
+        'pickupAddress'=>'Alamat Pembayaran',
+        'pickupDistrict'=>'Kecamatan',
+        'pickupCity'=>'Kota',
+        'pickupZIP'=>'Kode Pos',
+
+    ],
 
 ];

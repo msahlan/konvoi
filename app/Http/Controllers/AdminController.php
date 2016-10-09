@@ -72,6 +72,8 @@ class AdminController extends Controller {
 
     public $delurl = null;
 
+    public $toggleurl = null;
+
     public $dlxl = null;
 
     public $newbutton = null;
@@ -413,13 +415,15 @@ class AdminController extends Controller {
 
         $this->addurl = (is_null($this->addurl))? $route->getPrefix().'/'.strtolower($this->controller_name).'/add': $this->addurl;
 
-        $this->importurl = (is_null($this->importurl))? strtolower($this->controller_name).'/import': $this->importurl;
+        $this->importurl = (is_null($this->importurl))? $route->getPrefix().'/'.strtolower($this->controller_name).'/import': $this->importurl;
 
-        $this->rowdetail = (is_null($this->rowdetail))? strtolower($this->controller_name).'.rowdetail': $this->rowdetail;
+        $this->rowdetail = (is_null($this->rowdetail))? $route->getPrefix().'/'.strtolower($this->controller_name).'.rowdetail': $this->rowdetail;
 
-        $this->delurl = (is_null($this->delurl))? strtolower($this->controller_name).'/del': $this->delurl;
+        $this->delurl = (is_null($this->delurl))? $route->getPrefix().'/'.strtolower($this->controller_name).'/del': $this->delurl;
 
-        $this->newbutton = (is_null($this->newbutton))? str_singular($this->controller_name): $this->newbutton;
+        $this->toggleurl = (is_null($this->toggleurl))? $route->getPrefix().'/'.strtolower($this->controller_name).'/toggle': $this->toggleurl;
+
+        $this->newbutton = (is_null($this->newbutton))? $route->getPrefix().'/'.str_singular($this->controller_name): $this->newbutton;
 
         //dialog related url
         //$this->product_info_url = (is_null($this->product_info_url))? strtolower($this->controller_name).'/info': $this->product_info_url;
@@ -466,10 +470,10 @@ class AdminController extends Controller {
 
         /* additional features */
 
-        $this->dlxl = (is_null($this->dlxl))? strtolower($this->controller_name).'/dlxl': $this->dlxl;
+        $this->dlxl = (is_null($this->dlxl))? $route->getPrefix().'/'.strtolower($this->controller_name).'/dlxl': $this->dlxl;
 
 
-        $this->printlink = (is_null($this->printlink) || $this->printlink == '')? strtolower($this->controller_name).'/static': $this->printlink;
+        $this->printlink = (is_null($this->printlink) || $this->printlink == '')? $route->getPrefix().'/'.strtolower($this->controller_name).'/static': $this->printlink;
 
         //print_r($this->crumb);
 
@@ -480,6 +484,7 @@ class AdminController extends Controller {
 			->with('addurl',$this->addurl )
             ->with('importurl',$this->importurl )
 			->with('ajaxsource',url($this->ajaxsource) )
+            ->with('ajaxtoggle',url($this->toggleurl))
 			->with('ajaxdel',url($this->delurl) )
             ->with('ajaxdlxl',url($this->dlxl) )
 			->with('crumb',$this->crumb )
@@ -895,6 +900,8 @@ class AdminController extends Controller {
 							}elseif($field[1]['kind'] == 'currency'){
 								$num = (double) $doc[$field[0]];
 								$rowitem = number_format($num,2,',','.');
+                            }elseif($field[1]['kind'] == 'boolean'){
+                                $rowitem = (boolean) $doc[$field[0]];
 							}else{
 								$rowitem = $doc[$field[0]];
 							}
@@ -2129,6 +2136,11 @@ class AdminController extends Controller {
                     }
 
                     $q[$field] = $qval;
+                }elseif($type == 'boolean'){
+                    $state = Request::input('sSearch_'.$idx);
+
+                    $state = (strtolower($state) == 'false' )?false:$state;
+                    $model = $model->where($field,'=', (bool) $state );
 
                 }elseif($type == 'numeric' || $type == 'currency'){
 
@@ -2294,15 +2306,7 @@ class AdminController extends Controller {
         $q = array();
         $inputarray = array();
 
-        //rprint_r($infilter);
-
-        //array_shift($infilters);
-        //array_shift($infilters);
-
-        //print count($fields);
-
-        //print count($infilter);
-
+        //print_r($fields);
         //print_r($infilter);
 
         for($i = 0;$i < count($fields);$i++){
@@ -2311,7 +2315,9 @@ class AdminController extends Controller {
             $field = $fields[$i][0];
             $type = $fields[$i][1]['kind'];
 
-            $inputarray[$fields[$i][0]] = $infilter[$i];
+            if(isset($infilter[$i])){
+                $inputarray[$fields[$i][0]] = $infilter[$i];
+            }
 
             //print $field."\r\n";
 
@@ -2324,7 +2330,7 @@ class AdminController extends Controller {
                 $subfield = $sfields[1];
             }
 
-            if($infilter[$i])
+            if( isset($infilter[$i]) && $infilter[$i] != '' )
             {
 
                 //print $field.':'.$infilter[$i]."\r\n";
@@ -2615,7 +2621,9 @@ class AdminController extends Controller {
             $field = $fields[$i][0];
             $type = $fields[$i][1]['kind'];
 
-            $inputarray[$fields[$i][0]] = $infilter[$i];
+            if(isset($infilter[$i])){
+                $inputarray[$fields[$i][0]] = $infilter[$i];
+            }
 
             //print $field."\r\n";
 
@@ -2628,7 +2636,7 @@ class AdminController extends Controller {
                 $subfield = $sfields[1];
             }
 
-            if($infilter[$i])
+            if( isset($infilter[$i]) && $infilter[$i] != '' )
             {
 
                 //print $field.':'.$infilter[$i]."\r\n";
@@ -2931,7 +2939,7 @@ class AdminController extends Controller {
                 $subfield = $sfields[1];
             }
 
-            if($infilter[$i])
+            if(isset($infilter[$i]))
             {
                 //print $infilter[$i];
 
@@ -3223,7 +3231,7 @@ class AdminController extends Controller {
 
         $this->title = ($this->title == '')?str_singular($this->controller_name):str_singular($this->title);
 
-        $this->crumb->addCrumb($this->title,url($controller_name));
+        $this->crumb->addCrumb($this->title,url($route->getPrefix().'/'.$controller_name));
 
         $this->crumb->addCrumb('New '.$this->title,url('/'));
 
@@ -3260,7 +3268,7 @@ class AdminController extends Controller {
 
 		$controller_name = strtolower($this->controller_name);
 
-        $this->backlink = ($this->backlink == '')?$controller_name:$this->backlink;
+        $this->backlink = ($this->backlink == '')? $route->getPrefix().'/'.$controller_name:$this->backlink;
 
 	    $validation = Validator::make($input = $data, $this->validator);
 
@@ -3272,7 +3280,7 @@ class AdminController extends Controller {
 
             Event::fire('log.a',array($controller_name, 'add' ,$actor,'validation failed'));
 
-	    	return redirect($controller_name.'/add')
+	    	return redirect($route->getPrefix().'/'.$controller_name.'/add')
                 ->withErrors($validation)
                 ->withInput(Request::all());
 
@@ -3330,6 +3338,8 @@ class AdminController extends Controller {
 
         }
 
+        $route = Route::current();
+
 		//$population = $model->where('_id',$_id)->first();
 
         $population = $this->model->find($id)->toArray();
@@ -3356,18 +3366,18 @@ class AdminController extends Controller {
 
         $this->title = ($this->title == '')?str_singular($this->controller_name):str_singular($this->title);
 
-        $this->crumb->addCrumb($this->title,url($controller_name));
+        $this->crumb->addCrumb($this->title,url($route->getPrefix().'/'.$controller_name));
 
         $this->crumb->addCrumb('Update '.$this->title,url('/'));
 
         $fupload = new Wupload();
 
 		return View::make(strtolower($this->controller_name).'.'.$this->form_edit)
-					->with('back',$controller_name)
+					->with('back',$route->getPrefix().'/'.$controller_name)
                     ->with('crumb',$this->crumb)
                     ->with('fupload',$fupload)
 					->with('formdata',$population)
-					->with('submit',strtolower($this->controller_name).'/edit/'.$id)
+					->with('submit',$route->getPrefix().'/'.strtolower($this->controller_name).'/edit/'.$id)
 					->with('title','Edit '.$this->title);
 	}
 
@@ -3377,17 +3387,22 @@ class AdminController extends Controller {
 		$controller_name = strtolower($this->controller_name);
 		//print_r(Session::get('permission'));
 
-        $this->backlink = ($this->backlink == '')?$controller_name:$this->backlink;
+        $route = Route::current();
+
+        $backlink = ($this->backlink == '')?$route->getPrefix().'/'.$controller_name:$this->backlink;
 
 	    $validation = Validator::make($input = Request::all(), $this->validator);
 
         $actor = (isset(Auth::user()->email))?Auth::user()->name.' - '.Auth::user()->email:'guest';
 
 	    if($validation->fails()){
-
+            $messages = $validation->messages();
+            
             Event::fire('log.a',array($controller_name, 'update' ,$actor,'validation failed'));
 
-	    	return redirect($controller_name.'/edit/'.$_id)->withInput(Request::all())->withErrors($validation);
+	    	return redirect($route->getPrefix().'/'.$controller_name.'/edit/'.$_id)
+                        ->withInput(Request::all())
+                        ->withErrors($validation);
 
 	    }else{
 
@@ -3441,13 +3456,13 @@ class AdminController extends Controller {
 
                     Event::fire('log.a',array($controller_name, 'update' ,$actor,json_encode($obj)));
 
-			    	return redirect($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saved successfully');
+			    	return redirect($backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saved successfully');
 				}
 			}else{
 
                 Event::fire('log.a',array($controller_name, 'update' ,$actor,'saving failed'));
 
-		    	return redirect($this->backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saving failed');
+		    	return redirect($backlink)->with('notify_success',ucfirst(str_singular($controller_name)).' saving failed');
 			}
 
 	    }
@@ -3485,6 +3500,37 @@ class AdminController extends Controller {
 
 		return Response::json($result);
 	}
+
+    public function postToggle(){
+        $id = Request::input('id');
+
+        $controller_name = strtolower($this->controller_name);
+
+        $model = $this->model;
+
+        if(is_null($id)){
+            $result = array('status'=>'ERR','data'=>'NOID');
+        }else{
+
+            $obj = $model->find($id);
+
+            if(isset($obj->active) && $obj->active == true){
+                $obj->active = false;
+            }else{
+                $obj->active = true;
+            }
+
+            if($obj->save()){
+                Event::fire($controller_name.'.toggle',array('id'=>$id, 'active'=>$obj->active ,'result'=>'OK'));
+                $result = array('status'=>'OK','data'=>'CONTENTTOGGLED');
+            }else{
+                Event::fire($controller_name.'.toggle',array('id'=>$id,'result'=>'FAILED'));
+                $result = array('status'=>'ERR','data'=>'TOGGLEFAILED');
+            }
+        }
+
+        return Response::json($result);
+    }
 
 	public function beforeSave($data)
 	{
@@ -4009,12 +4055,14 @@ class AdminController extends Controller {
 
         fclose($fp);
 
+        $route = Route::current();
+
 
         $result = array(
             'status'=>'OK',
             'filename'=>$fname,
-            'urlxls'=>url(strtolower($this->controller_name).'/dl/'.$path['file']),
-            'urlcsv'=>url(strtolower($this->controller_name).'/csv/'.$fname.'.csv'),
+            'urlxls'=>url($route->getPrefix().'/'.strtolower($this->controller_name).'/dl/'.$path['file']),
+            'urlcsv'=>url($route->getPrefix().'/'.strtolower($this->controller_name).'/csv/'.$fname.'.csv'),
             'q'=>$lastQuery,
             'search'=>$searchpar
         );

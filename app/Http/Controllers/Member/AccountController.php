@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\AdminController;
 
 use App\Models\Creditaccount;
+use App\Models\Creditor;
 use App\Models\Uploaded;
 use App\Models\Role;
 
@@ -59,12 +60,13 @@ class AccountController extends AdminController {
         print Route::currentRouteName();
 
         $this->heads = array(
-            array('Contract Number',array('search'=>false,'sort'=>false)),
-            array('Creditor',array('search'=>true,'sort'=>true)),
-            array('Type',array('search'=>true,'sort'=>true)),
-            array('Due Date',array('search'=>true,'sort'=>false, 'select'=>Prefs::getRole()->RoleToSelection('_id','rolename' )  )),
-            array('Installment Amount',array('search'=>true,'sort'=>true)),
-            array('JC Visit Date',array('search'=>true,'sort'=>true)),
+            array('Nomor Kontrak',array('search'=>false,'sort'=>false)),
+            array('Perusahaan Kreditor',array('search'=>true,'sort'=>true)),
+            array('Tipe',array('search'=>true,'sort'=>true,  'select'=> array_merge([''=>'All'], config('jc.credit_type' ) ) ) ),
+            array('Jatuh Tempo',array('search'=>true,'sort'=>false  )),
+            array('Jumlah Cicilan',array('search'=>true,'sort'=>true)),
+            array('Tgl Bayar via JC',array('search'=>true,'sort'=>true)),
+            array('Alamat Pengambilan',array('search'=>true,'sort'=>true)),
             //array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
             //array('Last Update',array('search'=>true,'sort'=>true,'date'=>true)),
         );
@@ -85,12 +87,13 @@ class AccountController extends AdminController {
     {
 
         $this->fields = array(
-            array('contractNumber',array('kind'=>'text', 'callback'=>'namePic' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('creditor',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('Type',array('kind'=>'text', 'callback'=>'idRole' ,'query'=>'like','pos'=>'both','show'=>true)),
+            array('contractNumber',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
+            array('creditorName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('Type',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('dueDate',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
-            array('installmentAmt',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('installmentAmt',array('kind'=>'currency','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupDate',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('pickupAddress',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             //array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             //array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
         );
@@ -102,9 +105,16 @@ class AccountController extends AdminController {
     {
 
         $this->validator = array(
-            'name' => 'required',
-            'email'=> 'required|unique:users',
-            'password'=>'required|same:repass'
+            'contractNumber' => 'required',
+            'creditor'=> 'required',
+            'Type'=>'required',
+            'dueDate'=>'required',
+            'installmentAmt'=>'required',
+            'pickupDate'=>'required',
+            'pickupAddress'=>'required',
+            'pickupDistrict'=>'required',
+            'pickupCity'=>'required',
+            'pickupZIP'=>'required',
         );
 
         return parent::postAdd($data);
@@ -112,66 +122,34 @@ class AccountController extends AdminController {
 
     public function beforeSave($data)
     {
-        unset($data['repass']);
-        $data['password'] = bcrypt($data['password']);
+        $creditor = Creditor::find($data['creditor']);
+        $data['creditorName'] = $creditor->coName;
+        
+        $data['payerId'] = Auth::user()->id;
+        $data['payerName'] = Auth::user()->name;
 
-            $photo = array();
-            $avatar = '';
-
-            if( isset($data['fileid'])){
-
-                $avfile = Uploaded::find($data['fileid']);
-                if($avfile){
-                    $avatar = $avfile->square_url;
-                    $photo[] = $avfile->toArray();
-                }
-
-            }
-
-            $data['photo']= $photo;
-            $data['avatar'] = $avatar;
+        $data['dueDate'] = intval($data['dueDate']);
+        $data['pickupDate'] = intval($data['pickupDate']);
 
         return $data;
     }
 
     public function afterSave($data)
     {
-        foreach($data['photo'] as $p) {
-            $up = Uploaded::find($p['_id']);
-            if($up){
-                $up->parent_id = $data['_id'];
-                $up->save();
-            }
-        }
+
     }
 
     public function beforeUpdate($id,$data)
     {
+        $creditor = Creditor::find($data['creditor']);
 
-        if(isset($data['password']) && $data['password'] != ''){
-            unset($data['repass']);
-            $data['password'] = bcrypt($data['pass']);
+        $data['creditorName'] = $creditor->coName;
 
-        }else{
-            unset($data['password']);
-            unset($data['repass']);
-        }
+        $data['payerId'] = Auth::user()->id;
+        $data['payerName'] = Auth::user()->name;
 
-        $photo = array();
-        $avatar = '';
-
-        if( isset($data['fileid'])){
-
-            $avfile = Uploaded::find($data['fileid']);
-            if($avfile){
-                $avatar = $avfile->square_url;
-            }
-
-        }
-
-        $data['photo']= $photo;
-        $data['avatar'] = $avatar;
-
+        $data['dueDate'] = intval($data['dueDate']);
+        $data['pickupDate'] = intval($data['pickupDate']);
 
         return $data;
     }
@@ -179,26 +157,33 @@ class AccountController extends AdminController {
     public function postEdit($id,$data = null)
     {
         $this->validator = array(
-            'name' => 'required',
-            'email'=> 'required'
+            'contractNumber' => 'required',
+            'creditor'=> 'required',
+            'Type'=>'required',
+            'dueDate'=>'required',
+            'installmentAmt'=>'required',
+            'pickupDate'=>'required',
+            'pickupAddress'=>'required',
+            'pickupDistrict'=>'required',
+            'pickupCity'=>'required',
+            'pickupZIP'=>'required',
         );
-
-        if($data['password'] == ''){
-            unset($data['password']);
-            unset($data['repass']);
-        }else{
-            $this->validator['password'] = 'required|same:repass';
-        }
 
         return parent::postEdit($id,$data);
     }
 
     public function makeActions($data)
     {
-        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i>Delete</span>';
-        $edit = '<a href="'.url('user/edit/'.$data['_id']).'"><i class="fa fa-edit"></i>Update</a>';
+        if($data['active']){
+            $toggle = '<span class="toggle" id="'.$data['_id'].'" >Off <i class="fa fa-toggle-on"></i> On</span>';
+        }else{
+            $toggle = '<span class="toggle" id="'.$data['_id'].'" >Off <i class="fa fa-toggle-off"></i> On</span>';
+        }
+        $edit = '<a href="'.url('member/account/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
 
-        $actions = $edit.'<br />'.$delete;
+        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i> Del</span>';
+
+        $actions = $toggle.'<br />'.$edit.'<br />'.$delete;
         return $actions;
     }
 

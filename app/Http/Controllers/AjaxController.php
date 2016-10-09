@@ -93,6 +93,18 @@ class AjaxController extends BaseController {
 
     }
 
+    public function postGeneratedata()
+    {
+        $in = Request::input();
+
+        $date = $in['day'];
+
+        $month = $in['month'];
+
+        
+
+    }
+
     public function getOrg()
     {
         $orgs = Company::all();

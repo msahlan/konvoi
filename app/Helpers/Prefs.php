@@ -11,6 +11,7 @@ use App\Models\Boxstatus;
 use App\Models\Printdefault;
 use App\Models\Generatedawb;
 use App\Models\Creditor;
+use App\Models\Coverage;
 
 
 use \Auth;
@@ -1192,6 +1193,11 @@ class Prefs {
         return self::$shopcategory;
     }
 
+    public static function getRoleById($id)
+    {
+        return Role::find($id)->rolename;        
+    }
+
     public static function getRole(){
         $c = Role::get();
 
@@ -1219,6 +1225,76 @@ class Prefs {
     {
         return self::$role;
     }
+
+//company
+    public static function getProvince(){
+        $c = Coverage::distinct('province')->get();
+
+        self::$role = $c;
+        return new self;
+    }
+
+    public function ProvinceToSelection($value, $label, $all = true)
+    {
+        if($all){
+            $ret = array(''=>'Select Province');
+        }else{
+            $ret = array();
+        }
+
+        foreach (self::$role as $c ) {
+            $c = $c->toArray();
+            $ret[$c[0]] = $c[0];
+        }
+
+        //print_r($ret);
+
+        ksort($ret);
+
+        return $ret;
+    }
+
+    public function ProvinceToArray()
+    {
+        return self::$role;
+    }
+
+//company
+
+//company
+    public static function getCity($province){
+        $c = Coverage::distinct('city')->where('province','=',$province)->get();
+
+        self::$role = $c;
+        return new self;
+    }
+
+    public function CityToSelection($value, $label, $all = true)
+    {
+        if($all){
+            $ret = array(''=>'Select City');
+        }else{
+            $ret = array();
+        }
+
+        foreach (self::$role as $c ) {
+            $c = $c->toArray();
+            $ret[$c[0]] = $c[0];
+        }
+
+        //print_r($ret);
+
+        ksort($ret);
+
+        return $ret;
+    }
+
+    public function CityToArray()
+    {
+        return self::$role;
+    }
+
+//company
 
 //company
     public static function getCompany(){
