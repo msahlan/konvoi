@@ -50,13 +50,13 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a class="page-scroll" href="#about">Login</a>
+                        <a class="page-scroll" href="{{ url('login') }}">Login</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#services">Register Member</a>
+                        <a class="page-scroll" href="{{ url('member/register') }}">Register Member</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#portfolio">Register Creditor</a>
+                        <a class="page-scroll" href="{{ url('creditor/register') }}">Register Creditor</a>
                     </li>
                     <li>
                         <a class="page-scroll" href="#contact">Help Center</a>
@@ -71,14 +71,7 @@
     <header>
         <div class="header-content">
             <div class="header-content-inner">
-                <h1 id="homeHeading">Bayar Cicilan Di Tempat</h1>
-                <hr>
-                <h3>Daftarkan Diri Anda : Tentukan Tanggal Dan Lokasi,
-                Nikmati Layanan JemputCicilan.com</h3>
-                <h4> Registrasi</h4>
-
-                <a href="#about" class="btn btn-primary btn-xl ">Debitur</a>
-                <a href="#about" class="btn btn-primary btn-xl page-scroll">Kreditur</a>
+                @yield('content')
             </div>
         </div>
     </header>
@@ -125,7 +118,7 @@
                     <div class="service-box">
                         <i class="fa fa-4x fa-newspaper-o text-primary sr-icons"></i>
                         <h3>Berbagai Jenis Cicilan</h3>
-                        <p class="text-muted">Apapun cicilan anda asalkan tersedia dalam menu layanan akan dilayani. Hanya cicilan yang sudah lewat dan ada denda tidak kamim layani</p>
+                        <p class="text-muted">Apapun cicilan anda asalkan tersedia dalam menu layanan akan dilayani. Hanya cicilan yang sudah lewat dan ada denda tidak kami layani</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 text-center">
@@ -240,7 +233,7 @@
         <div class="container text-center">
             <div class="call-to-action">
                 <h2 style="color:white;">Jemputcicilan.com</h2>
-                <a href="http://startbootstrap.com/template-overviews/creative/" class="btn btn-default btn-xl sr-button">Join Now!</a>
+                <a href="{{ url('member/register') }}" class="btn btn-default btn-xl sr-button">Daftar Sekarang!</a>
             </div>
         </div>
     </aside>

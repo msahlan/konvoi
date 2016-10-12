@@ -43,7 +43,7 @@
 	<!-- Main navbar -->
 	<div class="navbar navbar-inverse bg-indigo has-shadow">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="index.html">{{ config('site.name') }}</a>
+			<a class="navbar-brand" href="{{ url('/') }}">{{ config('site.name') }}</a>
 
 			<ul class="nav navbar-nav pull-right visible-xs-block">
 				<li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-grid3"></i></a></li>
@@ -98,7 +98,7 @@
 
 		<div class="navbar-collapse collapse" id="footer">
 			<div class="navbar-text">
-				&copy; 2015. <a href="#" class="navbar-link">Limitless Web App Kit</a> by <a href="http://themeforest.net/user/Kopyov" class="navbar-link" target="_blank">Eugene Kopyov</a>
+				&copy; 2016. <a href="#" class="navbar-link">JemputCicilan.com</a>
 			</div>
 
 			<div class="navbar-right">
