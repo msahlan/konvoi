@@ -3,7 +3,10 @@
 
 @section('left')
         @inject('prefs','App\Helpers\Prefs')
-        <?php use App\Helpers\Prefs; ?>
+        <?php
+            use App\Helpers\Prefs;
+            use App\Helpers\Ks;
+         ?>
 
     {{--
 
@@ -22,7 +25,12 @@ pickupDate
 
         {!! Former::text('contractNumber','Nomor Kontrak')  !!}
         {!! Former::text('contractName','Atas Nama')  !!}
-        {!! Former::select('creditor')->options(Prefs::getCreditor()->CreditorToSelection( 'id','coName',true ) )->label('Perusahaan Penyedia Kredit')->class('form-control bootstrap-select')  !!}
+
+        @if(Ks::is('Creditor'))
+            {!! Former::hidden('creditor', Prefs::getCreditorByPic( Auth::user()->id )->id ) !!}
+        @else
+            {!! Former::select('creditor')->options(Prefs::getCreditor()->CreditorToSelection( 'id','coName',true ) )->label('Perusahaan Penyedia Kredit')->class('form-control bootstrap-select')  !!}
+        @endif
 
         {!! Former::select('Type')->options( array_merge([''=>'Select Credit Type'] ,config('jc.credit_type')) )->label('Jenis Kredit')->class('form-control bootstrap-select')  !!}
         {!! Former::text('dueDate','Tanggal Jatuh Tempo ( setiap bulan )')  !!}

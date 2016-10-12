@@ -3397,7 +3397,7 @@ class AdminController extends Controller {
 
 	    if($validation->fails()){
             $messages = $validation->messages();
-            
+
             Event::fire('log.a',array($controller_name, 'update' ,$actor,'validation failed'));
 
 	    	return redirect($route->getPrefix().'/'.$controller_name.'/edit/'.$_id)
@@ -4352,13 +4352,15 @@ class AdminController extends Controller {
 
         $this->crumb->addCrumb('Import '.$this->title,url('/'));
 
+        $route = Route::current();
+
         return View::make($this->import_main_form)
             ->with('title',$this->title)
             ->with('aux_form',$this->import_aux_form)
             //->with('input_name',$this->input_name)
             ->with('importkey', $this->importkey)
-            ->with('back',strtolower($this->controller_name))
-            ->with('submit',strtolower($this->controller_name).'/uploadimport');
+            ->with('back',$route->getPrefix().'/'.strtolower($this->controller_name))
+            ->with('submit',$route->getPrefix().'/'.strtolower($this->controller_name).'/uploadimport');
     }
 
     public function postUploadimport()
@@ -4511,7 +4513,9 @@ class AdminController extends Controller {
 
         }
 
-        $this->backlink = strtolower($this->controller_name);
+        $route = Route::current();
+
+        $this->backlink = $route->getPrefix().'/'.strtolower($this->controller_name);
 
         $commit_url = $this->backlink.'/commit/'.$rstring;
 
@@ -4529,6 +4533,8 @@ class AdminController extends Controller {
 
     public function getCommit($sessid)
     {
+        $route = Route::current();
+
         $heads = Importsession::where('sessId','=',$sessid)
             ->where('isHead','=',1)
             ->first();
@@ -4549,7 +4555,7 @@ class AdminController extends Controller {
 
         $title = $this->controller_name;
 
-        $submit = strtolower($this->controller_name).'/commit/'.$sessid;
+        $submit = $route->getPrefix().'/'.strtolower($this->controller_name).'/commit/'.$sessid;
 
         $controller_name = strtolower($this->controller_name);
 
@@ -4567,7 +4573,7 @@ class AdminController extends Controller {
             ->with('submit',$submit)
             ->with('headselect',$headselect)
             ->with('heads',$heads)
-            ->with('back',$controller_name.'/import')
+            ->with('back', $route->getPrefix().'/'.$controller_name.'/import')
             ->with('imports',$imports);
     }
 
@@ -4579,6 +4585,7 @@ class AdminController extends Controller {
 
         $importkey = $in['edit_key'];
 
+        $route = Route::current();
 
         $edit_selector = isset($in['edit_selector'])?$in['edit_selector']:array();
 
@@ -4659,7 +4666,8 @@ class AdminController extends Controller {
 
         }
 
-        $this->backlink = strtolower($this->controller_name);
+
+        $this->backlink = $route->getPrefix().'/'.strtolower($this->controller_name);
 
         return redirect($this->backlink);
 

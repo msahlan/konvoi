@@ -114,7 +114,7 @@
 
 
                 <!-- Page length options -->
-                <div class="panel panel-flat  command-bar">
+                <div class="panel panel-flat table-wrapper command-bar">
 
                     <div class="row">
                         <div class="col-md-12">

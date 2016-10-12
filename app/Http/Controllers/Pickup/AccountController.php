@@ -70,6 +70,8 @@ class AccountController extends AdminController {
             array('Alamat Pengambilan',array('search'=>true,'sort'=>true)),
             array('Kecamatan',array('search'=>true,'sort'=>true)),
             array('Kota',array('search'=>true,'sort'=>true)),
+            array('Propinsi',array('search'=>true,'sort'=>true)),
+            array('Kode Pos',array('search'=>true,'sort'=>true)),
             //array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
             //array('Last Update',array('search'=>true,'sort'=>true,'date'=>true)),
         );
@@ -79,6 +81,16 @@ class AccountController extends AdminController {
         $this->can_add = true;
 
         $this->place_action = 'first';
+
+        $day_load = $this->getQuotaByDate();
+
+        $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')
+                ->with('day_load', $day_load )
+                ->with('submit_url','gl')
+                ->with('ajaxawbdlxl','incoming/awbdlxl')
+                ->with('importawburl','incoming/importawb')
+                ->render();
+
 
         //$this->crumb->addCrumb('System',url( strtolower($this->controller_name) ));
 
@@ -101,6 +113,8 @@ class AccountController extends AdminController {
             array('pickupAddress',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupDistrict',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupCity',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('pickupProvince',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('pickupZIP',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             //array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             //array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
         );
@@ -122,66 +136,34 @@ class AccountController extends AdminController {
 
     public function beforeSave($data)
     {
-        unset($data['repass']);
-        $data['password'] = bcrypt($data['password']);
+        $creditor = Creditor::find($data['creditor']);
+        $data['creditorName'] = $creditor->coName;
 
-            $photo = array();
-            $avatar = '';
+        $data['payerId'] = '';
+        $data['payerName'] = '';
 
-            if( isset($data['fileid'])){
-
-                $avfile = Uploaded::find($data['fileid']);
-                if($avfile){
-                    $avatar = $avfile->square_url;
-                    $photo[] = $avfile->toArray();
-                }
-
-            }
-
-            $data['photo']= $photo;
-            $data['avatar'] = $avatar;
+        $data['dueDate'] = intval($data['dueDate']);
+        $data['pickupDate'] = intval($data['pickupDate']);
 
         return $data;
     }
 
     public function afterSave($data)
     {
-        foreach($data['photo'] as $p) {
-            $up = Uploaded::find($p['_id']);
-            if($up){
-                $up->parent_id = $data['_id'];
-                $up->save();
-            }
-        }
+
     }
 
     public function beforeUpdate($id,$data)
     {
 
-        if(isset($data['password']) && $data['password'] != ''){
-            unset($data['repass']);
-            $data['password'] = bcrypt($data['pass']);
+        $creditor = Creditor::find($data['creditor']);
+        $data['creditorName'] = $creditor->coName;
 
-        }else{
-            unset($data['password']);
-            unset($data['repass']);
-        }
+        $data['payerId'] = '';
+        $data['payerName'] = '';
 
-        $photo = array();
-        $avatar = '';
-
-        if( isset($data['fileid'])){
-
-            $avfile = Uploaded::find($data['fileid']);
-            if($avfile){
-                $avatar = $avfile->square_url;
-            }
-
-        }
-
-        $data['photo']= $photo;
-        $data['avatar'] = $avatar;
-
+        $data['dueDate'] = intval($data['dueDate']);
+        $data['pickupDate'] = intval($data['pickupDate']);
 
         return $data;
     }
@@ -189,16 +171,17 @@ class AccountController extends AdminController {
     public function postEdit($id,$data = null)
     {
         $this->validator = array(
-            'name' => 'required',
-            'email'=> 'required'
+            'contractNumber' => 'required',
+            'creditor'=> 'required',
+            'Type'=>'required',
+            'dueDate'=>'required',
+            'installmentAmt'=>'required',
+            'pickupDate'=>'required',
+            'pickupAddress'=>'required',
+            'pickupDistrict'=>'required',
+            'pickupCity'=>'required',
+            'pickupZIP'=>'required',
         );
-
-        if($data['password'] == ''){
-            unset($data['password']);
-            unset($data['repass']);
-        }else{
-            $this->validator['password'] = 'required|same:repass';
-        }
 
         return parent::postEdit($id,$data);
     }
@@ -307,7 +290,7 @@ class AccountController extends AdminController {
             array('Nomor Kontrak',array('search'=>true,'sort'=>true)),
             array('Atas Nama',array('search'=>true,'sort'=>true)),
             array('Perusahaan Kreditor',array('search'=>true,'sort'=>true)),
-            array('Tipe',array('search'=>true,'sort'=>true ) ),
+            array('Jenis Cicilan',array('search'=>true,'sort'=>true ) ),
             array('Jatuh Tempo',array('search'=>true,'sort'=>false  )),
             array('Jumlah Cicilan',array('search'=>true,'sort'=>true)),
             array('Tgl Bayar',array('search'=>true,'sort'=>true)),
@@ -321,8 +304,7 @@ class AccountController extends AdminController {
         );
 
         $this->fields = array(
-            array('contractNumber',array('kind'=>'text' ,'query'=>'like','callback'=>'dlActive','pos'=>'both','show'=>true)),
-            array('contractNumber',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
+            array('active',array('kind'=>'text' ,'query'=>'like','callback'=>'dlActive','pos'=>'both','show'=>true)),
             array('contractName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('creditorName',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('Type',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
@@ -348,6 +330,18 @@ class AccountController extends AdminController {
         $this->show_select = true;
 
         return parent::postDlxl();
+    }
+
+
+    public function getQuotaByDate()
+    {
+        $quotas = array();
+
+        for($i=1;$i < 32 ; $i++){
+            $quotas[$i] = $this->model->where('pickupDate','=',$i)->count();
+        }
+
+        return $quotas;
     }
 
 

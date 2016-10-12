@@ -1195,7 +1195,7 @@ class Prefs {
 
     public static function getRoleById($id)
     {
-        return Role::find($id)->rolename;        
+        return Role::find($id)->rolename;
     }
 
     public static function getRole(){
@@ -1328,6 +1328,12 @@ class Prefs {
 //company
 
 //creditor
+    public static function getCreditorByPic($picId){
+        $c = Creditor::where('picId',$picId)->first();
+
+        return $c;
+    }
+
     public static function getCreditor(){
         $c = Creditor::get();
 
