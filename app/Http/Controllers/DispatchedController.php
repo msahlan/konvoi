@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\AdminController;
 
-use App\Models\Shipment;
+use App\Models\Pickup;
 
 use App\Helpers\Prefs;
 
@@ -36,7 +36,7 @@ class DispatchedController extends AdminController {
         //$this->crumb->append('Home','left',true);
         //$this->crumb->append(strtolower($this->controller_name));
 
-        $this->model = new Shipment();
+        $this->model = new Pickup();
         //$this->model = DB::collection('documents');
         $this->title = 'In Progress Order';
 
@@ -110,7 +110,7 @@ class DispatchedController extends AdminController {
     {
 
 
-        $this->heads = config('jex.default_dispatched_heads');
+        $this->heads = config('jc.default_dispatched_heads');
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
@@ -120,7 +120,7 @@ class DispatchedController extends AdminController {
 
         $this->show_select = true;
 
-        $this->crumb->addCrumb('Shipment Order',url( strtolower($this->controller_name) ));
+        $this->crumb->addCrumb('Pickup Order',url( strtolower($this->controller_name) ));
 
         //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
 
@@ -150,7 +150,7 @@ class DispatchedController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = config('jex.default_dispatched_fields');
+        $this->fields = config('jc.default_dispatched_fields');
 
         /*
         $categoryFilter = Request::input('categoryFilter');
@@ -161,16 +161,12 @@ class DispatchedController extends AdminController {
 
         $db = config('jayon.main_db');
 
-        $this->def_order_by = 'assignment_date';
+        $this->def_order_by = 'assignmentDate';
         $this->def_order_dir = 'desc';
         $this->place_action = 'first';
         $this->show_select = true;
 
-        $this->sql_key = 'delivery_id';
-        $this->sql_table_name = config('jayon.incoming_delivery_table');
-        $this->sql_connection = 'mysql';
-
-        return parent::SQLtableResponder();
+        return parent::tableResponder();
     }
 
     public function getStatic()

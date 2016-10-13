@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Pickup;
 
 use App\Http\Controllers\AdminController;
 
-use App\Models\Shipment;
+use App\Models\Pickup;
 
 use App\Helpers\Prefs;
 
@@ -28,7 +28,7 @@ class DispatchedController extends AdminController {
     {
         parent::__construct();
 
-                $cname = substr(strrchr(get_class($this), '\\'), 1);
+        $cname = substr(strrchr(get_class($this), '\\'), 1);
         $this->controller_name = str_replace('Controller', '', $cname);
 
 
@@ -36,81 +36,17 @@ class DispatchedController extends AdminController {
         //$this->crumb->append('Home','left',true);
         //$this->crumb->append(strtolower($this->controller_name));
 
-        $this->model = new Shipment();
+        $this->model = new Pickup();
         //$this->model = DB::collection('documents');
         $this->title = 'In Progress Order';
 
-    }
-
-    public function getDetail($id)
-    {
-        $_id = new MongoId($id);
-        $history = History::where('historyObject._id',$_id)->where('historyObjectType','asset')
-                        ->orderBy('historyTimestamp','desc')
-                        ->orderBy('historySequence','desc')
-                        ->get();
-        $diffs = array();
-
-        foreach($history as $h){
-            $h->date = date( 'Y-m-d H:i:s', $h->historyTimestamp->sec );
-            $diffs[$h->date][$h->historySequence] = $h->historyObject;
-        }
-
-        $history = History::where('historyObject._id',$_id)->where('historyObjectType','asset')
-                        ->where('historySequence',0)
-                        ->orderBy('historyTimestamp','desc')
-                        ->get();
-
-        $tab_data = array();
-        foreach($history as $h){
-                $apv_status = Assets::getApprovalStatus($h->approvalTicket);
-                if($apv_status == 'pending'){
-                    $bt_apv = '<span class="btn btn-info change-approval '.$h->approvalTicket.'" data-id="'.$h->approvalTicket.'" >'.$apv_status.'</span>';
-                }else if($apv_status == 'verified'){
-                    $bt_apv = '<span class="btn btn-success" >'.$apv_status.'</span>';
-                }else{
-                    $bt_apv = '';
-                }
-
-                $d = date( 'Y-m-d H:i:s', $h->historyTimestamp->sec );
-                $tab_data[] = array(
-                    $d,
-                    $h->historyAction,
-                    $h->historyObject['itemDescription'],
-                    ($h->historyAction == 'new')?'NA':$this->objdiff( $diffs[$d] ),
-                    $bt_apv
-                );
-        }
-
-        $header = array(
-            'Modified',
-            'Event',
-            'Name',
-            'Diff',
-            'Approval'
-            );
-
-        $attr = array('class'=>'table', 'id'=>'transTab', 'style'=>'width:100%;', 'border'=>'0');
-        $t = new HtmlTable($tab_data, $attr, $header);
-        $itemtable = $t->build();
-
-        $asset = Asset::find($id);
-
-        $this->crumb->addCrumb('Ad Assets',url( strtolower($this->controller_name) ));
-        $this->crumb->addCrumb('Detail',url( strtolower($this->controller_name).'/detail/'.$asset->_id ));
-        $this->crumb->addCrumb($asset->SKU,url( strtolower($this->controller_name) ));
-
-        return View::make('history.table')
-                    ->with('a',$asset)
-                    ->with('title','Asset Detail '.$asset->itemDescription )
-                    ->with('table',$itemtable);
     }
 
     public function getIndex()
     {
 
 
-        $this->heads = config('jex.default_dispatched_heads');
+        $this->heads = config('jc.default_dispatched_heads');
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
@@ -120,7 +56,7 @@ class DispatchedController extends AdminController {
 
         $this->show_select = true;
 
-        $this->crumb->addCrumb('Shipment Order',url( strtolower($this->controller_name) ));
+        $this->crumb->addCrumb('Pickup Order',url( strtolower($this->controller_name) ));
 
         //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
 
@@ -137,11 +73,7 @@ class DispatchedController extends AdminController {
 
         $this->product_info_url = strtolower($this->controller_name).'/info';
 
-        $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 7 ] },
-                    { "sClass": "column-amt", "aTargets": [ 18 ] },
-                    { "sClass": "column-amt", "aTargets": [ 22 ] },
-                    { "sClass": "column-amt", "aTargets": [ 23 ] },
-                    { "sClass": "column-amt", "aTargets": [ 24 ] }';
+        $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 7 ] }';
 
         return parent::getIndex();
 
@@ -150,7 +82,7 @@ class DispatchedController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = config('jex.default_dispatched_fields');
+        $this->fields = config('jc.default_dispatched_fields');
 
         /*
         $categoryFilter = Request::input('categoryFilter');
@@ -161,16 +93,13 @@ class DispatchedController extends AdminController {
 
         $db = config('jayon.main_db');
 
-        $this->def_order_by = 'assignment_date';
+        $this->def_order_by = 'assignmentDate';
         $this->def_order_dir = 'desc';
         $this->place_action = 'first';
         $this->show_select = true;
 
-        $this->sql_key = 'delivery_id';
-        $this->sql_table_name = config('jayon.incoming_delivery_table');
-        $this->sql_connection = 'mysql';
 
-        return parent::SQLtableResponder();
+        return parent::tableResponder();
     }
 
     public function getStatic()
@@ -366,72 +295,6 @@ class DispatchedController extends AdminController {
 
     public function SQL_additional_query($model)
     {
-        $in = Request::input();
-
-        $period_from = Request::input('acc-period-from');
-        $period_to = Request::input('acc-period-to');
-
-        $db = config('lundin.main_db');
-
-        $company = Request::input('acc-company');
-
-        $company = strtolower($company);
-
-        /*
-        if($period_from == ''){
-            $model = $model->select($company.'_a_salfldg.*',$company.'_acnt.DESCR as ACC_DESCR')
-                ->leftJoin($company.'_acnt', $company.'_a_salfldg.ACCNT_CODE', '=', $company.'_acnt.ACNT_CODE' );
-        }else{
-            $model = $model->select($company.'_a_salfldg.*',$company.'_acnt.DESCR as ACC_DESCR')
-                ->leftJoin($company.'_acnt', $company.'_a_salfldg.ACCNT_CODE', '=', $company.'_acnt.ACNT_CODE' )
-                ->where('PERIOD','>=', Request::input('acc-period-from') )
-                ->where('PERIOD','<=', Request::input('acc-period-to') )
-                ->where('ACCNT_CODE','>=', Request::input('acc-code-from') )
-                ->where('ACCNT_CODE','<=', Request::input('acc-code-to') )
-                ->orderBy('PERIOD','DESC')
-                ->orderBy('ACCNT_CODE','ASC')
-                ->orderBy('TRANS_DATETIME','DESC');
-        }
-        */
-
-        $txtab = config('jayon.incoming_delivery_table');
-
-        $model = $model->select(
-                DB::raw(
-                    config('jayon.incoming_delivery_table').'.* ,'.
-                    config('jayon.jayon_couriers_table').'.fullname as courier ,'.
-                    config('jayon.jayon_devices_table').'.identifier as device ,'.
-                    config('jayon.jayon_members_table').'.merchantname as merchant_name ,'.
-                    config('jayon.applications_table').'.application_name as app_name ,'.
-                    '('.$txtab.'.width * '.$txtab.'.height * '.$txtab.'.length ) as volume'
-                )
-            )
-            ->leftJoin(config('jayon.jayon_couriers_table'), config('jayon.incoming_delivery_table').'.courier_id', '=', config('jayon.jayon_couriers_table').'.id' )
-            ->leftJoin(config('jayon.jayon_devices_table'), config('jayon.incoming_delivery_table').'.device_id', '=', config('jayon.jayon_devices_table').'.id' )
-            ->leftJoin(config('jayon.jayon_members_table'), config('jayon.incoming_delivery_table').'.merchant_id', '=', config('jayon.jayon_members_table').'.id' )
-            ->leftJoin(config('jayon.applications_table'), config('jayon.incoming_delivery_table').'.application_id', '=', config('jayon.applications_table').'.id' )
-
-            ->where(function($query){
-                $query->where('status','=', config('jayon.trans_status_admin_courierassigned') )
-                    ->orWhere('status','=', config('jayon.trans_status_mobile_pickedup') )
-                    ->orWhere('status','=', config('jayon.trans_status_mobile_enroute') )
-                    ->orWhere(function($q){
-                            $q->where('status', config('jayon.trans_status_new'))
-                                ->where(config('jayon.incoming_delivery_table').'.pending_count', '>', 0);
-                    });
-
-            })
-
-            ->orderBy('assignment_date','desc')
-            ->orderBy(config('jayon.jayon_devices_table').'.identifier','asc')
-            ->orderBy(config('jayon.jayon_members_table').'.fullname','asc')
-            ->orderBy('buyerdeliverycity','asc')
-            ->orderBy('buyerdeliveryzone','asc');
-
-        //print_r($in);
-
-
-        //$model = $model->where('group_id', '=', 4);
 
         return $model;
 
@@ -465,8 +328,8 @@ class DispatchedController extends AdminController {
         $date_index = 3;
         $device_index = 4;
         $courier_index = 5;
-        $city_index = 8;
-        $zone_index = 9;
+        $city_index = 6;
+        $zone_index = 7;
 
         if(count($rows) > 0){
 

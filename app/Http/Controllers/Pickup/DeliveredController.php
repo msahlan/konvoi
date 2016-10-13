@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Pickup;
 
 use App\Http\Controllers\AdminController;
 
-use App\Models\Shipment;
+use App\Models\Pickup;
 use App\Models\Uploaded;
 
 use App\Helpers\Prefs;
@@ -30,7 +30,7 @@ class DeliveredController extends AdminController {
     {
         parent::__construct();
 
-                $cname = substr(strrchr(get_class($this), '\\'), 1);
+        $cname = substr(strrchr(get_class($this), '\\'), 1);
         $this->controller_name = str_replace('Controller', '', $cname);
 
 
@@ -38,7 +38,7 @@ class DeliveredController extends AdminController {
         //$this->crumb->append('Home','left',true);
         //$this->crumb->append(strtolower($this->controller_name));
 
-        $this->model = new Shipment();
+        $this->model = new Pickup();
         //$this->model = DB::collection('documents');
         $this->title = 'Delivery Status';
 
@@ -112,16 +112,16 @@ class DeliveredController extends AdminController {
     {
 
 
-        $this->heads = config('jex.default_delivered_heads');
+        $this->heads = config('jc.default_delivered_heads');
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Delivery Status';
+        $this->title = 'Payment Pickup Status';
 
         $this->place_action = 'first';
 
         $this->show_select = true;
 
-        $this->crumb->addCrumb('Shipment Order',url( strtolower($this->controller_name) ));
+        $this->crumb->addCrumb('Pickup Order',url( strtolower($this->controller_name) ));
 
         //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
 
@@ -143,7 +143,7 @@ class DeliveredController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = config('jex.default_delivered_fields');
+        $this->fields = config('jc.default_delivered_fields');
 
         /*
         $categoryFilter = Request::input('categoryFilter');
@@ -154,7 +154,7 @@ class DeliveredController extends AdminController {
 
         $db = config('jayon.main_db');
 
-        $this->def_order_by = 'ordertime';
+        $this->def_order_by = 'assignmentDate';
         $this->def_order_dir = 'desc';
         $this->place_action = 'first';
         $this->show_select = true;
@@ -163,7 +163,7 @@ class DeliveredController extends AdminController {
         $this->sql_table_name = config('jayon.incoming_delivery_table');
         $this->sql_connection = 'mysql';
 
-        return parent::SQLtableResponder();
+        return parent::tableResponder();
     }
 
     public function getStatic()

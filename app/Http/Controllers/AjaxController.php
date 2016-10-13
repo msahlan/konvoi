@@ -16,6 +16,8 @@ use App\Models\Device;
 use App\Models\Courier;
 use App\Models\History;
 use App\Models\Shipmentlog;
+use App\Models\Creditaccount;
+use App\Models\Pickup;
 
 use App\Helpers\Prefs;
 use App\Helpers\PointLocation;
@@ -101,7 +103,43 @@ class AjaxController extends BaseController {
 
         $month = $in['month'];
 
-        
+        $scope = $in['scope'];
+
+        $creditor = $in['creditor'];
+
+        $accounts = Creditaccount::where('pickupDate','=',intval($date));
+        if($creditor != ''){
+            $accounts = $accounts->where('creditor','=',$creditor);
+        }
+
+        $accounts = $accounts->get();
+
+
+        $cnt = 0;
+
+        foreach($accounts as $acc){
+            $acc = $acc->toArray();
+            $acc['accountId'] = $acc['_id'];
+            $acc['periodMonth'] = intval($month);
+            $acc['assignmentDate'] = date( 'Y-m-d 00:00:00', time() );
+            $acc['assignmentDateTs'] = new MongoDate( strtotime($acc['assignmentDate']) );
+            $acc['status'] = 'new';
+            $acc['transactionId'] = Prefs::getDeliveryId();
+
+            unset($acc['_id']);
+            unset($acc['updated_at']);
+            unset($acc['created_at']);
+
+            if(Pickup::where('accountId', '=', $acc['accountId'])->where('status','=','new')->where( 'assignmentDate' ,'=', $acc['assignmentDate'])->count() > 0 ){
+
+            }else{
+                $cnt++;
+                Pickup::create($acc);
+            }
+
+        }
+
+        return Response::json(['status'=>'OK', 'msg'=>$cnt.' pickup order created' ]);
 
     }
 

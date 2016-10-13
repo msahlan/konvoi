@@ -12,6 +12,7 @@ use App\Models\Buyer;
 use App\Models\Member;
 use App\Models\History;
 use App\Models\Shipmentlog;
+use App\Models\Device;
 
 use App\Helpers\Prefs;
 
@@ -30,6 +31,7 @@ use \MongoRegex;
 use \MongoDate;
 use DB;
 use HTML;
+use Route;
 
 class IncomingController extends AdminController {
 
@@ -125,21 +127,27 @@ class IncomingController extends AdminController {
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
+        $route = Route::current();
+
         $this->title = 'Payment Pickup Order';
 
         $this->place_action = 'first';
 
         $this->show_select = true;
 
-        $this->crumb->addCrumb('Shipment Order',url( strtolower($this->controller_name) ));
+        $this->crumb->addCrumb('Pickup Order',url( strtolower($this->controller_name) ));
 
+        /*
         $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')
                         ->with('submit_url','gl')
                         ->with('ajaxawbdlxl','incoming/awbdlxl')
                         ->with('importawburl','incoming/importawb')
                         ->render();
+        */
 
         $this->additional_filter .= View::make('shared.generate')->render();
+        $this->additional_filter .= View::make('shared.deviceassign')
+            ->with('ajaxdeviceurl',$route->getPrefix().'/'.strtolower($this->controller_name).'/shipmentlist')->render();
 
         //$this->additional_filter .= View::make('shared.cancelaction')->render();
 
@@ -169,7 +177,7 @@ class IncomingController extends AdminController {
 
         $db = config('jayon.main_db');
 
-        $this->def_order_by = 'ordertime';
+        $this->def_order_by = 'createdDate';
         $this->def_order_dir = 'desc';
         $this->place_action = 'first';
         $this->show_select = true;
@@ -370,6 +378,10 @@ class IncomingController extends AdminController {
 
     public function SQL_additional_query($model)
     {
+        $model = $model->where('status','=','new')
+                    ->orderBy('assignmentDate','desc')
+                    ->orderBy('pickupCity','desc')
+                    ->orderBy('pickupDistrict','desc');
 
         return $model;
 
@@ -392,121 +404,187 @@ class IncomingController extends AdminController {
 
     }
 
+    public function postShipmentlist()
+    {
+        $in = Request::input();
+
+        $city = $in['city'];
+
+        $district = $in['district'];
+
+        $date = $in['date'];
+
+        //$pick_up_date = new MongoDate(strtotime($date));
+
+        $pick_up_date = date('Y-m-d 00:00:00', strtotime($date));
+
+        //print $pick_up_date;
+
+        $shipments = Pickup::where('assignmentDate','=', $pick_up_date )
+                        ->where('status','=', 'new')
+                        ->where('pickupCity','=',$city)
+                        ->where('pickupDistrict','=',$district)
+                        ->get();
+
+        $shipments = $shipments->toArray();
+
+        //print_r($shipments);
+
+        for($i = 0; $i < count($shipments); $i++){
+            $shipments[$i]['assignmentDate'] = date('Y-m-d', strtotime($shipments[$i]['assignmentDate']) );
+            //$shipments[$i]['assignmentdate'] = date('Y-m-d', $shipments[$i]['assignmentdate']->sec );
+        }
+
+        $city = trim($city);
+        /*
+        $devices = Device::where('city','regex', new MongoRegex('/'.$city.'/i'))
+                                ->where(function($on){
+                                        $on->where('is_on','=',1)
+                                            ->orWhere('is_on','=',strval(1));
+                                })
+                                ->get();
+        */
+        $devices = Device::where('city','like', '%'.$city.'%')
+                                ->where(function($on){
+                                        $on->where('is_on','=',1)
+                                            ->orWhere('is_on','=',strval(1));
+                                })
+                                ->get();
+
+        $caps = array();
+
+        $dids = array();
+        foreach($devices as $d){
+            $dids[] = $d->id;
+        }
+
+        $qloads = Pickup::select('deviceName')
+                    ->where('assignmentDate',$pick_up_date)
+                    ->where('deviceKey','!=','')
+                    //->groupBy('deviceName')
+                    ->get();
+
+        $loads = array();
+
+        foreach($qloads as $ld){
+            if(isset($loads[$ld->deviceKey])){
+                $loads[$ld->deviceKey] += 1;
+            }else{
+                $loads[$ld->deviceKey] = 1;
+            }
+        }
+
+
+
+        foreach($devices as $d){
+            $caps[$d->key]['identifier'] = $d->identifier;
+            $caps[$d->key]['id'] = $d->id;
+            $caps[$d->key]['key'] = $d->key;
+            $caps[$d->key]['city'] = $d->city;
+            $caps[$d->key]['count'] = (isset( $loads[$d->id] ))?$loads[$d->id]:0;
+
+        }
+
+        return Response::json( array('result'=>'OK', 'shipment'=>$shipments, 'device'=>$caps ) );
+        //print_r($caps);
+
+    }
+
+    public function postAssigndevice()
+    {
+        $in = Request::input();
+
+        //better use device key to alleviate mysql dependency
+        $device = Device::where('key','=', $in['device'] )->first();
+
+        $shipments = Pickup::whereIn('transactionId', $in['ship_ids'] )->get();
+
+        //print_r($device);
+        //print_r($shipments->toArray());
+
+        $ts = new MongoDate();
+
+        foreach($shipments as $sh){
+
+            $pre = clone $sh;
+
+
+            //$sh->status = Config::get('jayon.trans_status_admin_zoned');
+            $sh->status = config('jayon.trans_status_admin_devassigned');
+            $sh->deviceKey = $device->key;
+            $sh->deviceName = $device->identifier;
+            $sh->deviceId = $device->id;
+            $sh->save();
+
+
+            $hdata = array();
+            $hdata['historyTimestamp'] = $ts;
+            $hdata['historyAction'] = 'assign_device';
+            $hdata['historySequence'] = 1;
+            $hdata['historyObjectType'] = 'shipment';
+            $hdata['actor'] = Auth::user()->name;
+            $hdata['actor_id'] = Auth::user()->_id;
+
+            $hdata = array_merge($sh->toArray(), $hdata );
+
+            //History::insert($hdata);
+
+            $sdata = array();
+            $sdata['timestamp'] = $ts;
+            $sdata['action'] = 'assign_device';
+            $sdata['reason'] = 'initial';
+            $sdata['objectType'] = 'shipment';
+            $sdata['object'] = $sh->toArray();
+            $sdata['preObject'] = $pre->toArray();
+            $sdata['actor'] = Auth::user()->name;
+            $sdata['actor_id'] = Auth::user()->_id;
+            //Shipmentlog::insert($sdata);
+
+        }
+
+        return Response::json( array('result'=>'OK', 'shipment'=>$shipments ) );
+
+    }
+
+
     public function rows_post_process($rows, $aux = null){
 
-        //print_r($this->aux_data);
-        /*
-        $total_base = 0;
-        $total_converted = 0;
-        $end = 0;
+        $date = '';
+        $city = '';
+        $zone = '';
 
-        $br = array_fill(0, $this->column_count(), '');
-
-
-        $nrows = array();
-
-        $subhead1 = '';
-        $subhead2 = '';
-        $subhead3 = '';
-
-        $seq = 0;
-
-        $subamount1 = 0;
-        $subamount2 = 0;
+        //print_r($rows);
 
         if(count($rows) > 0){
 
-            for($i = 0; $i < count($rows);$i++){
-
-                //print_r($rows[$i]['extra']);
-
-                if($subhead1 == '' || $subhead1 != $rows[$i][1] || $subhead2 != $rows[$i][4] ){
-
-                    $headline = $br;
-                    if($subhead1 != $rows[$i][1]){
-                        $headline[1] = '<b>'.$rows[$i]['extra']['PERIOD'].'</b>';
-                    }else{
-                        $headline[1] = '';
-                    }
-
-                    $headline[4] = '<b>'.$rows[$i]['extra']['ACCNT_CODE'].'</b>';
-                    $headline['extra']['rowclass'] = 'row-underline';
-
-                    if($subhead1 != ''){
-                        $amtline = $br;
-                        $amtline[8] = '<b>'.Ks::idr($subamount1).'</b>';
-                        $amtline[10] = '<b>'.Ks::idr($subamount2).'</b>';
-                        $amtline['extra']['rowclass'] = 'row-doubleunderline row-overline';
-
-                        $nrows[] = $amtline;
-                        $subamount1 = 0;
-                        $subamount2 = 0;
-                    }
-
-                    $subamount1 += $rows[$i]['extra']['OTHER_AMT'];
-                    $subamount2 += $rows[$i]['extra']['AMOUNT'];
-
-                    $nrows[] = $headline;
-
-                    $seq = 1;
-                    $rows[$i][0] = $seq;
-
-                    $rows[$i][8] = ($rows[$i]['extra']['CONV_CODE'] == 'IDR')?Ks::idr($rows[$i][8]):'';
-                    $rows[$i][9] = ($rows[$i]['extra']['CONV_CODE'] == 'IDR')?Ks::dec2($rows[$i][9]):'';
-                    $rows[$i][10] = Ks::usd($rows[$i][10]);
-
-                    $nrows[] = $rows[$i];
+            for($i = 0; $i < count($rows); $i++){
+                if($rows[$i][3] != $date){
+                    $city = '';
+                    $date = $rows[$i][3];
+                    $rows[$i][3] = '<input type="radio" name="date_select" value="'.$rows[$i][3].'" class="date_select form-control" /> '.$rows[$i][3];
                 }else{
-                    $seq++;
-                    $rows[$i][0] = $seq;
-
-                    $rows[$i][8] = ($rows[$i]['extra']['CONV_CODE'] == 'IDR')?Ks::idr($rows[$i][8]):'';
-                    $rows[$i][9] = ($rows[$i]['extra']['CONV_CODE'] == 'IDR')?Ks::dec2($rows[$i][9]):'';
-                    $rows[$i][10] = Ks::usd($rows[$i][10]);
-
-                    $nrows[] = $rows[$i];
-
-
+                    $rows[$i][3] = '';
                 }
 
-                $total_base += doubleval( $rows[$i][8] );
-                $total_converted += doubleval($rows[$i][10]);
-                $end = $i;
 
-                $subhead1 = $rows[$i][1];
-                $subhead2 = $rows[$i][4];
-            }
+                if($rows[$i][4] != $city){
+                    $city = $rows[$i][4];
+                    $rows[$i][4] = '<input type="radio" name="city_select" value="'.$rows[$i][4].'" class="city_select form-control" /> '.$rows[$i][4];
+                }else{
+                    $rows[$i][4] = '';
+                }
 
-            // show total Page
-            if($this->column_count() > 0){
-
-                $tb = $br;
-                $tb[1] = 'Total Page';
-                $tb[8] = Ks::idr($total_base);
-                $tb[10] = Ks::usd($total_converted);
-
-                $nrows[] = $tb;
-
-                if(!is_null($this->aux_data)){
-                    $td = $br;
-                    $td[1] = 'Total';
-                    $td[8] = Ks::idr($aux['total_data_base']);
-                    $td[10] = Ks::usd($aux['total_data_converted']);
-                    $nrows[] = $td;
+                if($rows[$i][5] != $zone){
+                    $zone = $rows[$i][5];
+                    $rows[$i][5] = '<input type="radio" name="zone_select" value="'.$rows[$i][5].'" class="zone_select form-control" /> '.$rows[$i][5];
+                }else{
+                    $rows[$i][5] = '';
                 }
 
             }
 
-            return $nrows;
-
-        }else{
-
-            return $rows;
 
         }
-        */
-
-        // show total queried
 
         return $rows;
 

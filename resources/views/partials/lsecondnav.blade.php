@@ -102,9 +102,6 @@
                                        <li class="{{ sa('incoming') }}" >
                                             <a href="{{ url('pickup/incoming') }}"><i class="icon-inbox-alt"></i> Payment Pickup Order</a>
                                         </li>
-                                        <li class="{{ sa('zoning') }}" >
-                                            <a href="{{ url('pickup/zoning') }}"><i class="icon-map"></i> Device Zone Assignment</a>
-                                        </li>
                                         <li class="{{ sa('courierassign') }}" >
                                             <a href="{{ url('pickup/courierassign') }}"><i class="icon-person"></i> Rider Assignment</a>
                                         </li>
@@ -113,7 +110,7 @@
                                         </li>
 
                                         <li class="dropdown-header">Archives</li>
-    
+
                                         <li class="{{ sa('delivered') }}" ><a href="{{ url('pickup/delivered') }}"><i class="icon-clippy"></i> Payment Status</a></li>
 
                                         <li class="{{ sa('canceled') }}" ><a href="{{ url('pickup/canceled') }}"><i class="icon-stack-cancel"></i> Canceled</a></li>

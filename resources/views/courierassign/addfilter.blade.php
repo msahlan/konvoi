@@ -15,8 +15,8 @@
         {!! Former::text('courier_id','Courier ID')->id('courier-id') !!}
 
         {!! Former::text('pickup_date','Delivery Date')->id('pickup-date')->class('form-control')->readonly(true) !!}
-        {!! Former::text('device_name','Device')->id('device-name')->class('form-control')->readonly(true) !!}
-        {!! Former::text('device_key','Device')->id('device-key')->class('form-control')->readonly(true) !!}
+        {!! Former::text('device_name','Device Name')->id('device-name')->class('form-control')->readonly(true) !!}
+        {!! Former::text('device_key','Device Key')->id('device-key')->class('form-control')->readonly(true) !!}
 
     </div>
     <div class="modal-footer">
@@ -210,7 +210,7 @@
             var pickup_date = $('#pickup-date').val();
 
             if(courier_id != ''){
-                $.post('{!! URL::to('courierassign/assigncourier')!!}',
+                $.post('{!! URL::to('pickup/courierassign/assigncourier')!!}',
                     {
 
                         courier_name : courier_name,

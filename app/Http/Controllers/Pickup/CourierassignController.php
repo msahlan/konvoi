@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Pickup;
 
 use App\Http\Controllers\AdminController;
 
-use App\Models\Shipment;
+use App\Models\Pickup;
 use App\Models\Courier;
 use App\Models\Device;
 use App\Models\History;
@@ -26,6 +26,7 @@ use \MongoDate;
 use \MongoRegex;
 use DB;
 use HTML;
+use Route;
 
 class CourierassignController extends AdminController {
 
@@ -41,9 +42,9 @@ class CourierassignController extends AdminController {
         //$this->crumb->append('Home','left',true);
         //$this->crumb->append(strtolower($this->controller_name));
 
-        $this->model = new Shipment();
+        $this->model = new Pickup();
         //$this->model = DB::collection('documents');
-        $this->title = 'Courier Assignment';
+        $this->title = 'Rider Assignment';
 
     }
 
@@ -115,17 +116,18 @@ class CourierassignController extends AdminController {
     {
 
 
-        $this->heads = config('jex.default_courier_heads');
+        $this->heads = config('jc.default_courier_heads');
 
+        $route = Route::current();
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Courier Assignment';
+        $this->title = 'Rider Assignment';
 
         $this->place_action = 'first';
 
         $this->show_select = true;
 
-        $this->crumb->addCrumb('Shipment Order',url( strtolower($this->controller_name) ));
+        $this->crumb->addCrumb('Pickup Order',url( strtolower($this->controller_name) ));
 
 
         $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl')->render();
@@ -147,7 +149,7 @@ class CourierassignController extends AdminController {
     public function postIndex()
     {
 
-        $this->fields = config('jex.default_courier_fields');
+        $this->fields = config('jc.default_courier_fields');
 
         $db = config('jayon.main_db');
 
@@ -160,7 +162,7 @@ class CourierassignController extends AdminController {
         $this->sql_table_name = config('jayon.incoming_delivery_table');
         $this->sql_connection = 'mysql';
 
-        return parent::SQLtableResponder();
+        return parent::tableResponder();
     }
 
     public function getStatic()
@@ -285,7 +287,7 @@ class CourierassignController extends AdminController {
 
         //print $this->model->where('docFormat','picture')->get()->toJSON();
 
-        $this->title = 'Courier Assignment';
+        $this->title = 'Rider Assignment';
 
         $this->crumb->addCrumb('Cost Report',url( strtolower($this->controller_name) ));
 
@@ -356,55 +358,12 @@ class CourierassignController extends AdminController {
 
     public function SQL_additional_query($model)
     {
-        $in = Request::input();
 
-        $period_from = Request::input('acc-period-from');
-        $period_to = Request::input('acc-period-to');
-
-        $db = config('lundin.main_db');
-
-        $company = Request::input('acc-company');
-
-        $company = strtolower($company);
-
-        /*
-        if($period_from == ''){
-            $model = $model->select($company.'_a_salfldg.*',$company.'_acnt.DESCR as ACC_DESCR')
-                ->leftJoin($company.'_acnt', $company.'_a_salfldg.ACCNT_CODE', '=', $company.'_acnt.ACNT_CODE' );
-        }else{
-            $model = $model->select($company.'_a_salfldg.*',$company.'_acnt.DESCR as ACC_DESCR')
-                ->leftJoin($company.'_acnt', $company.'_a_salfldg.ACCNT_CODE', '=', $company.'_acnt.ACNT_CODE' )
-                ->where('PERIOD','>=', Request::input('acc-period-from') )
-                ->where('PERIOD','<=', Request::input('acc-period-to') )
-                ->where('ACCNT_CODE','>=', Request::input('acc-code-from') )
-                ->where('ACCNT_CODE','<=', Request::input('acc-code-to') )
-                ->orderBy('PERIOD','DESC')
-                ->orderBy('ACCNT_CODE','ASC')
-                ->orderBy('TRANS_DATETIME','DESC');
-        }
-        */
-
-        $txtab = config('jayon.incoming_delivery_table');
-
-        $model = $model->select(
-                DB::raw(
-                    config('jayon.incoming_delivery_table').'.* ,'.
-                    config('jayon.jayon_members_table').'.merchantname as merchant_name ,'.
-                    config('jayon.applications_table').'.application_name as app_name ,'.
-                    config('jayon.jayon_devices_table').'.identifier as device_name ,'.
-                    '('.$txtab.'.width * '.$txtab.'.height * '.$txtab.'.length ) as volume'
-                )
-            )
-            ->leftJoin(config('jayon.jayon_members_table'), config('jayon.incoming_delivery_table').'.merchant_id', '=', config('jayon.jayon_members_table').'.id' )
-            ->leftJoin(config('jayon.applications_table'), config('jayon.incoming_delivery_table').'.application_id', '=', config('jayon.applications_table').'.id' )
-            ->leftJoin(config('jayon.jayon_devices_table'), config('jayon.incoming_delivery_table').'.device_id', '=', config('jayon.jayon_devices_table').'.id' )
-            ->where('status','=', config('jayon.trans_status_admin_devassigned') )
-            ->orderBy('ordertime','desc');
-
-        //print_r($in);
-
-
-        //$model = $model->where('group_id', '=', 4);
+        $model = $model->where('status','=',config('jayon.trans_status_admin_devassigned'))
+                    ->orderBy('deviceName','desc')
+                    ->orderBy('assignmentDate','desc')
+                    ->orderBy('pickupCity','desc')
+                    ->orderBy('pickupDistrict','desc');
 
         return $model;
 
@@ -438,10 +397,10 @@ class CourierassignController extends AdminController {
 
         $in = Request::input();
 
-        $pickup_date = date('Y-m-d',strtotime($in['pickup_date']));
+        $pickup_date = date('Y-m-d 00:00:00',strtotime($in['pickup_date']));
 
-        $shipments = Shipment::where('device_id','=', $in['device_key'] )
-                        ->where('assignment_date','like', $pickup_date.'%' )
+        $shipments = Pickup::where('deviceKey','=', $in['device_key'] )
+                        ->where('assignmentDate','=', $pickup_date )
                         ->where('status','=',config('jayon.trans_status_admin_devassigned'))
                         ->get();
 
@@ -454,8 +413,8 @@ class CourierassignController extends AdminController {
 
             $sh->bucket = config('jayon.bucket_tracker');
             $sh->status = config('jayon.trans_status_admin_courierassigned');
-            $sh->courier_id = $in['courier_id'];
-            $sh->courier_name = $in['courier_name'];
+            $sh->courierId = $in['courier_id'];
+            $sh->courierName = $in['courier_name'];
             $sh->save();
 
 
@@ -515,7 +474,7 @@ class CourierassignController extends AdminController {
 
 
                 if($rows[$i][$device_index] != $device){
-                    $device_key = (isset($extra['device_id']))?$extra['device_id']:$rows[$i][$device_index];
+                    $device_key = (isset($extra['deviceKey']))?$extra['deviceKey']:$rows[$i][$device_index];
                     $device = $rows[$i][$device_index];
                     $rows[$i][$device_index] = '<input type="radio" name="device_select" value="'.$device_key.'" data-name="'.$device.'" class="device_select form-control" /> '.$rows[$i][$device_index];
                 }else{

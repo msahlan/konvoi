@@ -331,6 +331,9 @@ Route::group( [ 'prefix'=>'pickup', 'middlewareGroup'=>['web'] ] , function(){
     Route::get('/incoming/add', 'Pickup\IncomingController@getAdd');
     Route::post('/incoming/add', 'Pickup\IncomingController@postAdd');
     Route::post('/incoming/assigndate', 'Pickup\IncomingController@postAssigndate');
+    Route::post('/incoming/shipmentlist', 'Pickup\IncomingController@postShipmentlist');
+    Route::post('/incoming/assigndevice', 'Pickup\IncomingController@postAssigndevice');
+    Route::post('/incoming/deviceavail', 'Pickup\IncomingController@postDeviceavail');
 
 
     Route::get('/zoning', 'Pickup\ZoningController@getIndex');

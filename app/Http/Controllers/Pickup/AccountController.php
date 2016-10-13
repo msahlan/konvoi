@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pickup;
 use App\Http\Controllers\AdminController;
 
 use App\Models\Creditaccount;
+use App\Models\Creditor;
 use App\Models\Uploaded;
 use App\Models\Role;
 
@@ -84,6 +85,8 @@ class AccountController extends AdminController {
 
         $day_load = $this->getQuotaByDate();
 
+        //$this->additional_filter = View::make('shared.generate');
+
         $this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')
                 ->with('day_load', $day_load )
                 ->with('submit_url','gl')
@@ -107,9 +110,9 @@ class AccountController extends AdminController {
             array('contractName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('creditorName',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('Type',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('dueDate',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
+            array('dueDate',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
             array('installmentAmt',array('kind'=>'currency','query'=>'like','pos'=>'both','show'=>true)),
-            array('pickupDate',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('pickupDate',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupAddress',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupDistrict',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupCity',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -282,6 +285,61 @@ class AccountController extends AdminController {
 
     }
 
+    public function getImport(){
+
+        $this->importkey = '_id';
+
+        $this->import_aux_form = View::make(strtolower($this->controller_name).'.crimportauxform')->render();
+
+        return parent::getImport();
+    }
+
+    public function postUploadimport()
+    {
+        $this->importkey = '_id';
+
+        return parent::postUploadimport();
+    }
+
+    public function processImportAuxForm()
+    {
+
+        return array(
+            'creditor'=>Request::input('creditor'),
+            'creditorName'=>''
+         );
+    }
+
+    public function beforeImportCommit($data)
+    {
+
+        unset($data['createdDate']);
+        unset($data['lastUpdate']);
+
+        $data['created'] = $data['created_at'];
+
+        unset($data['created_at']);
+        unset($data['updated_at']);
+
+        unset($data['volume']);
+        unset($data['sessId']);
+        unset($data['isHead']);
+
+        $data['active'] = (strtolower($data['active']) == 'yes')?true:false;
+
+        $data['payerId'] = '';
+        $data['payerName'] = $data['contractName'];
+
+        $creditor = Creditor::find($data['creditor']);
+        $data['creditorName'] = $creditor->coName;
+
+        $data['dueDate'] = intval($data['dueDate']);
+        $data['pickupDate'] = intval($data['pickupDate']);
+
+        return $data;
+    }
+
+
     public function postDlxl()
     {
 
@@ -343,6 +401,7 @@ class AccountController extends AdminController {
 
         return $quotas;
     }
+
 
 
 }

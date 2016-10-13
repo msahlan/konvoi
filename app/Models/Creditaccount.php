@@ -6,4 +6,5 @@ class Creditaccount extends Eloquent {
 
     protected $collection = 'creditaccounts';
 
+
 }

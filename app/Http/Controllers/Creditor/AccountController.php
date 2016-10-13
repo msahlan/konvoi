@@ -91,9 +91,9 @@ class AccountController extends AdminController {
             array('contractNumber',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
             array('contractName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('Type',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('dueDate',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
+            array('dueDate',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
             array('installmentAmt',array('kind'=>'currency','query'=>'like','pos'=>'both','show'=>true)),
-            array('pickupDate',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('pickupDate',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupAddress',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             //array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             //array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
@@ -307,7 +307,7 @@ class AccountController extends AdminController {
         $data['active'] = (strtolower($data['active']) == 'yes')?true:false;
 
         $data['payerId'] = '';
-        $data['payerName'] = '';
+        $data['payerName'] = $data['contractName'];
 
         $data['dueDate'] = intval($data['dueDate']);
         $data['pickupDate'] = intval($data['pickupDate']);
