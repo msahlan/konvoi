@@ -557,7 +557,7 @@ class SyncapiController extends Controller {
                     $hdata['actor'] = $user->identifier;
                     $hdata['actor_id'] = $user->key;
 
-                    History::insert($hdata);
+                    //History::insert($hdata);
 
                     $sdata = array();
                     $sdata['timestamp'] = $ts;
@@ -1137,7 +1137,7 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)
+                $shipment = Shipment::where('transactionId','=',$olog->transactionId)
                                 //->where('status','!=','delivered')
                                 ->first();
 
@@ -1147,7 +1147,7 @@ class SyncapiController extends Controller {
 
 
                     //|| $shipment->change_actor != 'APP'
-                    if($shipment->status == 'delivered' || $shipment->status == 'returned'
+                    if($shipment->status == 'success' || $shipment->status == 'failed'
                             //|| ( $shipment->status != 'delivered' && $shipment->status != 'returned' && $shipment->change_actor != 'APP')
                       ){
                         $changes = false;
@@ -1183,7 +1183,7 @@ class SyncapiController extends Controller {
 
                     }else
                     */
-                    if($olog->status == 'delivered' || $olog->status == 'returned' || $olog->status == 'pending'){
+                    if($olog->status == 'success' || $olog->status == 'failed' || $olog->status == 'pending'){
 
                         if($olog->status == 'pending'){
                             if($shipment->delivery_note != $olog->deliveryNote){
@@ -1191,19 +1191,27 @@ class SyncapiController extends Controller {
                             }
                         }
 
-                        if( $olog->status == 'delivered' && $shipment->status != 'delivered' ){
+                        if( $olog->status == 'success' && $shipment->status != 'success' ){
                             if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
                                 $shipment->deliverytime = date('Y-m-d H:i:s',time());
                                 $shipment->eventtime = date('Y-m-d H:i:s',time());
+                                $shipment->deliverytimeTs = MongoDate(time());
+                                $shipment->eventtimeTs = MongoDate(time());
                             }else{
                                 $shipment->deliverytime = $olog->deliverytime;
                                 $shipment->eventtime = $olog->deliverytime;
+
+                                $shipment->deliverytimeTs = MongoDate(strtotime($olog->deliverytime));
+                                $shipment->eventtimeTs = MongoDate(strtotime($olog->deliverytime));
+
                             }
                         }else{
                             if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
                                 $shipment->eventtime = date('Y-m-d H:i:s',time());
+                                $shipment->eventtimeTs = MongoDate(time());
                             }else{
                                 $shipment->eventtime = $olog->deliverytime;
+                                $shipment->eventtimeTs = MongoDate(strtotime($olog->deliverytime));
                             }
                         }
 

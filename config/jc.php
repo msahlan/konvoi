@@ -3,7 +3,7 @@ return array(
 
         'api_page_size'=>50,
 
-        'tracker_app'=>'com.kickstartlab.android.jexdelivery',
+        'tracker_app'=>'com.kickstartlab.android.jcrider',
         'hub_app'=>'com.kickstartlab.android.jexwarehouse',
         'pickup_app'=>'com.kickstartlab.android.jexpickup',
 
