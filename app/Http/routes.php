@@ -391,6 +391,7 @@ Route::group(array('prefix' => 'api/v1/mobile','middleware'=>array('api') ), fun
     Route::resource('rack', 'Api\RackapiController');
     Route::resource('asset', 'Api\AssetapiController');
     Route::resource('delivery', 'Api\DeliveryapiController');
+    Route::resource('payment', 'Api\PaymentpickupapiController');
     Route::resource('pickup', 'Api\PickupapiController');
     Route::resource('warehouse', 'Api\HubapiController');
     Route::resource('merchant', 'Api\MerchantapiController');
