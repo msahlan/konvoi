@@ -1196,22 +1196,23 @@ class SyncapiController extends Controller {
                             if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
                                 $shipment->deliverytime = date('Y-m-d H:i:s',time());
                                 $shipment->eventtime = date('Y-m-d H:i:s',time());
-                                $shipment->deliverytimeTs = MongoDate(time());
-                                $shipment->eventtimeTs = MongoDate(time());
+                                $shipment->deliverytimeTs = new MongoDate(time());
+                                $shipment->eventtimeTs = new MongoDate(time());
                             }else{
                                 $shipment->deliverytime = $olog->deliverytime;
                                 $shipment->eventtime = $olog->deliverytime;
 
-                                $shipment->deliverytimeTs = MongoDate(strtotime($olog->deliverytime));
-                                $shipment->eventtimeTs = MongoDate(strtotime($olog->deliverytime));
+                                $shipment->deliverytimeTs = new MongoDate(strtotime($olog->deliverytime));
+                                $shipment->eventtimeTs = new MongoDate(strtotime($olog->deliverytime));
 
                             }
                         }else{
                             if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
                                 $shipment->eventtime = date('Y-m-d H:i:s',time());
+                                $shipment->eventtimeTs = new MongoDate(time());
                             }else{
                                 $shipment->eventtime = $olog->deliverytime;
-                                $shipment->eventtimeTs = MongoDate(strtotime($olog->deliverytime));
+                                $shipment->eventtimeTs = new MongoDate(strtotime($olog->deliverytime));
                             }
                         }
 
