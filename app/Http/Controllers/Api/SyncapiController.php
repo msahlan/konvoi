@@ -15,6 +15,7 @@ use App\Models\Imagemeta;
 use App\Models\Uploaded;
 use App\Models\History;
 use App\Models\Shipmentlog;
+use App\Models\Pickup;
 
 
 use App\Models\Deliverydetail;
@@ -251,7 +252,7 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+                $shipment = Pickup::where('transactionId','=',$olog->deliveryId)->first();
 
                 if($shipment){
 
@@ -374,7 +375,7 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+                $shipment = Pickup::where('transactionId','=',$olog->deliveryId)->first();
 
                 if($shipment){
 
@@ -497,7 +498,7 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)
+                $shipment = Pickup::where('transactionId','=',$olog->deliveryId)
                                 //->where('status','!=','delivered')
                                 ->first();
 
@@ -557,7 +558,7 @@ class SyncapiController extends Controller {
                     $hdata['actor'] = $user->identifier;
                     $hdata['actor_id'] = $user->key;
 
-                    //History::insert($hdata);
+                    History::insert($hdata);
 
                     $sdata = array();
                     $sdata['timestamp'] = $ts;
@@ -832,7 +833,7 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+                $shipment = Pickup::where('transactionId','=',$olog->deliveryId)->first();
 
                 if($shipment){
                     //$shipment->status = $olog->status;
@@ -944,7 +945,7 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = Shipment::where('delivery_id','=',$olog->deliveryId)->first();
+                $shipment = Pickup::where('transactionId','=',$olog->deliveryId)->first();
 
                 if($shipment){
 
@@ -1137,7 +1138,7 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = Shipment::where('transactionId','=',$olog->transactionId)
+                $shipment = Pickup::where('transactionId','=',$olog->deliveryId)
                                 //->where('status','!=','delivered')
                                 ->first();
 
@@ -1208,7 +1209,6 @@ class SyncapiController extends Controller {
                         }else{
                             if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
                                 $shipment->eventtime = date('Y-m-d H:i:s',time());
-                                $shipment->eventtimeTs = MongoDate(time());
                             }else{
                                 $shipment->eventtime = $olog->deliverytime;
                                 $shipment->eventtimeTs = MongoDate(strtotime($olog->deliverytime));
@@ -1455,7 +1455,7 @@ class SyncapiController extends Controller {
                                 ->count();
 
                 if($pending > 0){
-                    $ord = Shipment::where('delivery_id','=',$j['deliveryId'])->first();
+                    $ord = Pickup::where('transactionId','=',$j['deliveryId'])->first();
                     $ord->pending_count = $pending;
                     $ord->save();
                 }
