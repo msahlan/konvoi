@@ -1138,7 +1138,7 @@ class SyncapiController extends Controller {
 
                 $r = $olog->save();
 
-                $shipment = Pickup::where('transactionId','=',$olog->deliveryId)
+                $shipment = Pickup::where('transactionId','=',$olog->transactionId)
                                 //->where('status','!=','delivered')
                                 ->first();
 
