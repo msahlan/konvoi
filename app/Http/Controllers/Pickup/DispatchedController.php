@@ -295,6 +295,12 @@ class DispatchedController extends AdminController {
 
     public function SQL_additional_query($model)
     {
+        $model = $model->where('status','=',config('jayon.trans_status_admin_courierassigned'))
+                    ->orderBy('deviceName','desc')
+                    ->orderBy('courierName','desc')
+                    ->orderBy('assignmentDate','desc')
+                    ->orderBy('pickupCity','desc')
+                    ->orderBy('pickupDistrict','desc');
 
         return $model;
 
