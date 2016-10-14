@@ -145,6 +145,13 @@ class PaymentpickupapiController extends BaseController {
 
         $dev = Device::where('key','=',$key)->first();
 
+        if(!$dev){
+            $actor = 'no id : no name';
+            Event::fire('log.api',array($this->controller_name, 'post' ,$actor,'device not found'));
+
+            return Response::json(array('status'=>'ERR:NODEVICE', 'timestamp'=>time(), 'message'=>'no id' ));
+        }
+
         $orders = $this->model
 
             ->where(function($q) use($dev, $deliverydate){
@@ -169,9 +176,11 @@ class PaymentpickupapiController extends BaseController {
             ->orderBy('assignmentDate','desc')
             ->get();
 
-        $total_billing = 0;
-        $total_delivery = 0;
-        $total_cod = 0;
+        //print_r($orders->toArray());
+
+        $out = [];
+
+        $orders  = $orders->toArray();
 
         for($n = 0; $n < count($orders);$n++){
             $or = new \stdClass();
@@ -180,19 +189,20 @@ class PaymentpickupapiController extends BaseController {
                 $or->$nk = (is_null($v))?'':$v;
             }
 
-            $or->extId = $or->id;
-            unset($or->id);
+            $or->extId = $or->Id;
+            unset($or->Id);
+            unset($or->assignmentDateTs);
 
-            $or->merchantObject = $this->merchantObject($or->merchantId);
+            //$or->merchantObject = $this->merchantObject($or->creditor);
 
-            $orders[$n] = $or;
+            $out[$n] = $or;
         }
 
 
         $actor = $key;
         Event::fire('log.api',array($this->controller_name, 'get' ,$actor,'logged out'));
 
-        return $orders;
+        return $out;
         //
     }
 
@@ -297,7 +307,7 @@ class PaymentpickupapiController extends BaseController {
 
     public function merchantObject($merchant_id)
     {
-        $merchant = Merchant::where('id','=',$merchant_id)->first();
+        $merchant = Creditor::find($merchant_id);
         if($merchant){
 
             $merchant = $merchant->toArray();
