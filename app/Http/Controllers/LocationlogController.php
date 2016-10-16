@@ -7,6 +7,7 @@ use App\Models\Orderlog;
 use App\Models\Uploaded;
 use App\Models\Geolog;
 use App\Models\Role;
+use App\Models\Device;
 
 use App\Helpers\Prefs;
 
