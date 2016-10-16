@@ -149,6 +149,9 @@ Route::post('/ajax/confirmdata', 'AjaxController@postConfirmdata');
 Route::post('/ajax/canceldata', 'AjaxController@postCanceldata');
 Route::post('/ajax/generatedata', 'AjaxController@postGeneratedata');
 
+Route::post('/ajax/routelist', 'AjaxController@postRoutelist');
+Route::post('/ajax/saveroutelist', 'AjaxController@postSaveroutelist');
+
 
 Route::get('/profile', 'ProfileController@getIndex');
 
@@ -166,6 +169,9 @@ Route::post('/locationlog', 'LocationlogController@postIndex');
 
 Route::get('/route', 'RouteController@getIndex');
 Route::post('/route', 'RouteController@postIndex');
+Route::post('/route/locsearch', 'RouteController@postLocsearch');
+Route::post('/route/locsave', 'RouteController@postLocsave');
+Route::post('/route/saveseq', 'RouteController@postSaveseq');
 
 
 Route::group( [ 'prefix'=>'document', 'middlewareGroup'=>['web'] ] , function(){

@@ -350,7 +350,7 @@ select.input-sm {
                     {!! Former::text('Device')->id('devname')->class('form-control auto-device')  !!}
                 </div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                    {!! Former::text('Device ID')->id('devid')->class('form-control device-id')  !!}
+                    {!! Former::text('Device Key')->id('devid')->class('form-control device-key')  !!}
                 </div>
                 <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                     {!! Former::select('line_weight','Line Size')->options(range(4,8))->id('lineWeight')  !!}
@@ -443,6 +443,12 @@ select.input-sm {
 
     $(document).ready(function() {
 
+        $.ajaxSetup({
+           'beforeSend': function(xhr) {
+                xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
+            }
+        });
+
         $('#sel-result').on('click',function(e){
             if ($(e.target).is('.bt-viewmap')) {
                 var lat = $(e.target).data('lat');
@@ -459,6 +465,24 @@ select.input-sm {
 
         $('#use-location').on('click',function(e){
             var id = $('#target-obj').val();
+            var lat = $('#sel-lat').val();
+            var lon = $('#sel-lon').val();
+
+            $.post('{{ url('route/locsave') }}',
+                {
+                    id: id,
+                    lat: lat,
+                    lon: lon
+                },
+                function(data){
+                    if(data.result == 'OK'){
+                        $('#addresspick-modal').modal('hide');
+                        pullOrderData();
+                        refreshMap();
+                    }
+
+                },'json' );
+
 
         });
 

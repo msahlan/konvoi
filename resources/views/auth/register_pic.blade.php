@@ -6,6 +6,8 @@
 
         if($route == 'creditor/register'){
             $regrole = 'Creditor';
+        }else if($route == 'provider/register'){
+            $regrole = 'Provider';
         }else{
             $regrole = 'Member';            
         }

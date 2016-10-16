@@ -18,6 +18,7 @@ class Pickup extends Eloquent {
         'accountId',
         'assignmentDate',
         'assignmentDateTs',
+        'assignmentSeq',
         'periodMonth',
         'active',
         'contractName',

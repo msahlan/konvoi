@@ -123,6 +123,7 @@ class AjaxController extends BaseController {
             $acc['periodMonth'] = intval($month);
             $acc['assignmentDate'] = date( 'Y-m-d 00:00:00', time() );
             $acc['assignmentDateTs'] = new MongoDate( strtotime($acc['assignmentDate']) );
+            $acc['assignmentSeq'] = intval(0);
             $acc['status'] = 'new';
             $acc['transactionId'] = Prefs::getDeliveryId();
 
@@ -158,9 +159,9 @@ class AjaxController extends BaseController {
         $device = $in['devname'];
         $devid = $in['devid'];
 
-        $orders = Shipment::where('assignment_date','=',$ts)
-                    ->where('device_id','=',$devid)
-                    ->orderBy('assignment_seq','desc')
+        $orders = Pickup::where('assignmentDate','=',$ts.' 00:00:00' )
+                    ->where('deviceKey','=',$devid)
+                    ->orderBy('assignmentSeq','desc')
                     ->get();
 
         //print_r($orders);
@@ -190,7 +191,7 @@ class AjaxController extends BaseController {
 
         if( $delivery_id != ''){
 
-            $shipment = Shipment::where('delivery_id','=',$delivery_id)->first();
+            $shipment = Pickup::where('transactionId','=',$delivery_id)->first();
 
             if($shipment){
 

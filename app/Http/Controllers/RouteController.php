@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\AdminController;
 
+use App\Models\Pickup;
 use App\Models\Orderlog;
 use App\Models\Uploaded;
 use App\Models\Geolog;
@@ -131,14 +132,32 @@ class RouteController extends AdminController {
             $seqs[$i['id']] = $i['seq'];
         }
 
-        $shipments = Shipment::whereIn('delivery_id',$ids)->get();
+        $shipments = Pickup::whereIn('transactionId',$ids)->get();
 
         foreach($shipments as $ship){
-            $ship->assignment_seq = $seqs[$ship->delivery_id];
+            $ship->assignmentSeq = intval($seqs[$ship->transactionId]);
             $ship->save();
         }
 
         return Response::json(array('result'=>'OK'));
+
+    }
+
+
+
+    public function postLocsave()
+    {
+        $in = Request::input();
+
+        $order = Pickup::where('transactionId','=',$in['id'])
+                    ->first();
+        $order->latitude = $in['lat'];
+
+        $order->longitude = $in['lon'];
+
+        $order->save();
+
+        return Response::json(['result'=>'OK']);
 
     }
 
@@ -149,9 +168,11 @@ class RouteController extends AdminController {
 
         $term = $in['term'];
 
-        $orders = Shipment::where('shipping_address','like','%'.$term.'%')
+        $orders = Pickup::where('pickupAddress','like','%'.$term.'%')
                     ->where('latitude','!=','')
                     ->where('longitude','!=','')
+                    ->where('latitude','!=',0)
+                    ->where('longitude','!=',0)
                     ->get();
 
         //print_r($orders);
