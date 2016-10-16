@@ -1103,7 +1103,7 @@ class DeliveredController extends AdminController {
             if(count($pics) > 0){
                 foreach($pics as $g){
                     if($g->is_image == 1){
-                        $thumbnail_url = $g->thumbnail_url;
+                        $thumbnail_url = $g->square_url;
                         $glinks .= '<input type="hidden" class="g_'.$data['transactionId'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
                         $img_cnt++;
                     }

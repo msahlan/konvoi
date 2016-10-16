@@ -138,6 +138,10 @@ class UploadapiController extends Controller {
                     ->fit($ps['thumbnail']['width'],$ps['thumbnail']['height'])
                     ->save($destinationPath.'/th_'.$filename);
 
+                $square = Image::make($destinationPath.'/'.$filename)
+                    ->fit($ps['square']['width'],$ps['square']['height'])
+                    ->save($destinationPath.'/sq_'.$filename);
+
                 $medium = Image::make($destinationPath.'/'.$filename)
                     ->fit($ps['medium']['width'],$ps['medium']['height'])
                     ->save($destinationPath.'/med_'.$filename);
@@ -151,6 +155,7 @@ class UploadapiController extends Controller {
 
                 $image_size_array = array(
                     'thumbnail_url'=> url('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['thumbnail']['prefix'].$filename),
+                    'square_url'=> url('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['square']['prefix'].$filename),
                     'large_url'=> url('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['large']['prefix'].$filename),
                     'medium_url'=> url('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['medium']['prefix'].$filename),
                     'full_url'=> url('storage/media/'.$timepath.'/'.$rstring.'/'.$ps['full']['prefix'].$filename),
