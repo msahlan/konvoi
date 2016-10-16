@@ -649,6 +649,7 @@ class SyncapiController extends Controller {
                 $upl = Uploaded::where('_id','=',new MongoId($blog->extId))->first();
 
                 if($upl){
+                   $upl->category = $blog->category;
                    $upl->is_signature = $blog->isSignature;
                    $upl->latitude = $blog->latitude;
                    $upl->longitude = $blog->longitude;
