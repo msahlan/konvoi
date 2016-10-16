@@ -1084,7 +1084,7 @@ class DeliveredController extends AdminController {
     {
         //$data = $data->toArray();
 
-        $pics = Uploaded::where('parent_id','=', $data['delivery_id'] )
+        $pics = Uploaded::where('parent_id','=', $data['transactionId'] )
                     //->whereIn('_id', $data['fileid'])
                     ->where('deleted','=',0)
                     ->get();
@@ -1104,7 +1104,7 @@ class DeliveredController extends AdminController {
                 foreach($pics as $g){
                     if($g->is_image == 1){
                         $thumbnail_url = $g->square_url;
-                        $glinks .= '<input type="hidden" class="g_'.$data['delivery_id'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
+                        $glinks .= '<input type="hidden" class="g_'.$data['transactionId'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
                         $img_cnt++;
                     }
 
@@ -1119,7 +1119,7 @@ class DeliveredController extends AdminController {
                 $stat = $img_cnt.' pics, '.$sign_cnt.' signature';
 
                 if($img_cnt > 0){
-                    $display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['delivery_id'])).$glinks.'<br />'.$stat;
+                    $display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['transactionId'])).$glinks.'<br />'.$stat;
                 }else{
 
                     $display = '<span class="fa-stack fa-2x">
