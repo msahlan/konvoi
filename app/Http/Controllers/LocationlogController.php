@@ -28,7 +28,7 @@ class LocationlogController extends AdminController {
     {
         parent::__construct();
 
-                $cname = substr(strrchr(get_class($this), '\\'), 1);
+        $cname = substr(strrchr(get_class($this), '\\'), 1);
         $this->controller_name = str_replace('Controller', '', $cname);
 
 

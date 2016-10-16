@@ -75,6 +75,13 @@
     OSM_URL = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     OSM_ATTRIB = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
+    $.ajaxSetup({
+       'beforeSend': function(xhr) {
+            xhr.setRequestHeader("X-CSRF-TOKEN", "{{ csrf_token() }}" );
+        }
+    });
+
+
     $(document).ready(function() {
 
         var map = L.map('lmap').setView([-6.17742,106.828308], 12);
