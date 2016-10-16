@@ -12,6 +12,7 @@ use App\Models\Printdefault;
 use App\Models\Generatedawb;
 use App\Models\Creditor;
 use App\Models\Coverage;
+use App\Models\Device;
 
 
 use \Auth;
