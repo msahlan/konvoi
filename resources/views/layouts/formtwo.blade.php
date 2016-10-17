@@ -171,12 +171,12 @@
                                 </ul>
                             </div>
                         @endif
-                        {!! Former::open_for_files_vertical($submit,'POST',array('class'=>'container')) !!}
+                        {!! Former::open_for_files_vertical($submit,'POST',array('class'=>'')) !!}
                         <div class="row">
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12 col-md-6 col-6">
                               @yield('left')
                             </div>
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12 col-md-6 col-6">
                               @yield('right')
                             </div>
                         </div>

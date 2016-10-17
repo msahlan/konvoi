@@ -18,6 +18,8 @@ use App\Models\History;
 use App\Models\Shipmentlog;
 use App\Models\Creditaccount;
 use App\Models\Pickup;
+use App\Models\Credittype;
+use App\Models\Coverage;
 
 use App\Helpers\Prefs;
 use App\Helpers\PointLocation;
@@ -1932,6 +1934,77 @@ class AjaxController extends BaseController {
         return Response::json($result);
     }
 
+    public function getCreditprogram()
+    {
+        $q = Request::input('term');
+        $c = Request::input('cat');
+
+        $q = '%'.$q.'%';
+
+        $cp = Credittype::where('programName','like',$q)->where('creditor','=',$c)->get();
+
+        $result = array();
+
+        foreach($cp as $d){
+            $result[] = array('id'=>$d->id,'value'=>$d->programName,'name'=>$d->programName,'creditor'=>$d->creditorName,'label'=>$d->programName );
+        }
+
+        return Response::json($result);
+    }
+
+    public function postCreditprogram()
+    {
+        $c = Request::input('id');
+
+        $cp = Credittype::where('creditor','=',$c)->get();
+
+        $result = array();
+
+        $result[] = '<option value="" >Select Credit Type</option>';
+        foreach($cp as $d){
+            $result[] = '<option value="'.$d->programName.'" >'.$d->programName.'</option>';
+            //$result[] = array('id'=>$d->id,'value'=>$d->programName,'name'=>$d->programName,'creditor'=>$d->creditorName,'label'=>$d->programName );
+        }
+        $result = implode('',$result);
+
+        return $result;
+        //return Response::html($result);
+    }
+
+    public function postCity()
+    {
+        $c = Request::input('id');
+
+        $cp = Coverage::distinct('city')->where('province','=',$c)->get();
+
+        $result = array();
+
+        foreach($cp as $d){
+            $result[] = '<option value="'.$d[0].'" >'.$d[0].'</option>';
+            //$result[] = array('id'=>$d->id,'value'=>$d->programName,'name'=>$d->programName,'creditor'=>$d->creditorName,'label'=>$d->programName );
+        }
+        $result = implode('',$result);
+
+        return $result;
+        //return Response::html($result);
+    }
+
+    public function postDistrict()
+    {
+        $c = Request::input('id');
+
+        $cp = Coverage::distinct('district')->where('city','=',$c)->get();
+
+        $result = array();
+
+        foreach($cp as $d){
+            $result[] = '<option value="'.$d[0].'" >'.$d[0].'</option>';
+            //$result[] = array('id'=>$d->id,'value'=>$d->programName,'name'=>$d->programName,'creditor'=>$d->creditorName,'label'=>$d->programName );
+        }
+        $result = implode('',$result);
+
+        return $result;
+    }
 
     public function getEmail()
     {

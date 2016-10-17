@@ -152,6 +152,11 @@ Route::post('/ajax/generatedata', 'AjaxController@postGeneratedata');
 Route::post('/ajax/routelist', 'AjaxController@postRoutelist');
 Route::post('/ajax/saveroutelist', 'AjaxController@postSaveroutelist');
 
+Route::get('/ajax/creditprogram', 'AjaxController@getCreditprogram');
+Route::post('/ajax/creditprogram', 'AjaxController@postCreditprogram');
+
+Route::post('/ajax/city', 'AjaxController@postCity');
+Route::post('/ajax/district', 'AjaxController@postDistrict');
 
 Route::get('/profile', 'ProfileController@getIndex');
 
