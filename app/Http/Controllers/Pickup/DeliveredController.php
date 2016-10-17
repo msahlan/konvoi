@@ -1107,7 +1107,7 @@ class DeliveredController extends AdminController {
                 foreach($pics as $g){
 
                     if($g->is_image == 1){
-                        $thumb_array[] = HTML::image($g->square_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail','style'=>'width:45px;cursor:pointer;float:left;margin:0px;padding:0px;','id' => $data['transactionId']));
+                        $thumb_array[] = HTML::image($g->square_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail','style'=>'width:45px;45px;float:left;','id' => $data['transactionId']));
 
                         $thumbnail_url = $g->square_url;
                         $glinks .= '<input type="hidden" class="g_'.$data['transactionId'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
@@ -1124,13 +1124,21 @@ class DeliveredController extends AdminController {
 
                     $total_cnt++;
                 }
-
+/*
+<div style="width:100px;height:75px;clear:both;display:block;cursor:pointer;position:relative;border:thin solid brown;overflow-y:hidden;">
+        <img style="width:45px;35px;float:left;" alt="4ntht4.jpg" src="http://www.jayonexpress.com/jexadmin/storage/media2/201610/a111f57fe0658fd/th_4ntht4.jpg?1476674437">
+        <img style="width:45px;35px;float:left;" alt="Sign_1477630768249.jpg" src="http://www.jayonexpress.com/jexadmin/storage/media2/201610/c24200e8c503c6b/th_Sign_1477630768249.jpg?1476674437">
+        <div style="width:100%;height:100%;display:block;position:absolute;top:0px;left:0px;">
+            <img class="thumb_multi" style="width:100%;height:100%;" alt="008192-06-102016-00204709" src="http://jayonexpress.com/jayonadmin/assets/images/10.png">
+        </div>
+</div>
+*/
                 //$stat = $img_cnt.' pics, '.( $total_cnt - $img_cnt ).' docs';
                 $stat = $installment.' installment receipt <br />'.$fee.' fee receipt <br />'.$sign_cnt.' signature <br />'.$img_cnt.' photo';
 
                 if($img_cnt > 0){
                     $display = implode('',$thumb_array);
-                    $display = '<div style="display:block;clear:both;width:100% !important;min-width:100px;min-height:45px;" >'.$display.'</div>';
+                    $display = '<div style="width:100px;height:75px;clear:both;display:block;cursor:pointer;position:relative;border:thin solid brown;overflow-y:hidden;">'.$display.'</div>';
                     $display .= $glinks.'<div style="width:100%;display:block;">'.$stat.'</div>';
                     //$display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['transactionId'])).$glinks.'<br />'.$stat;
                 }else{
