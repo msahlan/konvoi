@@ -1110,7 +1110,8 @@ class DeliveredController extends AdminController {
                         $thumb_array[] = HTML::image($g->square_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail','style'=>'width:45px;45px;float:left;margin:0px;padding:0px;','id' => $data['transactionId']));
 
                         $thumbnail_url = $g->square_url;
-                        $glinks .= '<input type="hidden" class="g_'.$data['transactionId'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
+                        $caption = (isset($g->category))?$g->category.':'.$g->name:$g->name;
+                        $glinks .= '<input type="hidden" class="g_'.$data['transactionId'].'" data-caption="'.$caption.'" value="'.$g->full_url.'" />';
                         $img_cnt++;
                     }
 
