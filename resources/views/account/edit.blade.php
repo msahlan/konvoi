@@ -98,7 +98,7 @@
 
          ?>
 
-        <h4>Informasi Akun</h4>
+        <h4>Informasi Kontrak Kredit</h4>
 
         {!! Former::text('contractNumber','Nomor Kontrak')  !!}
         {!! Former::text('contractName','Atas Nama')  !!}
