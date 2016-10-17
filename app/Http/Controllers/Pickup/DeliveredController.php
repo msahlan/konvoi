@@ -1126,7 +1126,7 @@ class DeliveredController extends AdminController {
                 }
 
                 //$stat = $img_cnt.' pics, '.( $total_cnt - $img_cnt ).' docs';
-                $stat = $installment.' installment receipt <br />'.$fee.' fee receipt <br />'.$sign_cnt.' signature <br />'.$img_cnt.' photo'.;
+                $stat = $installment.' installment receipt <br />'.$fee.' fee receipt <br />'.$sign_cnt.' signature <br />'.$img_cnt.' photo';
 
                 if($img_cnt > 0){
                     $display = implode('',$thumb_array).$glinks.'<br />'.$stat;
