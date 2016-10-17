@@ -79,23 +79,22 @@
                 @if($menu == 'LOGISTIC' || $menu == 'PICKUP')
 
                     @if( Ks::is('Member') )
-                        <li><a href="{{ url('member/account')}}"><i class="icon-display4 position-left"></i> Accounts</a></li>
+                        <li><a href="{{ url('member/account')}}"><i class="icon-display4 position-left"></i> Kontrak Kredit</a></li>
 
-                        <li><a href="{{ url('member/transaction')}}"><i class="icon-display4 position-left"></i> Transactions</a></li>
+                        <li><a href="{{ url('member/transaction')}}"><i class="icon-display4 position-left"></i> Transaksi</a></li>
 
                     @elseif( Ks::is('Creditor') )
-                        <li><a href="{{ url('creditor/account')}}"><i class="icon-display4 position-left"></i> Accounts</a></li>
+                        <li><a href="{{ url('creditor/account')}}"><i class="icon-display4 position-left"></i> Kontrak Kredit</a></li>
 
-                        <li><a href="{{ url('creditor/transaction')}}"><i class="icon-display4 position-left"></i> Transactions</a></li>
+                        <li><a href="{{ url('creditor/transaction')}}"><i class="icon-display4 position-left"></i> Transaksi</a></li>
 
                     @else
 
                         @if($menu == 'PICKUP')
 
-                            <li><a href="{{ url('pickup/account')}}"><i class="icon-display4 position-left"></i> Accounts</a></li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <i class="icon-stack2 position-left"></i> Payment Pickup Orders <span class="caret"></span>
+                                    <i class="icon-stack2 position-left"></i> Order Jemput Cicilan <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu width-200">
@@ -122,6 +121,7 @@
 
                                 </ul>
                             </li>
+                            <li><a href="{{ url('pickup/account')}}"><i class="icon-display4 position-left"></i> Kontrak Kredit</a></li>
 
 
                         @else

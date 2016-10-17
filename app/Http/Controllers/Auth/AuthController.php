@@ -57,6 +57,8 @@ class AuthController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
+            'phone' => 'required|max:255',
+            'mobile' => 'max:255',
             'agreeToTerms' => 'required|present',
             'bankCard'=>'required'
         ];
@@ -66,6 +68,7 @@ class AuthController extends Controller
                 'coName' => 'required|max:255',
                 'address_1' => 'required|max:255',
                 'phone' => 'required|max:255',
+                'mobile' => 'max:255',
                 'city' => 'required|max:255',
                 'province' => 'required|max:255',
             ];
@@ -76,7 +79,7 @@ class AuthController extends Controller
 
         }
 
-        print_r($validator);
+        //print_r($validator);
 
         return Validator::make($data, $validator);
     }
@@ -98,6 +101,8 @@ class AuthController extends Controller
             $nu = [
                 'name' => $data['name'],
                 'email' => $data['email'],
+                'phone' => $data['phone'],
+                'mobile' => $data['mobile'],
                 'roleId' => $data['roleId'],
                 'password' => bcrypt($data['password'])
             ];
@@ -106,6 +111,8 @@ class AuthController extends Controller
             $nu = [
                 'name' => $data['name'],
                 'email' => $data['email'],
+                'phone' => $data['phone'],
+                'mobile' => $data['mobile'],
                 'roleId' => $data['roleId'],
                 'password' => bcrypt($data['password']),
                 'bankCard' => $data['bankCard']

@@ -47,6 +47,11 @@ pickupDate
 
         {!! Former::text('pickupZIP','Kode Pos')  !!}
 
+        <h4>Akun Pembayar</h4>
+        <p>Untuk identifikasi jika kontrak dimiliki oleh member JC</p>
+
+        {!! Former::text('payerEmail','Email Pembayar')  !!}
+
 
         {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary')) !!}&nbsp;&nbsp;
         {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}

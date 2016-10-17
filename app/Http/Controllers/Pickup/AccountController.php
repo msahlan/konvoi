@@ -7,6 +7,7 @@ use App\Models\Creditaccount;
 use App\Models\Creditor;
 use App\Models\Uploaded;
 use App\Models\Role;
+use App\Models\User;
 
 use App\Helpers\Prefs;
 
@@ -73,6 +74,8 @@ class AccountController extends AdminController {
             array('Kota',array('search'=>true,'sort'=>true)),
             array('Propinsi',array('search'=>true,'sort'=>true)),
             array('Kode Pos',array('search'=>true,'sort'=>true)),
+            array('Nama Pembayar',array('search'=>true,'sort'=>true)),
+            array('Email Pembayar',array('search'=>true,'sort'=>true)),
             //array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
             //array('Last Update',array('search'=>true,'sort'=>true,'date'=>true)),
         );
@@ -118,6 +121,8 @@ class AccountController extends AdminController {
             array('pickupCity',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupProvince',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupZIP',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('payerName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('payerEmail',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             //array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             //array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
         );
@@ -327,8 +332,24 @@ class AccountController extends AdminController {
 
         $data['active'] = (strtolower($data['active']) == 'yes')?true:false;
 
-        $data['payerId'] = '';
-        $data['payerName'] = $data['contractName'];
+        if(isset($data['payerEmail']) && $data['payerEmail'] != ''){
+            $payer = User::where('email','=', trim($data['payerEmail']))->first();
+            if($payer){
+                $data['payerId'] = $payer->id;
+                $data['payerName'] = $payer->name;
+                $data['payerEmail'] = trim($data['payerEmail']);
+            }else{
+                $data['payerId'] = '';
+                $data['payerName'] = $data['contractName'];
+                $data['payerEmail'] = trim($data['payerEmail']);
+            }
+
+        }else{
+            $data['payerId'] = '';
+            $data['payerName'] = $data['contractName'];
+            $data['payerEmail'] = 'Non Member';
+        }
+
 
         $creditor = Creditor::find($data['creditor']);
         $data['creditorName'] = $creditor->coName;
@@ -357,12 +378,15 @@ class AccountController extends AdminController {
             array('Kota',array('search'=>true,'sort'=>true)),
             array('Kode Pos',array('search'=>true,'sort'=>true)),
             array('Propinsi',array('search'=>true,'sort'=>true)),
+            array('Nama Pembayar',array('search'=>true,'sort'=>true)),
+            array('Email Pembayar',array('search'=>true,'sort'=>true)),
             array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
             array('Last Update',array('search'=>true,'sort'=>true,'date'=>true))
         );
 
         $this->fields = array(
             array('active',array('kind'=>'text' ,'query'=>'like','callback'=>'dlActive','pos'=>'both','show'=>true)),
+            array('contractNumber',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('contractName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('creditorName',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('Type',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
@@ -374,6 +398,8 @@ class AccountController extends AdminController {
             array('pickupCity',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupZIP',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupProvince',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('payerName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('payerEmail',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true))
         );

@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Models\Creditaccount;
 use App\Models\Uploaded;
 use App\Models\Role;
+use App\Models\User;
 
 use App\Helpers\Prefs;
 
@@ -67,6 +68,8 @@ class AccountController extends AdminController {
             array('Jumlah Cicilan',array('search'=>true,'sort'=>true)),
             array('Tgl Bayar via JC',array('search'=>true,'sort'=>true)),
             array('Alamat Pengambilan',array('search'=>true,'sort'=>true)),
+            array('Nama Pembayar',array('search'=>true,'sort'=>true)),
+            array('Email Pembayar',array('search'=>true,'sort'=>true)),
             //array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
             //array('Last Update',array('search'=>true,'sort'=>true,'date'=>true)),
         );
@@ -95,6 +98,8 @@ class AccountController extends AdminController {
             array('installmentAmt',array('kind'=>'currency','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupDate',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupAddress',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('payerName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('payerEmail',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             //array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             //array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
         );
@@ -126,8 +131,17 @@ class AccountController extends AdminController {
         $creditor = Creditor::find($data['creditor']);
         $data['creditorName'] = $creditor->coName;
 
-        $data['payerId'] = '';
-        $data['payerName'] = '';
+        if(isset($data['payerEmail']) && trim($data['payerEmail']) != ''){
+            $payer = User::where('email','=', trim($data['payerEmail']))->first();
+            $data['payerId'] = $payer->id;
+            $data['payerName'] = $payer->name;
+            $data['payerEmail'] = trim($data['payerEmail']);
+
+        }else{
+            $data['payerId'] = '';
+            $data['payerName'] = 'Non Member';
+            $data['payerEmail'] = 'Non Member';
+        }
 
         $data['dueDate'] = intval($data['dueDate']);
         $data['pickupDate'] = intval($data['pickupDate']);
@@ -146,8 +160,17 @@ class AccountController extends AdminController {
         $creditor = Creditor::find($data['creditor']);
         $data['creditorName'] = $creditor->coName;
 
-        $data['payerId'] = '';
-        $data['payerName'] = '';
+        if(isset($data['payerEmail']) && trim($data['payerEmail']) != ''){
+            $payer = User::where('email','=', trim($data['payerEmail']))->first();
+            $data['payerId'] = $payer->id;
+            $data['payerName'] = $payer->name;
+            $data['payerEmail'] = trim($data['payerEmail']);
+
+        }else{
+            $data['payerId'] = '';
+            $data['payerName'] = 'Non Member';
+            $data['payerEmail'] = 'Non Member';
+        }
 
         $data['dueDate'] = intval($data['dueDate']);
         $data['pickupDate'] = intval($data['pickupDate']);
@@ -306,8 +329,23 @@ class AccountController extends AdminController {
 
         $data['active'] = (strtolower($data['active']) == 'yes')?true:false;
 
-        $data['payerId'] = '';
-        $data['payerName'] = $data['contractName'];
+        if(isset($data['payerEmail']) && $data['payerEmail'] != ''){
+            $payer = User::where('email','=', trim($data['payerEmail']))->first();
+            if($payer){
+                $data['payerId'] = $payer->id;
+                $data['payerName'] = $payer->name;
+                $data['payerEmail'] = trim($data['payerEmail']);
+            }else{
+                $data['payerId'] = '';
+                $data['payerName'] = $data['contractName'];
+                $data['payerEmail'] = trim($data['payerEmail']);
+            }
+
+        }else{
+            $data['payerId'] = '';
+            $data['payerName'] = $data['contractName'];
+            $data['payerEmail'] = 'Non Member';
+        }
 
         $data['dueDate'] = intval($data['dueDate']);
         $data['pickupDate'] = intval($data['pickupDate']);
@@ -338,6 +376,8 @@ class AccountController extends AdminController {
             array('Kode Pos',array('search'=>true,'sort'=>true)),
             array('Propinsi',array('search'=>true,'sort'=>true)),
             array('Perusahaan Kreditor',array('search'=>true,'sort'=>true)),
+            array('Nama Pembayar',array('search'=>true,'sort'=>true)),
+            array('Email Pembayar',array('search'=>true,'sort'=>true)),
             array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
             array('Last Update',array('search'=>true,'sort'=>true,'date'=>true))
         );
@@ -356,6 +396,8 @@ class AccountController extends AdminController {
             array('pickupZIP',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupProvince',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('creditorName',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('payerName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('payerEmail',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true))
         );

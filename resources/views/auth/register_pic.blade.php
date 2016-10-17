@@ -9,7 +9,7 @@
         }else if($route == 'provider/register'){
             $regrole = 'Provider';
         }else{
-            $regrole = 'Member';            
+            $regrole = 'Member';
         }
 
         //print $route;
@@ -78,6 +78,33 @@
                         <input type="hidden" name="roleId" value="{!! Prefs::getRoleId($regrole) !!}" />
                     </div>
 
+                    <div class="form-group has-feedback has-feedback-left">
+                        <input id="phone" type="phone" class="form-control" placeholder="Phone" name="phone" value="{{ old('phone') }}">
+
+                        <div class="form-control-feedback">
+                            <i class="icon-phone text-muted"></i>
+                        </div>
+                        @if ($errors->has('phone'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('phone') }}</strong>
+                            </span>
+                        @endif
+
+                    </div>
+
+                    <div class="form-group has-feedback has-feedback-left">
+                        <input id="mobile" type="mobile" class="form-control" placeholder="Phone / Mobile" name="mobile" value="{{ old('mobile') }}">
+
+                        <div class="form-control-feedback">
+                            <i class="icon-mobile text-muted"></i>
+                        </div>
+                        @if ($errors->has('mobile'))
+                            <span class="help-block">
+                                <strong>{{ $errors->first('mobile') }}</strong>
+                            </span>
+                        @endif
+
+                    </div>
 
                     <div class="form-group">
                             <div class="checkbox">

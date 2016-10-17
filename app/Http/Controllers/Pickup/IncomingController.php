@@ -158,7 +158,8 @@ class IncomingController extends AdminController {
 
         //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
 
-
+        $this->can_import = false;
+        $this->can_add = false;
         return parent::getIndex();
 
     }

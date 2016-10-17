@@ -124,9 +124,10 @@ class AccountController extends AdminController {
     {
         $creditor = Creditor::find($data['creditor']);
         $data['creditorName'] = $creditor->coName;
-        
+
         $data['payerId'] = Auth::user()->id;
         $data['payerName'] = Auth::user()->name;
+        $data['payerEmail'] = Auth::user()->email;
 
         $data['dueDate'] = intval($data['dueDate']);
         $data['pickupDate'] = intval($data['pickupDate']);
