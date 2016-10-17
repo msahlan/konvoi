@@ -74,6 +74,8 @@ class UploadapiController extends Controller {
 
         $ns = Request::input('ns');
 
+        $category = (Request::has('cat'))?Request::input('cat'):'photo';
+
         $isSignature = Request::input('signature');
 
         $lat = Request::input('lat');
@@ -185,6 +187,7 @@ class UploadapiController extends Controller {
 
             $item = array(
                     'ns'=>$ns,
+                    'category'=>$category,
                     'parent_id'=> $parent_id,
                     'parent_class'=> $parent_class,
                     'url'=> url('storage/media/'.$rstring.'/'.$filename),
