@@ -297,6 +297,21 @@ Route::group( [ 'prefix'=>'creditor', 'middlewareGroup'=>['web'] ] , function(){
     Route::get('/account/dl/{filename}', 'Creditor\AccountController@getDl');
     Route::get('/account/csv/{filename}', 'Creditor\AccountController@getCsv');
 
+    Route::get('/type', 'Creditor\TypeController@getIndex');
+    Route::post('/type', 'Creditor\TypeController@postIndex');
+    Route::get('/type/add', 'Creditor\TypeController@getAdd');
+    Route::post('/type/add', 'Creditor\TypeController@postAdd');
+    Route::get('/type/edit/{id}', 'Creditor\TypeController@getEdit');
+    Route::post('/type/edit/{id}', 'Creditor\TypeController@postEdit');
+    Route::get('/type/printlabel/{sessionname}/{printparam}/{format?}', 'Creditor\TypeController@getPrintlabel');
+    Route::get('/type/import', 'Creditor\TypeController@getImport');
+    Route::post('/type/uploadimport', 'Creditor\TypeController@postUploadimport');
+    Route::get('/type/commit/{sessid}', 'Creditor\TypeController@getCommit');
+    Route::post('/type/commit/{sessid}', 'Creditor\TypeController@postCommit');
+    Route::post('/type/dlxl', 'Creditor\TypeController@postDlxl');
+    Route::get('/type/dl/{filename}', 'Creditor\TypeController@getDl');
+    Route::get('/type/csv/{filename}', 'Creditor\TypeController@getCsv');
+
     Route::get('/transaction', 'Creditor\TransactionController@getIndex');
     Route::post('/transaction', 'Creditor\TransactionController@postIndex');
 
@@ -364,6 +379,21 @@ Route::group( [ 'prefix'=>'pickup', 'middlewareGroup'=>['web'] ] , function(){
 
     Route::get('/quota', 'Pickup\QuotaController@getIndex');
     Route::post('/quota', 'Pickup\QuotaController@postIndex');
+
+    Route::get('/type', 'Pickup\TypeController@getIndex');
+    Route::post('/type', 'Pickup\TypeController@postIndex');
+    Route::get('/type/add', 'Pickup\TypeController@getAdd');
+    Route::post('/type/add', 'Pickup\TypeController@postAdd');
+    Route::get('/type/edit/{id}', 'Pickup\TypeController@getEdit');
+    Route::post('/type/edit/{id}', 'Pickup\TypeController@postEdit');
+    Route::get('/type/printlabel/{sessionname}/{printparam}/{format?}', 'Pickup\TypeController@getPrintlabel');
+    Route::get('/type/import', 'Pickup\TypeController@getImport');
+    Route::post('/type/uploadimport', 'Pickup\TypeController@postUploadimport');
+    Route::get('/type/commit/{sessid}', 'Pickup\TypeController@getCommit');
+    Route::post('/type/commit/{sessid}', 'Pickup\TypeController@postCommit');
+    Route::post('/type/dlxl', 'Pickup\TypeController@postDlxl');
+    Route::get('/type/dl/{filename}', 'Pickup\TypeController@getDl');
+    Route::get('/type/csv/{filename}', 'Pickup\TypeController@getCsv');
 
 });
 

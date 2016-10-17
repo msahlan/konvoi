@@ -124,7 +124,7 @@ class AjaxController extends BaseController {
             $acc['assignmentDate'] = date( 'Y-m-d 00:00:00', time() );
             $acc['assignmentDateTs'] = new MongoDate( strtotime($acc['assignmentDate']) );
             $acc['assignmentSeq'] = intval(0);
-            $acc['status'] = 'new';
+            $acc['status'] = config('jayon.trans_status_new');
             $acc['transactionId'] = Prefs::getDeliveryId();
 
             unset($acc['_id']);

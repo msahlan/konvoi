@@ -88,6 +88,8 @@
 
                         <li><a href="{{ url('creditor/transaction')}}"><i class="icon-display4 position-left"></i> Transaksi</a></li>
 
+                        <li><a href="{{ url('creditor/type')}}"><i class="icon-display4 position-left"></i> Jenis Kredit</a></li>
+
                     @else
 
                         @if($menu == 'PICKUP')
@@ -122,6 +124,8 @@
                                 </ul>
                             </li>
                             <li><a href="{{ url('pickup/account')}}"><i class="icon-display4 position-left"></i> Kontrak Kredit</a></li>
+
+                            <li><a href="{{ url('pickup/type')}}"><i class="icon-display4 position-left"></i> Jenis Kredit</a></li>
 
 
                         @else

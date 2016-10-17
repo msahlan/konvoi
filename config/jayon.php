@@ -69,7 +69,7 @@ $config['jayon_mobile_table'] = 'mobile_orders';
 
 /* Delivery status strings */
 
-$config['trans_status_new'] = 'pending';
+$config['trans_status_new'] = 'jadwal';
 $config['trans_status_tobeconfirmed'] = 'to be confirmed';
 $config['trans_status_purged'] = 'purged';
 $config['trans_status_archived'] = 'archived';
@@ -81,13 +81,13 @@ $config['trans_status_inprogress'] = 'inprogress';
 $config['trans_status_mobile_pending'] = 'pending';
 $config['trans_status_mobile_dispatched'] = 'dispatched';
 $config['trans_status_mobile_departure'] = 'departed';
-$config['trans_status_mobile_return'] = 'failed';
+$config['trans_status_mobile_return'] = 'gagal';
 $config['trans_status_mobile_pending'] = 'pending';
 $config['trans_status_mobile_pickedup'] = 'pickedup';
 $config['trans_status_mobile_enroute'] = 'enroute';
 $config['trans_status_mobile_location'] = 'loc_update';
 $config['trans_status_mobile_rescheduled'] = 'rescheduled';
-$config['trans_status_mobile_delivered'] = 'success';
+$config['trans_status_mobile_delivered'] = 'sukses';
 $config['trans_status_mobile_revoked'] = 'revoked';
 $config['trans_status_mobile_noshow'] = 'noshow';
 $config['trans_status_mobile_keyrequest'] = 'keyrequest';
