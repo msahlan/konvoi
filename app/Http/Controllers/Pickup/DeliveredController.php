@@ -1107,7 +1107,7 @@ class DeliveredController extends AdminController {
                 foreach($pics as $g){
 
                     if($g->is_image == 1){
-                        $thumb_array[] = HTML::image($g->square_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail','style'=>'width:45px;cursor:pointer;float:left;','id' => $data['transactionId']));
+                        $thumb_array[] = HTML::image($g->square_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail','style'=>'width:45px;cursor:pointer;float:left;margin:0px;padding:0px;','id' => $data['transactionId']));
 
                         $thumbnail_url = $g->square_url;
                         $glinks .= '<input type="hidden" class="g_'.$data['transactionId'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
@@ -1130,7 +1130,7 @@ class DeliveredController extends AdminController {
 
                 if($img_cnt > 0){
                     $display = implode('',$thumb_array);
-                    $display = '<div style="display:block;clear:both;" >'.$display.'</div>';
+                    $display = '<div style="display:block;clear:both;width:100px !important;min-width:100px;" >'.$display.'</div>';
                     $display .= $glinks.'<br />'.$stat;
                     //$display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['transactionId'])).$glinks.'<br />'.$stat;
                 }else{
