@@ -40,7 +40,7 @@ class DeliveredController extends AdminController {
 
         $this->model = new Pickup();
         //$this->model = DB::collection('documents');
-        $this->title = 'Delivery Status';
+        $this->title = 'Payment Pickup Status';
 
     }
 
@@ -1101,25 +1101,36 @@ class DeliveredController extends AdminController {
 
         if($pics){
             if(count($pics) > 0){
+                $fee = 0;
+                $installment = 0;
+                $thumb_array = array();
                 foreach($pics as $g){
+
                     if($g->is_image == 1){
+                        $thumb_array[] = HTML::image($g->square_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail','style'=>'width:45px;cursor:pointer;','id' => $data['transactionId']));
+
                         $thumbnail_url = $g->square_url;
                         $glinks .= '<input type="hidden" class="g_'.$data['transactionId'].'" data-caption="'.$g->name.'" value="'.$g->full_url.'" />';
                         $img_cnt++;
                     }
 
-                    if($g->is_signature == strval(1) ){
-                        $sign_cnt++;
+                    if( isset($g->category) && $g->category == 'fee' ){
+                        $fee++;
+                    }
+
+                    if( isset($g->category) && $g->category == 'installment' ){
+                        $installment++;
                     }
 
                     $total_cnt++;
                 }
 
                 //$stat = $img_cnt.' pics, '.( $total_cnt - $img_cnt ).' docs';
-                $stat = $img_cnt.' pics, '.$sign_cnt.' signature';
+                $stat = $installment.' installment receipt <br />'.$fee.' fee receipt <br />'.$sign_cnt.' signature <br />'.$img_cnt.' photo'.;
 
                 if($img_cnt > 0){
-                    $display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['transactionId'])).$glinks.'<br />'.$stat;
+                    $display = implode('',$thumb_array).$glinks.'<br />'.$stat;
+                    //$display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['transactionId'])).$glinks.'<br />'.$stat;
                 }else{
 
                     $display = '<span class="fa-stack fa-2x">
