@@ -13,8 +13,9 @@ use App\Models\Generatedawb;
 use App\Models\Creditor;
 use App\Models\Coverage;
 use App\Models\Device;
+use App\Models\Credittype;
 
-
+use \MongoDate;
 use \Auth;
 
 class Prefs {
@@ -36,6 +37,31 @@ class Prefs {
     {
 
     }
+
+    public static function checkProgram($creditor, $programname, $type, $creditorName)
+    {
+        $cnt = Credittype::where('creditor','=',$creditor)->where('programName','=',trim($programname))->count();
+
+        if($cnt > 0){
+            return true;
+        }else{
+
+            Credittype::create([
+                'programName'=>trim($programname),
+                'creditor'=>$creditor,
+                'Type'=>$type,
+                'createdDate'=>new MongoDate(),
+                'lastUpdate'=>new MongoDate(),
+                'ownerId'=>Auth::user()->id,
+                'ownerName'=>Auth::user()->name,
+                'creditorName'=>$creditorName
+            ]);
+
+        }
+
+    }
+
+
 
     public static function checkUrl($url)
     {

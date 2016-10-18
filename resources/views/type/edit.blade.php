@@ -3,7 +3,11 @@
 
 @section('left')
         @inject('prefs','App\Helpers\Prefs')
-        <?php use App\Helpers\Prefs; ?>
+        <?php
+            use App\Helpers\Prefs;
+            use App\Helpers\Ks;
+
+         ?>
 
     {{--
 

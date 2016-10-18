@@ -357,6 +357,10 @@ class AccountController extends AdminController {
         $data['dueDate'] = intval($data['dueDate']);
         $data['pickupDate'] = intval($data['pickupDate']);
 
+        if(isset($data['programName']) && $data['programName'] != ''){
+            Prefs::checkProgram($data['creditor'], $data['programName'], $data['Type'], $data['creditorName']);
+        }
+
         return $data;
     }
 

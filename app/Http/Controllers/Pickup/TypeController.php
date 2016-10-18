@@ -69,7 +69,7 @@ class TypeController extends AdminController {
             //array('Last Update',array('search'=>true,'sort'=>true,'date'=>true)),
         );
 
-        $this->title = 'Accounts';
+        $this->title = 'Jenis Kredit';
 
         $this->can_add = true;
 
@@ -143,10 +143,9 @@ class TypeController extends AdminController {
     public function makeActions($data)
     {
         $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i>Delete</span>';
-        $edit = '<a href="'.url('user/edit/'.$data['_id']).'"><i class="fa fa-edit"></i>Update</a>';
+        $edit = '<a href="'.url('pickup/type/edit/'.$data['_id']).'"><i class="fa fa-edit"></i>Update</a>';
 
         $actions = $edit.'<br />'.$delete;
-        $actions = '';
         return $actions;
     }
 
