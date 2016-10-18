@@ -1185,7 +1185,7 @@ class SyncapiController extends Controller {
 
                     }else
                     */
-                    if($olog->status == 'success' || $olog->status == 'failed' || $olog->status == 'pending'){
+                    if($olog->status == config('jayon.trans_status_mobile_delivered') || $olog->status == config('jayon.trans_status_mobile_return') || $olog->status == 'pending'){
 
                         if($olog->status == 'pending'){
                             if($shipment->delivery_note != $olog->deliveryNote){
@@ -1193,7 +1193,7 @@ class SyncapiController extends Controller {
                             }
                         }
 
-                        if( $olog->status == 'success' && $shipment->status != 'success' ){
+                        if( $olog->status == config('jayon.trans_status_mobile_delivered') && $shipment->status != config('jayon.trans_status_mobile_delivered') ){
                             if($olog->deliverytime == '' || $olog->deliverytime == '0000-00-00 00:00:00'){
                                 $shipment->deliverytime = date('Y-m-d H:i:s',time());
                                 $shipment->eventtime = date('Y-m-d H:i:s',time());
