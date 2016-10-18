@@ -1149,7 +1149,7 @@ class SyncapiController extends Controller {
 
 
                     //|| $shipment->change_actor != 'APP'
-                    if($shipment->status == 'success' || $shipment->status == 'failed'
+                    if($shipment->status == config('jayon.trans_status_mobile_delivered') || $shipment->status == config('jayon.trans_status_mobile_return')
                             //|| ( $shipment->status != 'delivered' && $shipment->status != 'returned' && $shipment->change_actor != 'APP')
                       ){
                         $changes = false;
