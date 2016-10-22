@@ -9,7 +9,7 @@ return array(
 
         'mapdefstatus'=>array(
                 'cr_assigned',
-                'delivered',
+                'success',
                 'pending',
                 'returned'
             ),

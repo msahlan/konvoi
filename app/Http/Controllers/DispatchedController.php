@@ -136,6 +136,7 @@ class DispatchedController extends AdminController {
         $this->additional_filter .= View::make('shared.markaction')->render();
 
         $this->product_info_url = strtolower($this->controller_name).'/info';
+        $this->can_add = false;
 
         $this->column_styles = '{ "sClass": "column-amt", "aTargets": [ 7 ] },
                     { "sClass": "column-amt", "aTargets": [ 18 ] },

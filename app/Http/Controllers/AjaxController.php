@@ -101,9 +101,11 @@ class AjaxController extends BaseController {
     {
         $in = Request::input();
 
-        $date = $in['day'];
+        $date = explode('-',$in['day']);
 
-        $month = $in['month'];
+        $date = intval($date[1]);
+
+        $month = intval($date[0]);
 
         $scope = $in['scope'];
 

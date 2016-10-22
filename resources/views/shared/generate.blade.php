@@ -1,5 +1,15 @@
 <?php
     use App\Helpers\Prefs;
+
+
+
+    $today = date('m-d',strtotime('today'));
+
+    $tomorrow = date('m-d',strtotime('tomorrow'));
+
+
+    $opt = [ $today=>'Hari ini', $tomorrow=>'Besok' ];
+
 ?>
 <a class="btn btn-raised btn-transparent btn-danger btn-sm" id="generate-data"><i class="fa fa-calendar"></i> Generate Today's Data</a>
 
@@ -10,6 +20,9 @@
     </div>
     <div class="modal-body" >
     	{!! Former::select('quotaScope','Quota by')->id('quota-scope')->options([ 'province'=>'Province', 'city'=>'City', 'district'=>'District' ]) !!}
+
+        {!! Former::select('pickupDate','Generate')->id('pickup-date')->options( $opt ) !!}
+
         {!! Former::select('creditor','Creditor')->id('creditor-id')->options( Prefs::getCreditor()->CreditorToSelection('_id','coName') ) !!}
 
     </div>
@@ -48,8 +61,7 @@
             	$('#loading-indicator').show();
                 $.post('{!! URL::to('ajax/generatedata') !!}',
                     {
-	                    day : {!! date('d',time()) !!},
-	                    month : {!! date('m',time()) !!},
+	                    day : $('#pickup-date').val(),
 	                    scope : scope,
                         creditor : creditor
                     },
