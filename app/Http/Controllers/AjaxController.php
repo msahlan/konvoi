@@ -135,7 +135,9 @@ class AjaxController extends BaseController {
             unset($acc['updated_at']);
             unset($acc['created_at']);
 
-            if(Pickup::where('accountId', '=', $acc['accountId'])->where('status','=','new')->where( 'assignmentDate' ,'=', $acc['assignmentDate'])->count() > 0 ){
+            if(Pickup::where('accountId', '=', $acc['accountId'])
+                //->where('status','=',config('jayon.trans_status_new'))
+                ->where( 'assignmentDate' ,'=', $acc['assignmentDate'])->count() > 0 ){
 
             }else{
                 $cnt++;
