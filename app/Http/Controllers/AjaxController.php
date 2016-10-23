@@ -107,6 +107,10 @@ class AjaxController extends BaseController {
 
         $month = intval($date[0]);
 
+        $year = date('Y', time());
+
+        $asdate = $year.'-'.$month.'-'.$date;
+
         $scope = $in['scope'];
 
         $creditor = $in['creditor'];
@@ -125,7 +129,7 @@ class AjaxController extends BaseController {
             $acc = $acc->toArray();
             $acc['accountId'] = $acc['_id'];
             $acc['periodMonth'] = intval($month);
-            $acc['assignmentDate'] = date( 'Y-m-d 00:00:00', time() );
+            $acc['assignmentDate'] = date( 'Y-m-d 00:00:00', strtotime($asdate) );
             $acc['assignmentDateTs'] = new MongoDate( strtotime($acc['assignmentDate']) );
             $acc['assignmentSeq'] = intval(0);
             $acc['status'] = config('jayon.trans_status_new');
