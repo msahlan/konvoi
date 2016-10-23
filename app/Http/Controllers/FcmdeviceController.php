@@ -32,31 +32,21 @@ use Parse\ParsePush;
 class FcmdeviceController extends AdminController {
 
     public $heads = array(
-        array('Created',array('search'=>true,'sort'=>true, 'daterange'=>true)),
         array('Device Identifier',array('search'=>true,'sort'=>true)),
         array('App Identifier',array('search'=>true,'sort'=>true)),
         array('Previous Identifier',array('search'=>true,'sort'=>true)),
         array('App Name',array('search'=>true,'sort'=>true)),
-        array('App Version',array('search'=>true,'sort'=>true)),
-        array('Device Brand',array('search'=>true,'sort'=>true)),
-        array('Device Type',array('search'=>true,'sort'=>true)),
-        array('Installation Id',array('search'=>true,'sort'=>true)),
-        array('Parse Version',array('search'=>true,'sort'=>true)),
-        array('Time Zone',array('search'=>true,'sort'=>true))
+        array('Created',array('search'=>true,'sort'=>true, 'daterange'=>true)),
+        array('Updated',array('search'=>true,'sort'=>true, 'daterange'=>true)),
     );
 
     public $fields = array(
-        array('createdAt',array('kind'=>'datetimerange','query'=>'like','pos'=>'both','show'=>true)),
         array('JEXDeviceId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         array('token',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         array('prevToken',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
         array('appName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        array('appVersion',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        array('deviceBrand',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        array('deviceType',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        array('installationId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        array('parseVersion',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        array('timeZone_on',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
+        array('created_at',array('kind'=>'datetimerange','query'=>'like','pos'=>'both','show'=>true)),
+        array('updated_at',array('kind'=>'datetimerange','query'=>'like','pos'=>'both','show'=>true)),
     );
 
 

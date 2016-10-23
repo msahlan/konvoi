@@ -1,6 +1,4 @@
 <a class="btn btn-transparent" id="push_message"><i class="fa fa-send"></i> Push Message</a>
-<a class="btn btn-transparent" id="sync_legacy"><i class="fa fa-refresh"></i> Sync Parse Data</a>
-<span class="syncing" style="display:none;">Processing...</span>
 
 <div id="push-message-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
