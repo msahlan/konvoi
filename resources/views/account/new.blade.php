@@ -130,6 +130,8 @@ pickupDate
 
         {!! Former::select('Type')->options( array_merge([''=>'Select Goods Type'] ,config('jc.credit_type')) )->label('Jenis Barang')->class('form-control bootstrap-select')  !!}
 
+        {!! Former::text('productDescription','Deskripsi Produk')  !!}
+
         {!! Former::text('dueDate','Tanggal Jatuh Tempo ( setiap bulan )')  !!}
         {!! Former::text('installmentAmt','Jumlah Tagihan')  !!}
         {!! Former::text('pickupDate','Tanggal Pembayaran Yang Diinginkan ( min. 2 hari sebelum Jatuh Tempo) ')  !!}

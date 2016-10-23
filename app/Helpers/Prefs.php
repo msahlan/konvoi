@@ -61,7 +61,17 @@ class Prefs {
 
     }
 
+    public static function cityDistrictSelect($province, $city){
+        $locs = Coverage::where('province','=',$province)->get();
 
+
+        $cities = [];
+        foreach($locs as $l){
+            $cities[$l->city][] = $l->district;
+        }
+
+        return $cities;
+    }
 
     public static function checkUrl($url)
     {

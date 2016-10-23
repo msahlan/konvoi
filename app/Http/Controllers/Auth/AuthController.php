@@ -92,8 +92,6 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        //print_r($data);
-        //die();
 
 
         if(isset($data['coName'])){
@@ -119,6 +117,9 @@ class AuthController extends Controller
             ];
 
         }
+
+        //print_r($nu);
+        //die();
 
         $new_user = User::create($nu);
 

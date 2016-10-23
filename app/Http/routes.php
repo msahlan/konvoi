@@ -15,7 +15,7 @@ Route::get('/', function(){
     if(Auth::check()){
         $role = strtolower( Prefs::getRoleById(Auth::user()->roleId ));
         if($role == 'member' || $role == 'creditor'){
-            return redirect( $role.'/dashboard');
+            return redirect( $role );
         }else{
             return redirect( 'dashboard');
         }
@@ -32,6 +32,23 @@ Route::get('dashboard', 'DashboardController@getIndex');
 Route::get('member/register', 'Auth\AuthController@showRegistrationForm');
 Route::get('creditor/register', 'Auth\AuthController@showRegistrationForm');
 
+Route::get('remkota',function(){
+    $cov = App\Models\Coverage::where('city','regexp', '/Kota /i')->get();
+
+    foreach($cov as $c){
+
+        print $c->city."\n\r";
+
+        $c->city = trim(str_replace('Kota ','',$c->city)) ;
+
+        print $c->city."\n\r";
+
+        $c->save();
+
+    }
+
+});
+
 Route::post('/upload', 'UploadController@postIndex');
 Route::post('/upload/avatar', 'UploadController@postAvatar');
 Route::post('/upload/logo', 'UploadController@postLogo');
@@ -45,22 +62,6 @@ Route::post('/user/add', 'UserController@postAdd');
 Route::get('/user/edit/{id}', 'UserController@getEdit');
 Route::post('/user/edit/{id}', 'UserController@postEdit');
 Route::post('/user/del', 'UserController@postDel');
-
-Route::get('/member', 'MemberController@getIndex');
-Route::post('/member', 'MemberController@postIndex');
-Route::get('/member/add', 'MemberController@getAdd');
-Route::post('/member/add', 'MemberController@postAdd');
-Route::get('/member/edit/{id}', 'MemberController@getEdit');
-Route::post('/member/edit/{id}', 'MemberController@postEdit');
-Route::post('/member/del', 'MemberController@postDel');
-
-Route::get('/creditor', 'CreditorController@getIndex');
-Route::post('/creditor', 'CreditorController@postIndex');
-Route::get('/creditor/add', 'CreditorController@getAdd');
-Route::post('/creditor/add', 'CreditorController@postAdd');
-Route::get('/creditor/edit/{id}', 'CreditorController@getEdit');
-Route::post('/creditor/edit/{id}', 'CreditorController@postEdit');
-Route::post('/creditor/del', 'CreditorController@postDel');
 
 
 Route::get('/usergroup', 'UsergroupController@getIndex');
@@ -399,6 +400,22 @@ Route::group( [ 'prefix'=>'pickup', 'middlewareGroup'=>['web'] ] , function(){
     Route::post('/type/dlxl', 'Pickup\TypeController@postDlxl');
     Route::get('/type/dl/{filename}', 'Pickup\TypeController@getDl');
     Route::get('/type/csv/{filename}', 'Pickup\TypeController@getCsv');
+
+    Route::get('/member', 'MemberController@getIndex');
+    Route::post('/member', 'MemberController@postIndex');
+    Route::get('/member/add', 'MemberController@getAdd');
+    Route::post('/member/add', 'MemberController@postAdd');
+    Route::get('/member/edit/{id}', 'MemberController@getEdit');
+    Route::post('/member/edit/{id}', 'MemberController@postEdit');
+    Route::post('/member/del', 'MemberController@postDel');
+
+    Route::get('/creditor', 'CreditorController@getIndex');
+    Route::post('/creditor', 'CreditorController@postIndex');
+    Route::get('/creditor/add', 'CreditorController@getAdd');
+    Route::post('/creditor/add', 'CreditorController@postAdd');
+    Route::get('/creditor/edit/{id}', 'CreditorController@getEdit');
+    Route::post('/creditor/edit/{id}', 'CreditorController@postEdit');
+    Route::post('/creditor/del', 'CreditorController@postDel');
 
 });
 

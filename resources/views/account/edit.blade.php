@@ -20,7 +20,6 @@
             }
         });
 
-
         $('.pick-a-color').pickAColor();
 
         $('#creditor-id').on('changed.bs.select',function(e){
@@ -68,21 +67,6 @@
             $('#permalink').val(slug);
         });
 
-        $('#location').on('change',function(){
-            var location = $('#location').val();
-            console.log(location);
-
-            $.post('{{ URL::to('asset/rack' ) }}',
-                {
-                    loc : location
-                },
-                function(data){
-                    var opt = updateselector(data.html);
-                    $('#rack').html(opt);
-                },'json'
-            );
-
-        })
 
 
     });
@@ -95,6 +79,19 @@
         <?php
             use App\Helpers\Prefs;
             use App\Helpers\Ks;
+
+            $cities = Prefs::cityDistrictSelect($formdata['pickupProvince'], $formdata['pickupCity']);
+
+            $city = array_keys($cities);
+            foreach($city as $c){
+                $citysel[$c] = $c;
+            }
+
+            $district = isset($cities[$formdata['pickupCity']])?$cities[$formdata['pickupCity']]:[];
+
+            foreach($district as $d){
+                $districtsel[$d] = $d;
+            }
 
          ?>
 
@@ -117,6 +114,8 @@
 
         {!! Former::select('Type')->options( array_merge([''=>'Select Goods Type'] ,config('jc.credit_type')) )->label('Jenis Barang')->class('form-control bootstrap-select')  !!}
 
+        {!! Former::text('productDescription','Deskripsi Produk')  !!}
+
         {!! Former::text('dueDate','Tanggal Jatuh Tempo ( setiap bulan )')  !!}
         {!! Former::text('installmentAmt','Jumlah Tagihan')  !!}
         {!! Former::text('pickupDate','Tanggal Pembayaran Yang Diinginkan ( min. 2 hari sebelum Jatuh Tempo) ')  !!}
@@ -134,9 +133,9 @@
         {!! Former::select('pickupProvince','Propinsi')
                 ->options( Prefs::getProvince()->ProvinceToSelection('province','province') )->id('province')->class('form-control bootstrap-select')  !!}
 
-        {!! Former::select('pickupCity')->options( [''=>'Select City'] )->label('Kota')->id('city')->class('form-control bootstrap-select')  !!}
+        {!! Former::select('pickupCity')->options( array_merge([''=>'Select City'], $citysel )  )->label('Kota')->id('city')->class('form-control bootstrap-select')->select($formdata['pickupCity'])  !!}
 
-        {!! Former::select('pickupDistrict')->options( [''=>'Select District'] )->label('Kecamatan')->id('district')->class('form-control bootstrap-select')  !!}
+        {!! Former::select('pickupDistrict')->options( array_merge([''=>'Select District'], $districtsel) )->label('Kecamatan')->id('district')->class('form-control bootstrap-select')->select($formdata['pickupDistrict'])  !!}
 
         {!! Former::text('pickupZIP','Kode Pos')  !!}
 
@@ -159,39 +158,5 @@
 
 @section('aux')
 
-<script type="text/javascript">
-
-
-$(document).ready(function() {
-
-
-    $('.pick-a-color').pickAColor();
-
-    $('#name').keyup(function(){
-        var title = $('#name').val();
-        var slug = string_to_slug(title);
-        $('#permalink').val(slug);
-    });
-
-    $('#location').on('change',function(){
-        var location = $('#location').val();
-        console.log(location);
-
-        $.post('{{ URL::to('asset/rack' ) }}',
-            {
-                loc : location
-            },
-            function(data){
-                var opt = updateselector(data.html);
-                $('#rack').html(opt);
-            },'json'
-        );
-
-    })
-
-
-});
-
-</script>
 
 @endsection

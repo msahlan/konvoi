@@ -129,6 +129,8 @@ class AccountController extends AdminController {
         $data['payerName'] = Auth::user()->name;
         $data['payerEmail'] = Auth::user()->email;
 
+        $data['bankCard'] = (isset(Auth::user()->bankCard))?Auth::user()->bankCard:'';
+
         $data['dueDate'] = intval($data['dueDate']);
         $data['pickupDate'] = intval($data['pickupDate']);
 

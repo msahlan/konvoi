@@ -60,6 +60,7 @@ class MemberController extends AdminController {
             array('Full Name',array('search'=>true,'sort'=>true)),
             array('Role',array('search'=>true,'sort'=>false, 'select'=>Prefs::getRole()->RoleToSelection('_id','rolename' )  )),
             array('Email',array('search'=>true,'sort'=>true)),
+            array('Kartu Debit',array('search'=>true,'sort'=>true)),
             array('Mobile',array('search'=>true,'sort'=>true)),
             array('Address',array('search'=>true,'sort'=>true)),
             array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
@@ -86,6 +87,7 @@ class MemberController extends AdminController {
             array('name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('roleId',array('kind'=>'text', 'callback'=>'idRole' ,'query'=>'like','pos'=>'both','show'=>true)),
             array('email',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
+            array('bankCard',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('mobile',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('address_1',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
@@ -190,10 +192,23 @@ class MemberController extends AdminController {
         return parent::postEdit($id,$data);
     }
 
+    public function SQL_additional_query($model)
+    {
+
+
+
+        $model = $model->where('roleId', '=', Prefs::getRoleId('Member'))
+                    ->orderBy('updated_at','desc');
+
+        return $model;
+
+    }
+
+
     public function makeActions($data)
     {
         $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i>Delete</span>';
-        $edit = '<a href="'.url('user/edit/'.$data['_id']).'"><i class="fa fa-edit"></i>Update</a>';
+        $edit = '<a href="'.url('pickup/member/edit/'.$data['_id']).'"><i class="fa fa-edit"></i>Update</a>';
 
         $actions = $edit.'<br />'.$delete;
         return $actions;

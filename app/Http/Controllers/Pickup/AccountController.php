@@ -65,15 +65,18 @@ class AccountController extends AdminController {
             array('Nomor Kontrak',array('search'=>true,'sort'=>true)),
             array('Atas Nama',array('search'=>true,'sort'=>true)),
             array('Perusahaan Kreditor',array('search'=>true,'sort'=>true)),
-            array('Tipe',array('search'=>true,'sort'=>true,  'select'=> array_merge([''=>'All'], config('jc.credit_type' ) ) ) ),
+            array('Jenis Kredit / Program',array('search'=>true,'sort'=>true)),
+            array('Jenis Barang',array('search'=>true,'sort'=>true,  'select'=> array_merge([''=>'All'], config('jc.credit_type' ) ) ) ),
             array('Jatuh Tempo',array('search'=>true,'sort'=>false  )),
             array('Jumlah Cicilan',array('search'=>true,'sort'=>true)),
             array('Tgl Bayar',array('search'=>true,'sort'=>true)),
+            array('Deskripsi Barang',array('search'=>true,'sort'=>true)),
             array('Alamat Pengambilan',array('search'=>true,'sort'=>true)),
             array('Kecamatan',array('search'=>true,'sort'=>true)),
             array('Kota',array('search'=>true,'sort'=>true)),
             array('Propinsi',array('search'=>true,'sort'=>true)),
             array('Kode Pos',array('search'=>true,'sort'=>true)),
+            array('Kartu Pembayaran',array('search'=>true,'sort'=>true)),
             array('Nama Pembayar',array('search'=>true,'sort'=>true)),
             array('Email Pembayar',array('search'=>true,'sort'=>true)),
             //array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
@@ -112,15 +115,18 @@ class AccountController extends AdminController {
             array('contractNumber',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
             array('contractName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('creditorName',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
+            array('programName',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('Type',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
             array('dueDate',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true,'attr'=>array('class'=>'expander'))),
             array('installmentAmt',array('kind'=>'currency','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupDate',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
+            array('productDescription',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupAddress',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupDistrict',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupCity',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupProvince',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupZIP',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('bankCard',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('payerName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('payerEmail',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             //array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
@@ -147,8 +153,33 @@ class AccountController extends AdminController {
         $creditor = Creditor::find($data['creditor']);
         $data['creditorName'] = $creditor->coName;
 
-        $data['payerId'] = '';
-        $data['payerName'] = '';
+        if(isset($data['payerEmail']) && $data['payerEmail'] != ''){
+            $payer = User::where('email','=', trim($data['payerEmail']))->first();
+            
+            if($payer){
+                $data['payerId'] = $payer->id;
+                $data['payerName'] = $payer->name;
+                $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = (isset($payer->bankCard))?$payer->bankCard:'';
+
+            }else{
+                $data['payerId'] = '';
+                $data['payerName'] = $data['contractName'];
+                $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = '';
+
+            }
+
+        }else{
+            $data['payerId'] = '';
+            $data['payerName'] = $data['contractName'];
+            $data['payerEmail'] = 'Non Member';
+
+            $data['bankCard'] = '';
+
+        }
 
         $data['dueDate'] = intval($data['dueDate']);
         $data['pickupDate'] = intval($data['pickupDate']);
@@ -167,8 +198,33 @@ class AccountController extends AdminController {
         $creditor = Creditor::find($data['creditor']);
         $data['creditorName'] = $creditor->coName;
 
-        $data['payerId'] = '';
-        $data['payerName'] = '';
+        if(isset($data['payerEmail']) && $data['payerEmail'] != ''){
+            $payer = User::where('email','=', trim($data['payerEmail']))->first();
+            
+            if($payer){
+                $data['payerId'] = $payer->id;
+                $data['payerName'] = $payer->name;
+                $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = (isset($payer->bankCard))?$payer->bankCard:'';
+
+            }else{
+                $data['payerId'] = '';
+                $data['payerName'] = $data['contractName'];
+                $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = '';
+
+            }
+
+        }else{
+            $data['payerId'] = '';
+            $data['payerName'] = $data['contractName'];
+            $data['payerEmail'] = 'Non Member';
+
+            $data['bankCard'] = '';
+
+        }
 
         $data['dueDate'] = intval($data['dueDate']);
         $data['pickupDate'] = intval($data['pickupDate']);
@@ -334,22 +390,31 @@ class AccountController extends AdminController {
 
         if(isset($data['payerEmail']) && $data['payerEmail'] != ''){
             $payer = User::where('email','=', trim($data['payerEmail']))->first();
+
             if($payer){
                 $data['payerId'] = $payer->id;
                 $data['payerName'] = $payer->name;
                 $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = (isset($payer->bankCard))?$payer->bankCard:'';
+
             }else{
                 $data['payerId'] = '';
                 $data['payerName'] = $data['contractName'];
                 $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = '';
+
             }
 
         }else{
             $data['payerId'] = '';
             $data['payerName'] = $data['contractName'];
             $data['payerEmail'] = 'Non Member';
-        }
 
+            $data['bankCard'] = '';
+
+        }
 
         $creditor = Creditor::find($data['creditor']);
         $data['creditorName'] = $creditor->coName;

@@ -133,16 +133,31 @@ class AccountController extends AdminController {
         $creditor = Creditor::find($data['creditor']);
         $data['creditorName'] = $creditor->coName;
 
-        if(isset($data['payerEmail']) && trim($data['payerEmail']) != ''){
+        if(isset($data['payerEmail']) && $data['payerEmail'] != ''){
             $payer = User::where('email','=', trim($data['payerEmail']))->first();
-            $data['payerId'] = $payer->id;
-            $data['payerName'] = $payer->name;
-            $data['payerEmail'] = trim($data['payerEmail']);
+            if($payer){
+                $data['payerId'] = $payer->id;
+                $data['payerName'] = $payer->name;
+                $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = (isset($payer->bankCard))?$payer->bankCard:'';
+
+            }else{
+                $data['payerId'] = '';
+                $data['payerName'] = $data['contractName'];
+                $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = '';
+
+            }
 
         }else{
             $data['payerId'] = '';
-            $data['payerName'] = 'Non Member';
+            $data['payerName'] = $data['contractName'];
             $data['payerEmail'] = 'Non Member';
+
+            $data['bankCard'] = '';
+
         }
 
         $data['dueDate'] = intval($data['dueDate']);
@@ -162,16 +177,31 @@ class AccountController extends AdminController {
         $creditor = Creditor::find($data['creditor']);
         $data['creditorName'] = $creditor->coName;
 
-        if(isset($data['payerEmail']) && trim($data['payerEmail']) != ''){
+        if(isset($data['payerEmail']) && $data['payerEmail'] != ''){
             $payer = User::where('email','=', trim($data['payerEmail']))->first();
-            $data['payerId'] = $payer->id;
-            $data['payerName'] = $payer->name;
-            $data['payerEmail'] = trim($data['payerEmail']);
+            if($payer){
+                $data['payerId'] = $payer->id;
+                $data['payerName'] = $payer->name;
+                $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = (isset($payer->bankCard))?$payer->bankCard:'';
+
+            }else{
+                $data['payerId'] = '';
+                $data['payerName'] = $data['contractName'];
+                $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = '';
+
+            }
 
         }else{
             $data['payerId'] = '';
-            $data['payerName'] = 'Non Member';
+            $data['payerName'] = $data['contractName'];
             $data['payerEmail'] = 'Non Member';
+
+            $data['bankCard'] = '';
+
         }
 
         $data['dueDate'] = intval($data['dueDate']);
@@ -337,16 +367,25 @@ class AccountController extends AdminController {
                 $data['payerId'] = $payer->id;
                 $data['payerName'] = $payer->name;
                 $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = (isset($payer->bankCard))?$payer->bankCard:'';
+
             }else{
                 $data['payerId'] = '';
                 $data['payerName'] = $data['contractName'];
                 $data['payerEmail'] = trim($data['payerEmail']);
+
+                $data['bankCard'] = '';
+
             }
 
         }else{
             $data['payerId'] = '';
             $data['payerName'] = $data['contractName'];
             $data['payerEmail'] = 'Non Member';
+
+            $data['bankCard'] = '';
+
         }
 
         $data['dueDate'] = intval($data['dueDate']);

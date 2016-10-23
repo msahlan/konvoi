@@ -127,6 +127,8 @@
 
                             <li><a href="{{ url('pickup/type')}}"><i class="icon-display4 position-left"></i> Jenis Kredit</a></li>
 
+                            <li><a href="{{ url('pickup/member')}}"><i class="icon-display4 position-left"></i> Debitur</a></li>
+                            <li><a href="{{ url('pickup/creditor')}}"><i class="icon-display4 position-left"></i> Kreditur</a></li>
 
                         @else
 
@@ -249,10 +251,10 @@
                                     <a href="{{ url('user') }}"><i class="icon-users"></i> Admins</a>
                                 </li>
                                 <li>
-                                    <a href="{{ url('member') }}"><i class="icon-users"></i> Members</a>
+                                    <a href="{{ url('pickup/member') }}"><i class="icon-users"></i> Members</a>
                                 </li>
                                 <li>
-                                    <a href="{{ url('creditor') }}"><i class="icon-users"></i> Creditors</a>
+                                    <a href="{{ url('pickup/creditor') }}"><i class="icon-users"></i> Creditors</a>
                                 </li>
                             </ul>
                         </li>

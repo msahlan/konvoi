@@ -11,12 +11,12 @@
     $opt = [ $today=>'Hari ini', $tomorrow=>'Besok' ];
 
 ?>
-<a class="btn btn-raised btn-transparent btn-danger btn-sm" id="generate-data"><i class="fa fa-calendar"></i> Generate Today's Data</a>
+<a class="btn btn-raised btn-transparent btn-danger btn-sm" id="generate-data"><i class="fa fa-calendar"></i> Generate Order Data</a>
 
 <div id="generate-data-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Generate Today's Data</span></h3>
+        <h3 id="myModalLabel">Generate Order Data</span></h3>
     </div>
     <div class="modal-body" >
     	{!! Former::select('quotaScope','Quota by')->id('quota-scope')->options([ 'province'=>'Province', 'city'=>'City', 'district'=>'District' ]) !!}
