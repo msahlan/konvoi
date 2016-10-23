@@ -8,7 +8,8 @@
     $tomorrow = date('m-d',strtotime('tomorrow'));
 
 
-    $opt = [ $today=>'Hari ini', $tomorrow=>'Besok' ];
+    //$opt = [ $today=>'Hari ini', $tomorrow=>'Besok' ];
+    $opt = [ 'today'=>'Hari ini', 'tomorrow'=>'Besok' ];
 
 ?>
 <a class="btn btn-raised btn-transparent btn-danger btn-sm" id="generate-data"><i class="fa fa-calendar"></i> Generate Order Data</a>
