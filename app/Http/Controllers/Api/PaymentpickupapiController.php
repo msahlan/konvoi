@@ -173,7 +173,7 @@ class PaymentpickupapiController extends BaseController {
             })
             */
 
-            ->orderBy('assignmentDate','desc')
+            ->orderBy('assignmentDateTs','desc')
             ->get();
 
         //print_r($orders->toArray());

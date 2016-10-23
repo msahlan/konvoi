@@ -99,6 +99,9 @@ class AjaxController extends BaseController {
 
     public function postGeneratedata()
     {
+
+        date_default_timezone_set('Asia/Jakarta');
+
         $in = Request::input();
 
         $date = explode('-',$in['day']);
