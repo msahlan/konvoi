@@ -379,7 +379,7 @@ class IncomingController extends AdminController {
 
     public function SQL_additional_query($model)
     {
-        $model = $model->where('status','=','new')
+        $model = $model->where('status','=',config('jayon.trans_status_new'))
                     ->orderBy('assignmentDate','desc')
                     ->orderBy('pickupCity','desc')
                     ->orderBy('pickupDistrict','desc');
