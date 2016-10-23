@@ -422,7 +422,7 @@ class IncomingController extends AdminController {
         //print $pick_up_date;
 
         $shipments = Pickup::where('assignmentDate','=', $pick_up_date )
-                        ->where('status','=', 'new')
+                        ->where('status','=', config('jayon.trans_status_new'))
                         ->where('pickupCity','=',$city)
                         ->where('pickupDistrict','=',$district)
                         ->get();
