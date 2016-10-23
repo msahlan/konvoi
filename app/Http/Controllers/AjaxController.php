@@ -110,7 +110,7 @@ class AjaxController extends BaseController {
 
         $month = intval($date[0]);
 
-        $year = date('Y', time());
+        $year = date('Y');
 
         $asdate = $year.'-'.$month.'-'.$date;
 
