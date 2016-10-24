@@ -138,6 +138,8 @@ class AccountController extends AdminController {
             if($payer){
                 $data['payerId'] = $payer->id;
                 $data['payerName'] = $payer->name;
+                $data['phone'] = isset($payer->phone)?$payer->phone:'';
+                $data['mobile'] = isset($payer->mobile)?$payer->mobile:'';
                 $data['payerEmail'] = trim($data['payerEmail']);
 
                 $data['bankCard'] = (isset($payer->bankCard))?$payer->bankCard:'';
@@ -182,6 +184,8 @@ class AccountController extends AdminController {
             if($payer){
                 $data['payerId'] = $payer->id;
                 $data['payerName'] = $payer->name;
+                $data['phone'] = isset($payer->phone)?$payer->phone:'';
+                $data['mobile'] = isset($payer->mobile)?$payer->mobile:'';
                 $data['payerEmail'] = trim($data['payerEmail']);
 
                 $data['bankCard'] = (isset($payer->bankCard))?$payer->bankCard:'';
@@ -366,6 +370,8 @@ class AccountController extends AdminController {
             if($payer){
                 $data['payerId'] = $payer->id;
                 $data['payerName'] = $payer->name;
+                $data['phone'] = isset($payer->phone)?$payer->phone:'';
+                $data['mobile'] = isset($payer->mobile)?$payer->mobile:'';
                 $data['payerEmail'] = trim($data['payerEmail']);
 
                 $data['bankCard'] = (isset($payer->bankCard))?$payer->bankCard:'';

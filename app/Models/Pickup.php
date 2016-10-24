@@ -39,6 +39,8 @@ class Pickup extends Eloquent {
         'pickupDistrict',
         'pickupProvince',
         'pickupZIP',
+        'phone',
+        'mobile',
         'status'
     ];
 
