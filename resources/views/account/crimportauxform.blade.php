@@ -8,7 +8,7 @@
             {!! Former::hidden('creditor', Prefs::getCreditorByPic( Auth::user()->id )->id ) !!}
             {!! Former::hidden('creditorName', Prefs::getCreditorByPic( Auth::user()->id )->coName ) !!}
         @else
-            {!! Former::select('creditor','Creditor')->options(Prefs::getCreditor()->CreditorToSelection('_id','coName') ) !!}
+            {!! Former::select('creditor','Perusahaan Kreditur')->options(Prefs::getCreditor()->CreditorToSelection('_id','coName') ) !!}
         @endif
     </div>
     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">

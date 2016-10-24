@@ -4357,6 +4357,7 @@ class AdminController extends Controller {
         return View::make($this->import_main_form)
             ->with('title',$this->title)
             ->with('aux_form',$this->import_aux_form)
+            ->with('crumb',$this->crumb)
             //->with('input_name',$this->input_name)
             ->with('importkey', $this->importkey)
             ->with('back',$route->getPrefix().'/'.strtolower($this->controller_name))

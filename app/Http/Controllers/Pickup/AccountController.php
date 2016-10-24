@@ -24,6 +24,7 @@ use \MongoRegex;
 use DB;
 use HTML;
 use Route;
+use Validator;
 
 class AccountController extends AdminController {
 
@@ -155,7 +156,7 @@ class AccountController extends AdminController {
 
         if(isset($data['payerEmail']) && $data['payerEmail'] != ''){
             $payer = User::where('email','=', trim($data['payerEmail']))->first();
-            
+
             if($payer){
                 $data['payerId'] = $payer->id;
                 $data['payerName'] = $payer->name;
@@ -200,7 +201,7 @@ class AccountController extends AdminController {
 
         if(isset($data['payerEmail']) && $data['payerEmail'] != ''){
             $payer = User::where('email','=', trim($data['payerEmail']))->first();
-            
+
             if($payer){
                 $data['payerId'] = $payer->id;
                 $data['payerName'] = $payer->name;
@@ -359,7 +360,23 @@ class AccountController extends AdminController {
     {
         $this->importkey = '_id';
 
-        return parent::postUploadimport();
+        $this->validator = [
+            'creditor'=>'required'
+        ];
+
+        $messages = [
+            'creditor.required' => ':attribute harus dipilih salah satu.',
+        ];
+
+        $validation = Validator::make(Request::all(), $this->validator, $messages);
+
+        if($validation->fails()){
+            return redirect('pickup/account/import')
+                ->withErrors($validation)
+                ->withInput();
+        }else{
+            return parent::postUploadimport();
+        }
     }
 
     public function processImportAuxForm()

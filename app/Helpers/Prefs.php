@@ -1381,7 +1381,7 @@ class Prefs {
     public function CreditorToSelection($value, $label, $all = true)
     {
         if($all){
-            $ret = array(''=>'Select Creditor');
+            $ret = array(''=>'Pilih Perusahaan Kreditur');
         }else{
             $ret = array();
         }
