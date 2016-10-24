@@ -69,6 +69,7 @@ class AccountController extends AdminController {
             array('Jumlah Cicilan',array('search'=>true,'sort'=>true)),
             array('Tgl Bayar via JC',array('search'=>true,'sort'=>true)),
             array('Alamat Pengambilan',array('search'=>true,'sort'=>true)),
+            array('Telepon',array('search'=>true,'sort'=>true)),
             array('Nama Pembayar',array('search'=>true,'sort'=>true)),
             array('Email Pembayar',array('search'=>true,'sort'=>true)),
             //array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
@@ -100,6 +101,7 @@ class AccountController extends AdminController {
             array('installmentAmt',array('kind'=>'currency','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupDate',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupAddress',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true, 'callback'=>'phoneList','multi'=>['phone','mobile'],'multirel'=>'OR')),
             array('payerName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('payerEmail',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             //array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
@@ -253,6 +255,11 @@ class AccountController extends AdminController {
         return $toggle;
     }
 
+    public function phoneList($data)
+    {
+        return $data['phone'].'<hr>'.$data['mobile'];
+    }
+
     public function splitTag($data){
         $tags = explode(',',$data['docTag']);
         if(is_array($tags) && count($tags) > 0 && $data['docTag'] != ''){
@@ -370,8 +377,17 @@ class AccountController extends AdminController {
             if($payer){
                 $data['payerId'] = $payer->id;
                 $data['payerName'] = $payer->name;
-                $data['phone'] = isset($payer->phone)?$payer->phone:'';
-                $data['mobile'] = isset($payer->mobile)?$payer->mobile:'';
+                if(isset($data['phone']) && trim($data['phone']) != ''){
+
+                }else{
+                    $data['phone'] = isset($payer->phone)?$payer->phone:'';
+                }
+
+                if(isset($data['mobile']) && trim($data['mobile']) != ''){
+
+                }else{
+                    $data['mobile'] = isset($payer->mobile)?$payer->mobile:'';
+                }
                 $data['payerEmail'] = trim($data['payerEmail']);
 
                 $data['bankCard'] = (isset($payer->bankCard))?$payer->bankCard:'';

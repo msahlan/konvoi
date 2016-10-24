@@ -73,6 +73,7 @@ class AccountController extends AdminController {
             array('Tgl Bayar',array('search'=>true,'sort'=>true)),
             array('Deskripsi Barang',array('search'=>true,'sort'=>true)),
             array('Alamat Pengambilan',array('search'=>true,'sort'=>true)),
+            array('Phone',array('search'=>true,'sort'=>true)),
             array('Kecamatan',array('search'=>true,'sort'=>true)),
             array('Kota',array('search'=>true,'sort'=>true)),
             array('Propinsi',array('search'=>true,'sort'=>true)),
@@ -123,6 +124,7 @@ class AccountController extends AdminController {
             array('pickupDate',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
             array('productDescription',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupAddress',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true ,'callback'=>'phoneList', 'multi'=>['phone','mobile'],'multirel'=>'OR' )),
             array('pickupDistrict',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupCity',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('pickupProvince',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -267,6 +269,11 @@ class AccountController extends AdminController {
         return $actions;
     }
 
+    public function phoneList($data)
+    {
+        return $data['phone'].'<hr>'.$data['mobile'];
+    }
+
     public function splitTag($data){
         $tags = explode(',',$data['docTag']);
         if(is_array($tags) && count($tags) > 0 && $data['docTag'] != ''){
@@ -365,11 +372,13 @@ class AccountController extends AdminController {
         $this->importkey = '_id';
 
         $this->validator = [
-            'creditor'=>'required'
+            'creditor'=>'required',
+            'inputfile'=>'required|file'
         ];
 
         $messages = [
             'creditor.required' => ':attribute harus dipilih salah satu.',
+            'inputfile.required' => 'File untuk diupload tidak boleh kosong.',
         ];
 
         $validation = Validator::make(Request::all(), $this->validator, $messages);
@@ -415,8 +424,17 @@ class AccountController extends AdminController {
             if($payer){
                 $data['payerId'] = $payer->id;
                 $data['payerName'] = $payer->name;
-                $data['phone'] = isset($payer->phone)?$payer->phone:'';
-                $data['mobile'] = isset($payer->mobile)?$payer->mobile:'';
+                if(isset($data['phone']) && trim($data['phone']) != ''){
+
+                }else{
+                    $data['phone'] = isset($payer->phone)?$payer->phone:'';
+                }
+
+                if(isset($data['mobile']) && trim($data['mobile']) != ''){
+
+                }else{
+                    $data['mobile'] = isset($payer->mobile)?$payer->mobile:'';
+                }
                 $data['payerEmail'] = trim($data['payerEmail']);
 
                 $data['bankCard'] = (isset($payer->bankCard))?$payer->bankCard:'';
