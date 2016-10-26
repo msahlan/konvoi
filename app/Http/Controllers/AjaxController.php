@@ -20,9 +20,12 @@ use App\Models\Creditaccount;
 use App\Models\Pickup;
 use App\Models\Credittype;
 use App\Models\Coverage;
+use App\Models\Creditor;
+use App\Models\User;
 
 use App\Helpers\Prefs;
 use App\Helpers\PointLocation;
+use App\Helpers\Options;
 
 use Config;
 
@@ -119,11 +122,23 @@ class AjaxController extends BaseController {
 
         $scope = $in['scope'];
 
-        $creditor = $in['creditor'];
+        $creditorId = $in['creditor'];
 
         $accounts = Creditaccount::where('pickupDate','=',intval($date));
-        if($creditor != ''){
-            $accounts = $accounts->where('creditor','=',$creditor);
+
+        $single = false;
+
+        if($creditorId != ''){
+
+            $accounts = $accounts->where('creditor','=',$creditorId);
+
+            $creditor = Creditor::find($creditorId);
+
+            $pickupFee = (isset($creditor->pickupFee) && $creditor->pickupFee != '')?$creditor->pickupFee: Options::get('default_pickup_fee');
+
+            $pickupFee = intval($pickupFee);
+
+            $single = true;
         }
 
         $accounts = $accounts->get();
@@ -141,6 +156,20 @@ class AjaxController extends BaseController {
             $acc['status'] = config('jayon.trans_status_new');
             $acc['transactionId'] = Prefs::getDeliveryId();
 
+            if($single){
+                $acc['pickupFee'] = $pickupFee;
+            }else{
+
+                $creditor = Creditor::find($acc['creditor']);
+
+                $pickupFee = (isset($creditor->pickupFee) && $creditor->pickupFee != '')?$creditor->pickupFee: Options::get('default_pickup_fee');
+
+                $pickupFee = intval($pickupFee);
+
+                $acc['pickupFee'] = $pickupFee;
+
+            }
+
             unset($acc['_id']);
             unset($acc['updated_at']);
             unset($acc['created_at']);
@@ -153,6 +182,7 @@ class AjaxController extends BaseController {
                 $cnt++;
                 Pickup::create($acc);
             }
+
 
         }
 
@@ -2076,15 +2106,18 @@ class AjaxController extends BaseController {
     {
         $q = Request::input('term');
 
-        $user = new User();
-        $qemail = new MongoRegex('/'.$q.'/i');
+        $rq = '/'.$q.'/i';
+        //$user = new User();
+        //$qemail = new MongoRegex('/'.$q.'/i');
+        //$res = $user->find(array('$or'=>array(array('email'=>$qemail),array('fullname'=>$qemail)) ),array('email','fullname'));
 
-        $res = $user->find(array('$or'=>array(array('email'=>$qemail),array('fullname'=>$qemail)) ),array('email','fullname'));
+        $res = User::where('email','regexp', $rq )->orWhere('name','regexp', $rq )->get()->toArray();
+
 
         $result = array();
 
         foreach($res as $r){
-            $result[] = array('id'=>$r['_id']->__toString(),'value'=>$r['fullname'],'email'=>$r['email'],'label'=>$r['fullname'].' ( '.$r['email'].' )');
+            $result[] = array('id'=>$r['_id'],'value'=>$r['email'],'name'=>$r['name'],'mobile'=>isset($r['mobile'])?$r['mobile']:'','phone'=>isset($r['phone'])?$r['phone']:'','email'=>$r['email'],'label'=>$r['name'].' ( '.$r['email'].' )');
         }
 
         return Response::json($result);

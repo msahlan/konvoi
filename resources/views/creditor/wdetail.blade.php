@@ -4,7 +4,7 @@
             <img style="width:100px;" src="{{ $filedata['thumbnail_url'] }}"><br />
             <span class="file_copy" data-clipboard-text="{{ $filedata['url'] }}><i class="icon-copy"></i> copy URL</span>
 
-            {{ Former::hidden('fileid', $filedata['_id'])->class('file-id') }}
+            {!! Former::hidden('fileid', $filedata['_id'])->class('file-id') !!}
 
         </td>
         <td><span class="img-title">{{ $filedata['name'] }}</span></td>

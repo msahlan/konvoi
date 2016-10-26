@@ -47,28 +47,28 @@
             </div>
 
             <div class="form-group has-feedback has-feedback-left">
-                <input id="phone" type="phone" class="form-control" placeholder="Phone" name="phone" value="{{ old('phone') }}">
+                <input id="coPhone" type="phone" class="form-control" placeholder="Phone" name="coPhone" value="{{ old('coPhone') }}">
 
                 <div class="form-control-feedback">
                     <i class="icon-phone text-muted"></i>
                 </div>
-                @if ($errors->has('phone'))
+                @if ($errors->has('coPhone'))
                     <span class="help-block">
-                        <strong>{{ $errors->first('phone') }}</strong>
+                        <strong>{{ $errors->first('coPhone') }}</strong>
                     </span>
                 @endif
 
             </div>
 
             <div class="form-group has-feedback has-feedback-left">
-                <input id="fax" type="fax" class="form-control" placeholder="Fax" name="fax" value="{{ old('fax') }}">
+                <input id="coFax" type="fax" class="form-control" placeholder="Fax" name="coFax" value="{{ old('fax') }}">
 
                 <div class="form-control-feedback">
                     <i class="icon-address-book text-muted"></i>
                 </div>
-                @if ($errors->has('fax'))
+                @if ($errors->has('coFax'))
                     <span class="help-block">
-                        <strong>{{ $errors->first('fax') }}</strong>
+                        <strong>{{ $errors->first('coFax') }}</strong>
                     </span>
                 @endif
 

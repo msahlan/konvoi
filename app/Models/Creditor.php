@@ -16,6 +16,9 @@ class Creditor extends Eloquent
      */
     protected $fillable = [
         'coName',
+        'coPhone',
+        'coFax',
+        'coUrl',
         'address_1',
         'address_2',
         'phone',

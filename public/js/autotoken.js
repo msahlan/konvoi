@@ -69,5 +69,43 @@ $(document).ready(function(){
         $('.th-loading').hide();
     });
 
+
+
+    var userengine = new Bloodhound({
+        datumTokenizer: function(d) {
+            return Bloodhound.tokenizers.whitespace(d.value);
+        },
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url : base + '/ajax/user?term=%QUERY'
+        }
+
+    });
+
+    // Initialize engine
+    userengine.initialize();
+
+    $('.auto-user').typeahead(null, {
+      name: 'user_id',
+      display: 'email',
+      templates:{
+          suggestion: function(data) {
+                return '<p><strong>' + data.email + '</strong><br />' + data.name + '<br />' + data.id + '</p>';
+            }
+      },
+      source: userengine.ttAdapter()
+    }).on('typeahead:selected',function(e, datum){
+        console.log(datum);
+        $('#picId').val(datum.id);
+        $('#picName').val(datum.name);
+        $('#picPhone').val(datum.phone);
+        $('#picMobile').val(datum.mobile);
+
+    }).on('typeahead:asyncrequest',function(){
+        $('.th-loading').show();
+    }).on('typeahead:asyncreceive',function(){
+        $('.th-loading').hide();
+    });
+
 });
 

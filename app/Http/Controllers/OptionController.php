@@ -1,4 +1,27 @@
 <?php
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\AdminController;
+
+use App\Models\Option;
+use App\Models\Uploaded;
+use App\Models\Role;
+
+use App\Helpers\Prefs;
+use App\Helpers\Options;
+
+use Creitive\Breadcrumbs\Breadcrumbs;
+
+use Auth;
+use Event;
+use View;
+use Input;
+use Request;
+use Response;
+use Mongomodel;
+use \MongoRegex;
+use DB;
+use HTML;
 
 class OptionController extends AdminController {
 
@@ -6,7 +29,7 @@ class OptionController extends AdminController {
     {
         parent::__construct();
 
-                $cname = substr(strrchr(get_class($this), '\\'), 1);
+        $cname = substr(strrchr(get_class($this), '\\'), 1);
         $this->controller_name = str_replace('Controller', '', $cname);
 
 
@@ -48,9 +71,9 @@ class OptionController extends AdminController {
 
         $this->can_add = false;
 
-        $this->modal_sets = View::make( strtolower( $this->controller_name ).'.modal')->render();
+        //$this->modal_sets = View::make( strtolower( $this->controller_name ).'.modal')->render();
 
-        $this->js_table_event = View::make(strtolower($this->controller_name).'.tableevent')->render();
+        //$this->js_table_event = View::make(strtolower($this->controller_name).'.tableevent')->render();
 
         $this->crumb->addCrumb('System',url( strtolower($this->controller_name) ));
 

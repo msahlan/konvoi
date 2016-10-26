@@ -5,7 +5,7 @@ use App\Models\Option;
 class Options {
 
     public static function refresh(){
-        $defaults = Config::get('options.defaults');
+        $defaults = config('options.defaults');
 
         foreach($defaults as $d=>$v){
 

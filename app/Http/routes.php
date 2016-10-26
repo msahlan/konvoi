@@ -54,6 +54,14 @@ Route::post('/upload/avatar', 'UploadController@postAvatar');
 Route::post('/upload/logo', 'UploadController@postLogo');
 Route::post('/upload/docs', 'UploadController@postDocs');
 
+Route::get('/option', 'OptionController@getIndex');
+Route::post('/option', 'OptionController@postIndex');
+Route::get('/option/add', 'OptionController@getAdd');
+Route::post('/option/add', 'OptionController@postAdd');
+Route::get('/option/edit/{id}', 'OptionController@getEdit');
+Route::post('/option/edit/{id}', 'OptionController@postEdit');
+Route::post('/option/del', 'OptionController@postDel');
+
 
 Route::get('/user', 'UserController@getIndex');
 Route::post('/user', 'UserController@postIndex');
@@ -144,6 +152,7 @@ Route::post('/ajax/merchantapp', 'AjaxController@postMerchantapp');
 Route::post('/ajax/locationlog', 'AjaxController@postLocationlog');
 Route::post('/ajax/delfile', 'AjaxController@postDelfile');
 Route::get('/ajax/org', 'AjaxController@getOrg');
+Route::get('/ajax/user', 'AjaxController@getUser');
 Route::get('/ajax/device', 'AjaxController@getDevice');
 Route::get('/ajax/courier', 'AjaxController@getCourier');
 Route::post('/ajax/confirmdata', 'AjaxController@postConfirmdata');

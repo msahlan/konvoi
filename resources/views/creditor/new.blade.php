@@ -1,8 +1,20 @@
 @extends('layouts.formtwo')
 
+@section('page_js')
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/inputs/typeahead/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/tags/tagsinput.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/tags/tokenfield.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/ui/prism.min.js"></script>
+
+    {{ HTML::script('js/autotoken.js')}}
+
+@endsection
 
 @section('left')
-        @inject('prefs','App\Helpers\Prefs')
+
+        <?php
+            use App\Helpers\Prefs;
+        ?>
 
         <h4>Organization Info</h4>
 
@@ -10,10 +22,11 @@
 
         {!! Former::text('code','Company Code')  !!}
 
-        {!! Former::text('email','Email') !!}
-        {!! Former::text('url','Website') !!}
+        {!! Former::text('coEmail','Email') !!}
+        {!! Former::text('coUrl','Website') !!}
 
-        {!! Former::text('phone','Phone')  !!}
+        {!! Former::text('coPhone','Phone')  !!}
+        {!! Former::text('coFax','Fax')  !!}
 
         {!! Former::text('address_1','Address line 1')  !!}
         {!! Former::text('address_2','Address line 2')  !!}
@@ -21,7 +34,10 @@
 
         {!! Former::text('province','State / Province')  !!}
 
+
         {!! Former::select('countryOfOrigin')->id('country')->options(config('country.countries'))->label('Country of Origin')  !!}
+
+        {!! Former::hidden('roleId', Prefs::getRoleId('Creditor') ) !!}
 
 
         {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary')) !!}&nbsp;&nbsp;
@@ -33,7 +49,23 @@
 
         <h4>PIC Info</h4>
 
-        {!! Former::text('picName','Full Name')  !!}
+        {!! Former::text('email','Email')  !!}
+
+        {!! Former::text('picId','User Id ( if already exists )')  !!}
+
+        {!! Former::text('name','Full Name')  !!}
+
+        {!! Former::text('phone','Phone')  !!}
+
+        {!! Former::text('mobile','Phone / Mobile')  !!}
+
+        {!! Former::text('password','Password')  !!}
+
+        {!! Former::text('password_confirmation','Confirm Password')  !!}
+
+        <h4>Pickup Fee</h4>
+
+        {!! Former::text('pickupFee','Pickup Fee')  !!}
 
         <h4>Logo</h4>
 

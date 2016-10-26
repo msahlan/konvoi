@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Models\Creditor;
 use App\Models\Uploaded;
 use App\Models\Role;
+use App\Models\User;
 
 use App\Helpers\Prefs;
 
@@ -21,6 +22,7 @@ use Mongomodel;
 use \MongoRegex;
 use DB;
 use HTML;
+use Route;
 
 class CreditorController extends AdminController {
 
@@ -68,7 +70,7 @@ class CreditorController extends AdminController {
             array('Last Update',array('search'=>true,'sort'=>true,'date'=>true)),
         );
 
-        $this->title = 'Users';
+        $this->title = 'Creditors';
 
         $this->can_add = true;
 
@@ -105,8 +107,15 @@ class CreditorController extends AdminController {
         $this->validator = array(
             'coName' => 'required',
             'address_1'=> 'required',
-            'phone'=>'required'
+            'coPhone'=>'required',
+            'coEmail'=>'required',
+            'pickupFee'=>'required',
+            'password'=>'required|same:password_confirmation'
         );
+
+        if($data['userId'] == ''){
+            $this->validator['email']='required|unique:users';
+        }
 
         return parent::postAdd($data);
     }
@@ -143,6 +152,19 @@ class CreditorController extends AdminController {
         }
     }
 
+
+    public function beforeUpdateForm($population)
+    {
+        $pic = User::find($population['picId']);
+
+        $population['name'] = $pic->name;
+        $population['email'] = $pic->email;
+        $population['phone'] = $pic->phone;
+        $population['mobile'] = $pic->mobile;
+
+        return $population;
+    }
+
     public function beforeUpdate($id,$data)
     {
 
@@ -170,16 +192,27 @@ class CreditorController extends AdminController {
         $this->validator = array(
             'coName' => 'required',
             'address_1'=> 'required',
-            'phone'=>'required'
+            'coPhone'=>'required',
+            'coEmail'=>'required'
         );
+
+        if($data['password'] != ''){
+            $this->validator['password'] = 'required|same:password_confirmation';
+        }
+
+        if($data['userId'] == ''){
+            $this->validator['email']='required|unique:users';
+        }
 
         return parent::postEdit($id,$data);
     }
 
     public function makeActions($data)
     {
+        $route = Route::current();
+
         $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i>Delete</span>';
-        $edit = '<a href="'.url('creditor/edit/'.$data['_id']).'"><i class="fa fa-edit"></i>Update</a>';
+        $edit = '<a href="'.url( $route->getPrefix().'/creditor/edit/'.$data['_id']).'"><i class="fa fa-edit"></i>Update</a>';
 
         $actions = $edit.'<br />'.$delete;
         return $actions;
