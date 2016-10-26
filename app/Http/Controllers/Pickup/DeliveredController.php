@@ -1103,6 +1103,7 @@ class DeliveredController extends AdminController {
             if(count($pics) > 0){
                 $fee = 0;
                 $installment = 0;
+                $fail = 0;
                 $thumb_array = array();
                 foreach($pics as $g){
 
@@ -1123,6 +1124,11 @@ class DeliveredController extends AdminController {
                         $installment++;
                     }
 
+
+                    if( isset($g->category) && $g->category == 'fail' ){
+                        $fail++;
+                    }
+
                     $total_cnt++;
                 }
 /*
@@ -1135,7 +1141,7 @@ class DeliveredController extends AdminController {
 </div>
 */
                 //$stat = $img_cnt.' pics, '.( $total_cnt - $img_cnt ).' docs';
-                $stat = $installment.' installment receipt <br />'.$fee.' fee receipt <br />'.$sign_cnt.' signature <br />'.$img_cnt.' photo';
+                $stat = $installment.' installment receipt <br />'.$fail.' fail photo <br />'.$sign_cnt.' signature <br />'.$img_cnt.' photo';
 
                 if($img_cnt > 0){
                     $display = implode('',$thumb_array);
