@@ -2,7 +2,11 @@
 
 
 @section('left')
-        {!! Former::text('value', $formdata['label'] ) !!}
+        @if($formdata['type'] == 'select')
+            {!! Former::select('value', $formdata['label'] )->options( $formdata['options'] )->selected( $formdata['value'] ) !!}
+        @else
+            {!! Former::text('value', $formdata['label'] ) !!}
+        @endif
 
         {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary')) !!}&nbsp;&nbsp;
         {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}

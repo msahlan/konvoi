@@ -49,19 +49,15 @@
 
         <h4>PIC Info</h4>
 
-        {!! Former::text('email','Email')  !!}
+        {!! Former::text('email','Email')->class('form-control auto-user')  !!}
 
-        {!! Former::text('picId','User Id ( if already exists )')  !!}
+        {!! Former::text('picId','User Id ( if already exists )')->id('picId')  !!}
 
-        {!! Former::text('name','Full Name')  !!}
+        {!! Former::text('name','Full Name')->id('picName')  !!}
 
-        {!! Former::text('phone','Phone')  !!}
+        {!! Former::text('phone','Phone')->id('picPhone')  !!}
 
-        {!! Former::text('mobile','Phone / Mobile')  !!}
-
-        {!! Former::text('password','Password')  !!}
-
-        {!! Former::text('password_confirmation','Confirm Password')  !!}
+        {!! Former::text('mobile','Phone / Mobile')->id('picMobile')  !!}
 
         <h4>Pickup Fee</h4>
 

@@ -2,6 +2,13 @@
 
 return array(
     'defaults'=>array(
+       'current_quota_mode'=>array(
+                'label'=>'Mode Kuota',
+                'value'=>'province',
+                'type'=>'select',
+                'options'=>['province'=>'Province','city'=>'City','district'=>'District']
+
+            ),
         'default_pickup_fee'=>array(
                 'label'=>'Default Pickup Fee',
                 'value'=>15000,
