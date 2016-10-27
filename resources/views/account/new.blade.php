@@ -22,7 +22,7 @@
 
 
         $('.pick-a-color').pickAColor();
-
+        /*
         $('#creditor-id').on('changed.bs.select',function(e){
 
             $.post('{{ url('ajax/creditprogram') }}',
@@ -33,6 +33,44 @@
                     //console.log(data);
                     $('#program-name').html(data);
                     $('#program-name').selectpicker('refresh');
+                },'html');
+        });
+        */
+        $('#product-type').on('changed.bs.select',function(e){
+
+            $.post('{{ url('ajax/creditprogram') }}',
+                {
+                    id : $('#creditor-id').val(),
+                    type : this.value
+                },
+                function(data) {
+                    //console.log(data);
+                    $('#program-name').html(data);
+                    $('#program-name').selectpicker('refresh');
+
+                    $.post('{{ url('ajax/programname') }}',
+                        {
+                            id : $('#program-name').val()
+                        },
+                        function(data) {
+                            //console.log(data);
+                            $('#bank-card').html(data);
+                            $('#bank-card').selectpicker('refresh');
+                        },'html');
+
+                },'html');
+        });
+
+        $('#program-name').on('changed.bs.select',function(e){
+
+            $.post('{{ url('ajax/programname') }}',
+                {
+                    id : $('#program-name').val()
+                },
+                function(data) {
+                    //console.log(data);
+                    $('#bank-card').html(data);
+                    $('#bank-card').selectpicker('refresh');
                 },'html');
         });
 
@@ -121,6 +159,7 @@ pickupDate
             {!! Former::select('creditor')->options(Prefs::getCreditor()->CreditorToSelection( 'id','coName',true ) )->label('Perusahaan Penyedia Kredit')->id('creditor-id')->class('form-control bootstrap-select')  !!}
         @endif
 
+        {!! Former::select('Type')->options( array_merge([''=>'Select Goods Type'] ,config('jc.credit_type')) )->label('Jenis Barang')->class('form-control bootstrap-select')->id('product-type')  !!}
 
         @if(Ks::is('Member'))
             {!! Former::select('programName')->options( [''=>'Select Credit Type'] )->label('Program Kredit')->id('program-name')->class('form-control bootstrap-select')  !!}
@@ -128,7 +167,8 @@ pickupDate
             {!! Former::text('programName','Program Kredit')->id('program-name')->class('form-control auto-program')  !!}
         @endif
 
-        {!! Former::select('Type')->options( array_merge([''=>'Select Goods Type'] ,config('jc.credit_type')) )->label('Jenis Barang')->class('form-control bootstrap-select')  !!}
+        {!! Former::select('bankCard')->options( [''=>'Select Debit Card'] )->label('Debit Card')->id('bank-card')->class('form-control bootstrap-select')  !!}
+
 
         {!! Former::text('productDescription','Deskripsi Produk')  !!}
 
