@@ -275,6 +275,12 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu width-200 dropdown-menu-right">
+                            @if($menu == 'PICKUP')
+                                <li class="{{ sa('pickup/cardtype') }}" >
+                                  <a href="{{ url('pickup/cardtype') }}" class="{{ sa('pickup/cardtype') }}" ><span class="icon-credit-card"></span>
+                                   Jenis Kartu Debit</a>
+                                </li>
+                            @endif
                             <li class="{{ sa('organization') }}" >
                               <a href="{{ url('organization') }}" class="{{ sa('organization') }}" ><span class="fa fa-group"></span>
                                Organization</a>

@@ -427,6 +427,21 @@ Route::group( [ 'prefix'=>'pickup', 'middlewareGroup'=>['web'] ] , function(){
     Route::get('/type/dl/{filename}', 'Pickup\TypeController@getDl');
     Route::get('/type/csv/{filename}', 'Pickup\TypeController@getCsv');
 
+    Route::get('/cardtype', 'Pickup\CardtypeController@getIndex');
+    Route::post('/cardtype', 'Pickup\CardtypeController@postIndex');
+    Route::get('/cardtype/add', 'Pickup\CardtypeController@getAdd');
+    Route::post('/cardtype/add', 'Pickup\CardtypeController@postAdd');
+    Route::get('/cardtype/edit/{id}', 'Pickup\CardtypeController@getEdit');
+    Route::post('/cardtype/edit/{id}', 'Pickup\CardtypeController@postEdit');
+    Route::get('/cardtype/printlabel/{sessionname}/{printparam}/{format?}', 'Pickup\CardtypeController@getPrintlabel');
+    Route::get('/cardtype/import', 'Pickup\CardtypeController@getImport');
+    Route::post('/cardtype/uploadimport', 'Pickup\CardtypeController@postUploadimport');
+    Route::get('/cardtype/commit/{sessid}', 'Pickup\CardtypeController@getCommit');
+    Route::post('/cardtype/commit/{sessid}', 'Pickup\CardtypeController@postCommit');
+    Route::post('/cardtype/dlxl', 'Pickup\CardtypeController@postDlxl');
+    Route::get('/cardtype/dl/{filename}', 'Pickup\CardtypeController@getDl');
+    Route::get('/cardtype/csv/{filename}', 'Pickup\CardtypeController@getCsv');
+
     Route::get('/member', 'MemberController@getIndex');
     Route::post('/member', 'MemberController@postIndex');
     Route::get('/member/add', 'MemberController@getAdd');

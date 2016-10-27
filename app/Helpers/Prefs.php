@@ -14,6 +14,7 @@ use App\Models\Creditor;
 use App\Models\Coverage;
 use App\Models\Device;
 use App\Models\Credittype;
+use App\Models\Cardtype;
 use App\Models\Position;
 
 use \MongoDate;
@@ -33,6 +34,7 @@ class Prefs {
     public static $courier;
     public static $position;
     public static $node;
+    public static $cardtype;
 
     public function __construct()
     {
@@ -1059,6 +1061,40 @@ class Prefs {
     public function merchantToArray()
     {
         return self::$merchant;
+    }
+
+    //Cardtype
+    public static function getCardtype($key = null, $val = null){
+        if(is_null($key)){
+            $c = Cardtype::get();
+            self::$cardtype = $c;
+            return new self;
+        }else{
+            $c = Cardtype::where($key,'=',$val)->first();
+            self::$cardtype = $c;
+            return $c;
+        }
+    }
+
+    public function CardtypeToSelection($value, $label, $all = true)
+    {
+        if($all){
+            $ret = array(''=>'All');
+        }else{
+            $ret = array();
+        }
+
+        foreach (self::$cardtype as $c) {
+            $ret[$c->{$value}] = $c->{$label};
+        }
+
+
+        return $ret;
+    }
+
+    public function CardtypeToArray()
+    {
+        return self::$cardtype;
     }
 
 

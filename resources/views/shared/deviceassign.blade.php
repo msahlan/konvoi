@@ -103,7 +103,9 @@ button#label_default{
             var city = $('input[name=city_select]:checked').val();
             var district = $('input[name=zone_select]:checked').val();
 
-            if(date == '' || city == '' || district == ''){
+            console.log(date + ' '+ city +' '+ district);
+
+            if(date == '' || city == '' || district == '' || date === undefined || city === undefined || district === undefined){
                 alert('Please select date AND city AND zone');
             }else{
                 $('#device-assign-modal').modal();

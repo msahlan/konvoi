@@ -3550,13 +3550,15 @@ class AdminController extends Controller {
             $id = (isset($data['id']))?$data['id']:'0';
         }
 
+        $route = Route::current();
+
         $printslip = '<span class="printslip action" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Print Slip" id="'.$id.'" ><i class="fa fa-print"></i> Print Slip</span>';
 
         $detailview = '<span class="detailview action" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Order Detail" id="'.$id.'" ><i class="fa fa-eye"></i> View Order</span>';
 
         $delete = '<span class="del" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Delete item" id="'.$id.'" ><i class="fa fa-trash"></i> Del</span>';
 
-        $edit = '<a href="'.url( strtolower($this->controller_name).'/edit/'.$id).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Edit item" ><i class="fa fa-edit"></i> Edit</a>';
+        $edit = '<a href="'.url( $route->getPrefix().'/'.strtolower($this->controller_name).'/edit/'.$id).'" type"button" data-rel="tooltip" data-toggle="tooltip" data-placement="left" title="" data-original-title="Edit item" ><i class="fa fa-edit"></i> Edit</a>';
         $actions = $edit.'<br />'.$delete;
 
         //$actions = $printslip.'<br />'.$detailview;

@@ -51,7 +51,13 @@
 
     <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/selects/bootstrap_select.min.js"></script>
 
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/styling/uniform.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/notifications/pnotify.min.js"></script>
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/selects/bootstrap_multiselect.js"></script>
+
     <script type="text/javascript" src="{{ url('limitless')}}/assets/js/pages/form_bootstrap_select.js"></script>
+
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/pages/form_multiselect.js"></script>
 
     <!-- /core JS files -->
 

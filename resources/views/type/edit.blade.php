@@ -32,6 +32,15 @@ pickupDate
 
         {!! Former::select('Type')->options( array_merge([''=>'Select Goods Type'] ,config('jc.credit_type')) )->label('Jenis Komoditas / Barang')->class('form-control bootstrap-select')  !!}
 
+        <!-- Default multiselect -->
+        <div class="form-group">
+            <label>Jenis Kartu Debit yang Digunaka</label>
+            <div class="multi-select-full">
+                {!! Form::select('cardType[]',Prefs::getCardtype()->CardtypeToSelection( 'label','label',false ), isset($formdata['cardType'])?$formdata['cardType']:null,['class'=>'multiselect','multiple'=>'multiple' ]) !!}
+            </div>
+        </div>
+
+
         {!! Form::submit('Save',array('class'=>'btn btn-raised btn-primary')) !!}&nbsp;&nbsp;
         {{ HTML::link($back,'Cancel',array('class'=>'btn'))}}
 
