@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use App\Models\Creditor;
+use App\Models\Creditaccount;
 
 use App\Helpers\Prefs;
 
@@ -171,7 +172,7 @@ class AuthController extends Controller
                 $cname = $creditor->coName;
             }
 
-            Account::create([
+            Creditaccount::create([
                 'contractNumber' =>$data['contractName'],
                 'contractName'=>$data['contractName'],
                 'creditor' => $data['creditor'],
