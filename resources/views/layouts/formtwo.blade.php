@@ -133,7 +133,33 @@
                     </li>
                 </ul>
 
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+
+
+                        <li class="dropdown dropdown-user">
+                            <a class="dropdown-toggle" data-toggle="dropdown">
+                                <img class="img-circle" src="{{ ( isset(Auth::user()->avatar) )?Auth::user()->avatar:'' }}" alt="">
+                                <span>{{ ( isset(Auth::user()->name)) ?Auth::user()->name:'' }}</span>
+                                <i class="caret"></i>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li><a href="{{ url('profile')}}"><i class="icon-user-plus"></i> My profile</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{{ url('profile')}}"><i class="icon-cog5"></i> Account settings</a></li>
+                                <li><a href="{{ url('/logout')}}"><i class="icon-switch2"></i> Logout</a></li>
+                            </ul>
+
+                        </li>
+
+                    </ul>
+                </div>
+
+
             </div>
+
+
         </div>
         <!-- /main navbar -->
 
