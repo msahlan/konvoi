@@ -2042,6 +2042,31 @@ class AjaxController extends BaseController {
         //return Response::html($result);
     }
 
+    public function postProgramname()
+    {
+        $c = Request::input('id');
+
+        $cp = Credittype::where('programName','=',$c)->first();
+
+        $result = array();
+
+        if($cp && isset($cp->cardType)){
+            foreach($cp->cardType as $d){
+                $result[] = '<option value="'.$d.'" >'.$d.'</option>';
+                //$result[] = array('id'=>$d->id,'value'=>$d->programName,'name'=>$d->programName,'creditor'=>$d->creditorName,'label'=>$d->programName );
+            }
+        }
+
+        if(count($result) == 0){
+            $result[] = '<option value="" >Pilih Kartu Debit</option>';
+        }
+
+        $result = implode('',$result);
+
+        return $result;
+        //return Response::html($result);
+    }
+
     public function postCity()
     {
         $c = Request::input('id');

@@ -79,6 +79,29 @@ class AuthController extends Controller
 
         }
 
+        if(isset($data['contractNumber'])){
+            $cx_validator = [
+                'contractNumber' => 'required|max:255',
+                'contractName' => 'required|max:255',
+                'creditor' => 'required',
+                'Type' => 'required',
+                'programName' => 'required',
+                'bankCard' => 'required',
+                'productDescription' => 'required',
+                'dueDate' => 'required',
+                'installmentAmt' => 'required',
+                'pickupDate' => 'required',
+                'pickupAddress' => 'required',
+                'province' => 'required',
+                'pickupCity' => 'required',
+                'pickupDistrict' => 'required',
+                'pickupZIP' => 'required',
+
+            ];
+
+            $validator = array_merge($validator, $cx_validator);
+        }
+
         //print_r($validator);
 
         return Validator::make($data, $validator);
@@ -136,6 +159,41 @@ class AuthController extends Controller
                 'pic'=>$new_user->name,
                 'picId'=>$new_user->_id,
                 'picName'=>$new_user->name
+            ]);
+        }
+
+        if(isset($data['contractNumber']) && $new_user){
+
+            $creditor = Creditor::find($data['creditor']);
+            if($creditor && isset($creditor->coName)){
+                $cname = $creditor->coName;
+            }else{
+                $cname = $creditor->coName;
+            }
+
+            Account::create([
+                'contractNumber' =>$data['contractName'],
+                'contractName'=>$data['contractName'],
+                'creditor' => $data['creditor'],
+                'Type' => $data['Type'],
+                'programName' => $data['programName'],
+                'bankCard' => $data['bankCard'],
+                'productDescription' => $data['productDescription'],
+                'dueDate' => $data['dueDate'],
+                'installmentAmt' => $data['installmentAmt'],
+                'pickupDate' => $data['pickupDate'],
+                'pickupAddress' => $data['pickupAddress'],
+                'pickupProvince' => $data['province'],
+                'pickupCity' => $data['pickupCity'],
+                'pickupDistrict' => $data['pickupDistrict'],
+                'pickupZIP' => $data['pickupZIP'],
+                'active' => true,
+                'payerEmail' => $data['email'],
+                'phone' => $data['phone'],
+                'mobile' => $data['mobile'],
+                'creditorName' => $cname,
+                'payerId' => $new_user->_id,
+                'payerName' => $new_user->name,
             ]);
         }
 

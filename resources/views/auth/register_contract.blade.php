@@ -53,6 +53,30 @@
                     //console.log(data);
                     $('#program-name').html(data);
                     $('#program-name').selectpicker('refresh');
+
+                    $.post('{{ url('ajax/programname') }}',
+                        {
+                            id : $('#program-name').val()
+                        },
+                        function(data) {
+                            //console.log(data);
+                            $('#bank-card').html(data);
+                            $('#bank-card').selectpicker('refresh');
+                        },'html');
+
+                },'html');
+        });
+
+        $('#program-name').on('changed.bs.select',function(e){
+
+            $.post('{{ url('ajax/programname') }}',
+                {
+                    id : $('#program-name').val()
+                },
+                function(data) {
+                    //console.log(data);
+                    $('#bank-card').html(data);
+                    $('#bank-card').selectpicker('refresh');
                 },'html');
         });
 
@@ -194,7 +218,7 @@
                 <div class="form-control-feedback">
                     <i class="icon-credit-card text-muted"></i>
                 </div>
-                {{ Form::select('bankCard', array_merge([''=>'Pilih Debit Card'] ,config('card.issuer') ) ,null,['class'=>'bootstrap-select'] ) }}
+                {{ Form::select('bankCard', [''=>'Pilih Debit Card'] ,null,['class'=>'bootstrap-select','id'=>'bank-card'] ) }}
 
                 @if ($errors->has('bankCard'))
                     <span class="help-block">
@@ -205,7 +229,7 @@
             </div>
 
             <div class="form-group has-feedback has-feedback-left">
-                <input id="productDescription" type="productDescription" class="form-control" placeholder="Penjelasan Produk" name="productDescription" value="{{ old('productDescription') }}">
+                <input id="productDescription" type="productDescription" class="form-control" placeholder="Penjelasan Produk ( contoh : Honda GL Pro 2016 )" name="productDescription" value="{{ old('productDescription') }}">
 
                 <div class="form-control-feedback">
                     <i class="icon-info22 text-muted"></i>
@@ -247,7 +271,7 @@
             </div>
 
             <div class="form-group has-feedback has-feedback-left">
-                <input id="pickupDate" type="pickupDate" class="form-control" placeholder="Tanggal Pembayaran Yang Diinginkan ( min. 2 hari sebelum Jatuh Tempo)" name="pickupDate" value="{{ old('pickupDate') }}">
+                <input id="pickupDate" type="pickupDate" class="form-control" placeholder="Tanggal Pembayaran ( min. 2 hari sebelum Jatuh Tempo)" name="pickupDate" value="{{ old('pickupDate') }}">
 
                 <div class="form-control-feedback">
                     <i class="icon-calendar text-muted"></i>
