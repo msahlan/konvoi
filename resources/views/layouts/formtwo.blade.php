@@ -43,8 +43,8 @@
     <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/pickers/pickadate/picker.time.js"></script>
     <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/pickers/pickadate/legacy.js"></script>
 
+    <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/pickers/color/spectrum.js"></script>
 
-    {{ HTML::script('js/spectrum.js')}}
 
 
     <script type="text/javascript" src="{{ url('limitless')}}/assets/js/plugins/forms/selects/select2.min.js"></script>
@@ -89,6 +89,10 @@
             margin-top: 8px !important;
             margin-bottom: 0px !important;
             font-weight: bold !important;
+        }
+
+        .sp-replacer{
+            display: block !important;
         }
 
     </style>

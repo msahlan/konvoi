@@ -135,6 +135,20 @@ Route::post('/coverage', 'CoverageController@postIndex');
 
 Route::get('/device', 'DeviceController@getIndex');
 Route::post('/device', 'DeviceController@postIndex');
+Route::get('/device/printlabel/{sessionname}/{printparam}/{format?}', 'DeviceController@getPrintlabel');
+Route::get('/device/import', 'DeviceController@getImport');
+Route::post('/device/uploadimport', 'DeviceController@postUploadimport');
+Route::get('/device/commit/{sessid}', 'DeviceController@getCommit');
+Route::post('/device/commit/{sessid}', 'DeviceController@postCommit');
+Route::post('/device/dlxl', 'DeviceController@postDlxl');
+Route::get('/device/dl/{filename}', 'DeviceController@getDl');
+Route::get('/device/csv/{filename}', 'DeviceController@getCsv');
+Route::get('/device/add', 'DeviceController@getAdd');
+Route::post('/device/add', 'DeviceController@postAdd');
+Route::get('/device/edit/{id}', 'DeviceController@getEdit');
+Route::post('/device/edit/{id}', 'DeviceController@postEdit');
+Route::post('/device/del', 'DeviceController@postDel');
+
 
 Route::get('/parsedevice', 'ParsedeviceController@getIndex');
 Route::post('/parsedevice', 'ParsedeviceController@postIndex');
@@ -167,6 +181,9 @@ Route::post('/ajax/creditprogram', 'AjaxController@postCreditprogram');
 
 Route::post('/ajax/city', 'AjaxController@postCity');
 Route::post('/ajax/district', 'AjaxController@postDistrict');
+
+Route::get('/ajax/city', 'AjaxController@getCity');
+Route::get('/ajax/district', 'AjaxController@getDistrict');
 
 Route::get('/profile', 'ProfileController@getIndex');
 

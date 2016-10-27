@@ -19,6 +19,7 @@ use Request;
 use Response;
 use Mongomodel;
 use \MongoRegex;
+use \MongoDate;
 use DB;
 use HTML;
 
@@ -28,7 +29,7 @@ class DeviceController extends AdminController {
     {
         parent::__construct();
 
-                $cname = substr(strrchr(get_class($this), '\\'), 1);
+        $cname = substr(strrchr(get_class($this), '\\'), 1);
         $this->controller_name = str_replace('Controller', '', $cname);
 
 
@@ -42,75 +43,12 @@ class DeviceController extends AdminController {
 
     }
 
-    public function getDetail($id)
-    {
-        $_id = new MongoId($id);
-        $history = History::where('historyObject._id',$_id)->where('historyObjectType','asset')
-                        ->orderBy('historyTimestamp','desc')
-                        ->orderBy('historySequence','desc')
-                        ->get();
-        $diffs = array();
-
-        foreach($history as $h){
-            $h->date = date( 'Y-m-d H:i:s', $h->historyTimestamp->sec );
-            $diffs[$h->date][$h->historySequence] = $h->historyObject;
-        }
-
-        $history = History::where('historyObject._id',$_id)->where('historyObjectType','asset')
-                        ->where('historySequence',0)
-                        ->orderBy('historyTimestamp','desc')
-                        ->get();
-
-        $tab_data = array();
-        foreach($history as $h){
-                $apv_status = Assets::getApprovalStatus($h->approvalTicket);
-                if($apv_status == 'pending'){
-                    $bt_apv = '<span class="btn btn-info change-approval '.$h->approvalTicket.'" data-id="'.$h->approvalTicket.'" >'.$apv_status.'</span>';
-                }else if($apv_status == 'verified'){
-                    $bt_apv = '<span class="btn btn-success" >'.$apv_status.'</span>';
-                }else{
-                    $bt_apv = '';
-                }
-
-                $d = date( 'Y-m-d H:i:s', $h->historyTimestamp->sec );
-                $tab_data[] = array(
-                    $d,
-                    $h->historyAction,
-                    $h->historyObject['itemDescription'],
-                    ($h->historyAction == 'new')?'NA':$this->objdiff( $diffs[$d] ),
-                    $bt_apv
-                );
-        }
-
-        $header = array(
-            'Modified',
-            'Event',
-            'Name',
-            'Diff',
-            'Approval'
-            );
-
-        $attr = array('class'=>'table', 'id'=>'transTab', 'style'=>'width:100%;', 'border'=>'0');
-        $t = new HtmlTable($tab_data, $attr, $header);
-        $itemtable = $t->build();
-
-        $asset = Asset::find($id);
-
-        $this->crumb->addCrumb('Ad Assets',url( strtolower($this->controller_name) ));
-        $this->crumb->addCrumb('Detail',url( strtolower($this->controller_name).'/detail/'.$asset->_id ));
-        $this->crumb->addCrumb($asset->SKU,url( strtolower($this->controller_name) ));
-
-        return View::make('history.table')
-                    ->with('a',$asset)
-                    ->with('title','Asset Detail '.$asset->itemDescription )
-                    ->with('table',$itemtable);
-    }
-
     public function getIndex()
     {
 
 
         $this->heads = array(
+            array('Path Color',array('search'=>true,'sort'=>true,'date'=>true)),
             array('Device Identifier',array('search'=>true,'sort'=>true)),
             array('Name',array('search'=>true,'sort'=>true)),
             array('Description',array('search'=>true,'sort'=>true)),
@@ -118,7 +56,6 @@ class DeviceController extends AdminController {
             array('Number',array('search'=>true,'sort'=>true,'date'=>true)),
             array('District',array('search'=>true,'sort'=>true,'date'=>true)),
             array('City',array('search'=>true,'sort'=>true,'date'=>true)),
-            array('Path Color',array('search'=>true,'sort'=>true,'date'=>true)),
             array('Status',array('search'=>true,'sort'=>true,'date'=>true)),
         );
 
@@ -150,6 +87,7 @@ class DeviceController extends AdminController {
     {
 
         $this->fields = array(
+            array('color',array('kind'=>'text','callback'=>'showColor','query'=>'like','pos'=>'both','show'=>true)),
             array('identifier',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('devname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('descriptor',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
@@ -157,180 +95,17 @@ class DeviceController extends AdminController {
             array('mobile',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('district',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('city',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('color',array('kind'=>'text','callback'=>'showColor','query'=>'like','pos'=>'both','show'=>true)),
             array('is_on',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
         );
-
-        /*
-        $categoryFilter = Request::input('categoryFilter');
-        if($categoryFilter != ''){
-            $this->additional_query = array('shopcategoryLink'=>$categoryFilter, 'group_id'=>4);
-        }
-        */
-
-        $db = config('jayon.main_db');
 
         $this->def_order_by = 'identifier';
         $this->def_order_dir = 'desc';
         $this->place_action = 'first';
         $this->show_select = true;
 
-        $this->sql_key = 'identifier';
-        $this->sql_table_name = config('jayon.jayon_devices_table');
-        $this->sql_connection = 'mysql';
-
-        return parent::SQLtableResponder();
+        return parent::tableResponder();
     }
 
-    public function getStatic()
-    {
-
-        $this->heads = array(
-            array('Device Identifier',array('search'=>true,'sort'=>true)),
-            array('Description',array('search'=>true,'sort'=>true)),
-            array('Name',array('search'=>true,'sort'=>true)),
-            array('Key',array('search'=>true,'sort'=>true)),
-            array('Number',array('search'=>true,'sort'=>true,'date'=>true)),
-            array('District',array('search'=>true,'sort'=>true,'date'=>true)),
-            array('City',array('search'=>true,'sort'=>true,'date'=>true)),
-            array('Path Color',array('search'=>true,'sort'=>true,'date'=>true)),
-            array('Status',array('search'=>true,'sort'=>true,'date'=>true)),
-        );
-
-        //print $this->model->where('docFormat','picture')->get()->toJSON();
-
-        $this->title = 'General Ledger';
-
-
-        $this->crumb->addCrumb('Cost Report',url( strtolower($this->controller_name) ));
-
-        //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl/static')->render();
-
-        //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
-
-        $this->product_info_url = strtolower($this->controller_name).'/info';
-
-        $this->printlink = strtolower($this->controller_name).'/print';
-
-        //table generator part
-
-        $this->fields = array(
-            array('identifier',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('descriptor',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('devname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('key',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('password',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('mobile',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('district',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('city',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('color',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('is_on',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))
-        );
-
-        $db = config('jayon.main_db');
-
-        $this->def_order_by = 'ordertime';
-        $this->def_order_dir = 'desc';
-        $this->place_action = 'none';
-        $this->show_select = false;
-
-        $this->sql_key = 'delivery_id';
-        $this->sql_table_name = config('jayon.incoming_delivery_table');
-        $this->sql_connection = 'mysql';
-
-        $this->responder_type = 's';
-
-        return parent::printGenerator();
-    }
-
-    public function getPrint()
-    {
-
-        $this->heads = array(
-            array('Timestamp',array('search'=>true,'sort'=>true, 'style'=>'min-width:90px;','daterange'=>true)),
-            array('PU Time',array('search'=>true,'sort'=>true, 'style'=>'min-width:100px;','daterange'=>true)),
-            array('PU Pic',array('search'=>true,'sort'=>true, 'style'=>'min-width:120px;')),
-            array('PU Person & Device',array('search'=>true,'style'=>'min-width:100px;','sort'=>true)),
-            array('Delivery Date',array('search'=>true,'style'=>'min-width:125px;','sort'=>true, 'daterange'=>true )),
-            array('Slot',array('search'=>true,'sort'=>true)),
-            array('Zone',array('search'=>true,'sort'=>true)),
-            array('City',array('search'=>true,'sort'=>true)),
-            array('Shipping Address',array('search'=>true,'sort'=>true, 'style'=>'max-width:200px;width:200px;' )),
-            array('No Kode Penjualan Toko',array('search'=>true,'sort'=>true)),
-            array('Type',array('search'=>true,'sort'=>true,'select'=>config('jayon.deliverytype_selector') )),
-            array('Merchant & Shop Name',array('search'=>true,'sort'=>true)),
-            array('Delivery ID',array('search'=>true,'sort'=>true)),
-            array('Status',array('search'=>true,'sort'=>true)),
-            array('Directions',array('search'=>true,'sort'=>true)),
-            array('TTD Toko',array('search'=>true,'sort'=>true)),
-            array('Delivery Charge',array('search'=>true,'sort'=>true)),
-            array('COD Surcharge',array('search'=>true,'sort'=>true)),
-            array('COD Value',array('search'=>true,'sort'=>true)),
-            array('Buyer',array('search'=>true,'sort'=>true)),
-            array('ZIP',array('search'=>true,'sort'=>true)),
-            array('Phone',array('search'=>true,'sort'=>true)),
-            array('W x H x L = V',array('search'=>true,'sort'=>true)),
-            array('Weight Range',array('search'=>true,'sort'=>true)),
-        );
-
-        //print $this->model->where('docFormat','picture')->get()->toJSON();
-
-        $this->title = 'Devices';
-
-        $this->crumb->addCrumb('Cost Report',url( strtolower($this->controller_name) ));
-
-        //$this->additional_filter = View::make(strtolower($this->controller_name).'.addfilter')->with('submit_url','gl/static')->render();
-
-        //$this->js_additional_param = "aoData.push( { 'name':'acc-period-to', 'value': $('#acc-period-to').val() }, { 'name':'acc-period-from', 'value': $('#acc-period-from').val() }, { 'name':'acc-code-from', 'value': $('#acc-code-from').val() }, { 'name':'acc-code-to', 'value': $('#acc-code-to').val() }, { 'name':'acc-company', 'value': $('#acc-company').val() } );";
-
-        $this->product_info_url = strtolower($this->controller_name).'/info';
-
-        $this->printlink = strtolower($this->controller_name).'/print';
-
-        //table generator part
-
-        $this->fields = array(
-            array('ordertime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickuptime',array('kind'=>'daterange', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('pickup_person',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverytime',array('kind'=>'daterange','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliveryslot',array('kind'=>'text' , 'query'=>'like', 'pos'=>'both','show'=>true)),
-            array('buyerdeliveryzone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyerdeliverycity',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_address',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            array('merchant_trans_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_type',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array(config('jayon.jayon_members_table').'.merchantname',array('kind'=>'text','alias'=>'merchant_name','query'=>'like','callback'=>'merchantInfo','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('directions',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_id',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('delivery_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('cod_cost',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('total_price',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('buyer_name',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('shipping_zip',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('phone',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('volume',array('kind'=>'numeric','query'=>'like','pos'=>'both','show'=>true)),
-            array('weight',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-        );
-
-        $db = config('jayon.main_db');
-
-        $this->def_order_by = 'ordertime';
-        $this->def_order_dir = 'desc';
-        $this->place_action = 'none';
-        $this->show_select = false;
-
-        $this->sql_key = 'delivery_id';
-        $this->sql_table_name = config('jayon.incoming_delivery_table');
-        $this->sql_connection = 'mysql';
-
-        $this->responder_type = 's';
-
-        return parent::printPage();
-    }
 
     public function SQL_make_join($model)
     {
@@ -346,73 +121,14 @@ class DeviceController extends AdminController {
 
     public function SQL_additional_query($model)
     {
-        $in = Request::input();
-
-        $period_from = Request::input('acc-period-from');
-        $period_to = Request::input('acc-period-to');
-
-        $db = config('lundin.main_db');
-
-        $company = Request::input('acc-company');
-
-        $company = strtolower($company);
-
-        /*
-        if($period_from == ''){
-            $model = $model->select($company.'_a_salfldg.*',$company.'_acnt.DESCR as ACC_DESCR')
-                ->leftJoin($company.'_acnt', $company.'_a_salfldg.ACCNT_CODE', '=', $company.'_acnt.ACNT_CODE' );
-        }else{
-            $model = $model->select($company.'_a_salfldg.*',$company.'_acnt.DESCR as ACC_DESCR')
-                ->leftJoin($company.'_acnt', $company.'_a_salfldg.ACCNT_CODE', '=', $company.'_acnt.ACNT_CODE' )
-                ->where('PERIOD','>=', Request::input('acc-period-from') )
-                ->where('PERIOD','<=', Request::input('acc-period-to') )
-                ->where('ACCNT_CODE','>=', Request::input('acc-code-from') )
-                ->where('ACCNT_CODE','<=', Request::input('acc-code-to') )
-                ->orderBy('PERIOD','DESC')
-                ->orderBy('ACCNT_CODE','ASC')
-                ->orderBy('TRANS_DATETIME','DESC');
-        }
-
-        $txtab = config('jayon.incoming_delivery_table');
-
-        $model = $model->select(
-                DB::raw(
-                    config('jayon.incoming_delivery_table').'.* ,'.
-                    config('jayon.jayon_members_table').'.merchantname as merchant_name ,'.
-                    config('jayon.applications_table').'.application_name as app_name ,'.
-                    '('.$txtab.'.width * '.$txtab.'.height * '.$txtab.'.length ) as volume'
-                )
-            )
-            ->leftJoin(config('jayon.jayon_members_table'), config('jayon.incoming_delivery_table').'.merchant_id', '=', config('jayon.jayon_members_table').'.id' )
-            ->leftJoin(config('jayon.applications_table'), config('jayon.incoming_delivery_table').'.application_id', '=', config('jayon.applications_table').'.id' )
-            ->where('status','=', config('jayon.trans_status_new') )
-            ->orderBy('ordertime','desc');
-        */
-
-        //print_r($in);
-
-
-        //$model = $model->where('group_id', '=', 4);
-
         return $model;
 
     }
 
     public function SQL_before_paging($model)
     {
-        /*
-        $m_original_amount = clone($model);
-        $m_base_amount = clone($model);
-
-        $aux['total_data_base'] = $m_base_amount->sum('OTHER_AMT');
-        $aux['total_data_converted'] = $m_original_amount->sum('AMOUNT');
-        */
-        //$this->aux_data = $aux;
-
         $aux = array();
         return $aux;
-        //print_r($this->aux_data);
-
     }
 
     public function rows_post_process($rows, $aux = null){
@@ -564,32 +280,11 @@ class DeviceController extends AdminController {
 
     public function afterSave($data)
     {
-
-        $hdata = array();
-        $hdata['historyTimestamp'] = new MongoDate();
-        $hdata['historyAction'] = 'new';
-        $hdata['historySequence'] = 0;
-        $hdata['historyObjectType'] = 'asset';
-        $hdata['historyObject'] = $data;
-        History::insert($hdata);
-
         return $data;
     }
 
     public function afterUpdate($id,$data = null)
     {
-        //$data['_id'] = new MongoId($id);
-
-
-        $hdata = array();
-        $hdata['historyTimestamp'] = new MongoDate();
-        $hdata['historyAction'] = 'update';
-        $hdata['historySequence'] = 1;
-        $hdata['historyObjectType'] = 'asset';
-        $hdata['historyObject'] = $data;
-        History::insert($hdata);
-
-
         return $id;
     }
 
@@ -700,40 +395,6 @@ class DeviceController extends AdminController {
         $data['files'] = array();
 
         return $data;
-    }
-
-    public function postRack()
-    {
-        $locationId = Request::input('loc');
-        if($locationId == ''){
-            $racks = Assets::getRack()->RackToSelection('_id','SKU',true);
-        }else{
-            $racks = Assets::getRack(array('locationId'=>$locationId))->RackToSelection('_id','SKU',true);
-        }
-
-        $options = Assets::getRack(array('locationId'=>$locationId));
-
-        return Response::json(array('result'=>'OK','html'=>$racks, 'options'=>$options ));
-    }
-
-
-    public function accountDesc($data)
-    {
-
-        return $data['ACCNT_CODE'];
-    }
-
-    public function extractCategory()
-    {
-        $category = Product::distinct('category')->get()->toArray();
-        $cats = array(''=>'All');
-
-        //print_r($category);
-        foreach($category as $cat){
-            $cats[$cat[0]] = $cat[0];
-        }
-
-        return $cats;
     }
 
     public function splitTag($data){
@@ -907,7 +568,7 @@ class DeviceController extends AdminController {
 
     public function showColor($data)
     {
-        return '<div style="background-color:'.$data['color'].';line-height:1em;" >&nbsp;</div>';
+        return '<div style="background-color:'.$data['color'].';line-height:1em;width:40px;height:40px;" class="img-circle" >&nbsp;</div>';
     }
 
     public function dispBar($data)

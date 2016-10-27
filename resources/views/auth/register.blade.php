@@ -15,7 +15,7 @@
         .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
             width: 100%;
             padding-left: 32px;
-        }        
+        }
 
         .help-block{
             color:red;
@@ -25,17 +25,18 @@
         {{ csrf_field() }}
         <div class="panel panel-body">
 
-            @if($route == 'creditor/register')
-                <style type="text/css">
-                    .login-container .page-container .login-form {
-                      width: 740px !important;
-                    }
-                    .form-horizontal .form-group {
-                        margin-left: 8px;
-                        margin-right: 8px;
-                    }
+            <style type="text/css">
+                .login-container .page-container .login-form {
+                  width: 740px !important;
+                }
+                .form-horizontal .form-group {
+                    margin-left: 8px;
+                    margin-right: 8px;
+                }
 
-                </style>
+            </style>
+
+            @if($route == 'creditor/register')
 
                 <div class="row">
                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 pad">
@@ -53,7 +54,19 @@
 
             @else
 
-                @include('auth.register_member')
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 pad">
+
+                        @include('auth.register_member')
+
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 pad">
+
+                        @include('auth.register_contract')
+
+                    </div>
+                </div>
+
 
             @endif
 

@@ -1,4 +1,48 @@
 $(document).ready(function(){
+//toke city
+    var cityengine = new Bloodhound({
+        datumTokenizer: function(d) {
+            return Bloodhound.tokenizers.whitespace(d.value);
+        },
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url : base + '/ajax/city?term=%QUERY'
+        }
+
+    });
+
+    // Initialize engine
+    cityengine.initialize();
+
+    // Initialize tokenfield
+    $('.tokenfield-city').tokenfield({
+        typeahead: [null, { source: cityengine.ttAdapter() }]
+    });
+//district
+    var districtengine = new Bloodhound({
+        datumTokenizer: function(d) {
+            return Bloodhound.tokenizers.whitespace(d.value);
+        },
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url : base + '/ajax/district',
+            replace : function(url, uriEncodedQuery) {
+                city = $('.tokenfield-city').val();
+
+                return url + '?term=' + uriEncodedQuery + '&city=' + city;
+            },
+
+        }
+
+    });
+
+    // Initialize engine
+    districtengine.initialize();
+
+    // Initialize tokenfield
+    $('.tokenfield-district').tokenfield({
+        typeahead: [null, { source: districtengine.ttAdapter() }]
+    });
 
     //device autocomplete
     var devengine = new Bloodhound({

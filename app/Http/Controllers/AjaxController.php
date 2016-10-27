@@ -1927,7 +1927,23 @@ class AjaxController extends BaseController {
 
         $q = '%'.$q.'%';
 
-        $devices = Coverage::where('district','like',$q)->get();
+        if(Request::has('city') && Request::input('city') != ''){
+
+            $city = explode(',',Request::input('city'));
+
+            for($i = 0; $i < count($city);$i++){
+                $city[$i] = trim($city[$i]);
+            }
+
+            //print_r($city);
+
+            $devices = Coverage::whereIn('city',$city)->where('district','like',$q)->get();
+
+        }else{
+
+            $devices = Coverage::where('district','like',$q)->get();
+
+        }
 
         $result = array();
 
@@ -1944,7 +1960,7 @@ class AjaxController extends BaseController {
 
         $q = '%'.$q.'%';
 
-        $devices = Coverage::distinct('city')->where('city','like',$q)->get();
+        $devices = Coverage::where('city','like',$q)->get();
 
         //print_r($devices->toArray());
 
@@ -2000,15 +2016,26 @@ class AjaxController extends BaseController {
     {
         $c = Request::input('id');
 
-        $cp = Credittype::where('creditor','=',$c)->get();
+        if(Request::has('type')){
+            $t = Request::input('type');
+            $cp = Credittype::where('creditor','=',$c)
+                        ->where('Type','=',$t)
+                        ->get();
+        }else{
+            $cp = Credittype::where('creditor','=',$c)->get();
+        }
 
         $result = array();
 
-        $result[] = '<option value="" >Select Credit Type</option>';
         foreach($cp as $d){
             $result[] = '<option value="'.$d->programName.'" >'.$d->programName.'</option>';
             //$result[] = array('id'=>$d->id,'value'=>$d->programName,'name'=>$d->programName,'creditor'=>$d->creditorName,'label'=>$d->programName );
         }
+
+        if(count($result) == 0){
+            $result[] = '<option value="" >Pilih Program Kredit</option>';
+        }
+
         $result = implode('',$result);
 
         return $result;

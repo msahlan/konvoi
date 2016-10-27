@@ -104,23 +104,6 @@
 
                     </div>
 
-                    <div class="form-group has-feedback has-feedback-left">
-
-
-                        <div class="form-control-feedback">
-                            <i class="icon-credit-card text-muted"></i>
-                        </div>
-                        {{ Form::select('bankCard', array_merge([''=>'Select Debit Card used'] ,config('card.issuer') ) ,null,['class'=>'bootstrap-select'] ) }}
-
-                        @if ($errors->has('bankCard'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('bankCard') }}</strong>
-                            </span>
-                        @endif
-
-                    </div>
-
-
                     <div class="form-group">
                             <div class="checkbox">
                                 <label>

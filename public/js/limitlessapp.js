@@ -104,8 +104,8 @@
             forceParse:true,
             zIndexOffset:10000
         });
-        
-        /*        
+
+        /*
         $('.p-datepicker').daterangepicker({
             locale: {
                 format:'YYYY-MM-DD'
@@ -115,7 +115,7 @@
         });
         */
 
-        
+
 
 
         $('.pop').click(function(){
