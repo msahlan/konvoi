@@ -99,6 +99,7 @@ button#label_default{
         });
 
         $('#assign_to_device').on('click',function(e){
+
             var date = $('input[name=date_select]:checked').val();
             var city = $('input[name=city_select]:checked').val();
             var district = $('input[name=zone_select]:checked').val();
@@ -122,9 +123,27 @@ button#label_default{
             $('table#shipment_list tbody').html('<tr><td colspan="3">Loading shipment data...</td></tr>');
             $('table#device_list tbody').html('<tr><td colspan="3">Loading available devices...</td></tr>');
 
+            var flt = $('thead td input, thead td select');
+            var dlfilter = [];
+
+            flt.each(function(){
+                if($(this).hasClass('datetimeinput') || $(this).hasClass('dateinput')){
+                    console.log(this.parentNode);
+                    dlfilter[parseInt(this.parentNode.id)] = this.value ;
+                }else{
+                    dlfilter[parseInt(this.id)] = this.value ;
+                }
+            });
+
+            console.log(dlfilter);
+
+            var sort = oTable.order();
 
             $.post('{{ URL::to($ajaxdeviceurl)}}',
                 {
+                    filter : dlfilter,
+                    sort : sort[0],
+                    sortdir : sort[1],
                     date : date,
                     city : city,
                     district : district

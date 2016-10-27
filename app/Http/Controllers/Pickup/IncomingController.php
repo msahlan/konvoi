@@ -415,13 +415,49 @@ class IncomingController extends AdminController {
 
         $date = $in['date'];
 
+        $this->fields = config('jc.default_incoming_fields');
+
+        $fields = $this->fields; // fields set must align with search column index
+
+        $search_fields = (is_null($this->search_fields))?$this->fields:$this->search_fields;
+
+        $infilters = Request::input('filter');
+        $insorting = Request::input('sort');
+
+        $defsort = 1;
+        $defdir = -1;
+
+        $idx = 0;
+        $q = array();
+
+        $hilite = array();
+        $hilite_replace = array();
+
+        $colheads = array();
+        $coltitles = array();
+
+        //exit();
+        $model = new Pickup();
+
+        array_shift($infilters);
+        if($this->place_action == 'both' || $this->place_action == 'first'){
+            array_shift($infilters);
+        }
+
+        $comres = $this->DLcompileSearch($search_fields, $model,$infilters);
+
+        $model = $comres['model'];
+        $q = $comres['q'];
+        $searchpar = $comres['in'];
+
+
         //$pick_up_date = new MongoDate(strtotime($date));
 
         $pick_up_date = date('Y-m-d 00:00:00', strtotime($date));
 
         //print $pick_up_date;
 
-        $shipments = Pickup::where('assignmentDate','=', $pick_up_date )
+        $shipments = $model->where('assignmentDate','=', $pick_up_date )
                         ->where('status','=', config('jayon.trans_status_new'))
                         ->where('pickupCity','=',$city)
                         ->where('pickupDistrict','=',$district)

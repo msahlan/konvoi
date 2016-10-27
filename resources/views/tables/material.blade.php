@@ -570,7 +570,9 @@
                 //var sort = oTable.fnSettings().aaSorting;
                 var sort = oTable.order();
                 console.log(sort);
-                $.post('{{ url($ajaxdlxl) }}',{'filter' : dlfilter, 'sort':sort[0], 'sortdir' : sort[1] }, function(data) {
+                $.post('{{ url($ajaxdlxl) }}',{
+                    'filter' : dlfilter, 'sort':sort[0], 'sortdir' : sort[1]
+                }, function(data) {
                     if(data.status == 'OK'){
 
                         window.location.href = data.urlxls;
