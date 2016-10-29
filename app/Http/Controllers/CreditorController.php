@@ -200,10 +200,6 @@ class CreditorController extends AdminController {
             $this->validator['password'] = 'required|same:password_confirmation';
         }
 
-        if($data['userId'] == ''){
-            $this->validator['email']='required|unique:users';
-        }
-
         return parent::postEdit($id,$data);
     }
 
