@@ -88,7 +88,7 @@ class LocationlogController extends AdminController {
             array('transactionId',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('creditorName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             //array('fulfillmentCode',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
-            array('Type',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
+            array('programName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('status',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('event',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('appname',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true))

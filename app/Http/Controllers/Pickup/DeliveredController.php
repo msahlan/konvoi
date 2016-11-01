@@ -1149,7 +1149,7 @@ class DeliveredController extends AdminController {
                 if($img_cnt > 0){
                     $display = implode('',$thumb_array);
                     $display = '<div style="width:110px;height:100px;clear:both;display:block;cursor:pointer;position:relative;padding:0px;overflow-y:auto;overflow-x:hidden;">'.$display.'</div>';
-                    $display .= $glinks.'<div style="width:100%;display:block;">'.$stat.'</div>';
+                    $display .= $glinks.'<div style="width:100%;display:block;">'.$stat.'<br />'.$coord.'</div>';
                     //$display = HTML::image($thumbnail_url.'?'.time(), $thumbnail_url, array('class'=>'thumbnail img-circle','style'=>'cursor:pointer;','id' => $data['transactionId'])).$glinks.'<br />'.$stat;
                 }else{
 
