@@ -1338,11 +1338,11 @@ class SyncapiController extends Controller {
 
         $dids = array_unique($dids);
 
-        $ships = Shipment::whereIn('delivery_id', $dids)->get();
+        $ships = Pickup::whereIn('transactionId', $dids)->get();
 
         $shipments = array();
         foreach($ships->toArray() as $sh){
-            $shipments[$sh['delivery_id']] = $sh;
+            $shipments[$sh['transactionId']] = $sh;
         }
 
         $logIds = array();
