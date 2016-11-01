@@ -1084,10 +1084,13 @@ class DeliveredController extends AdminController {
     {
         //$data = $data->toArray();
 
+        $coord = $data['latitude'].','.$data['longitude'];
+
         $pics = Uploaded::where('parent_id','=', $data['transactionId'] )
                     //->whereIn('_id', $data['fileid'])
                     ->where('deleted','=',0)
                     ->get();
+
 
                     //print_r($pics->toArray());
 
@@ -1153,15 +1156,15 @@ class DeliveredController extends AdminController {
                     $display = '<span class="fa-stack fa-2x">
                           <i class="fa fa-circle fa-stack-2x"></i>
                           <i class="fa fa-file fa-stack-1x fa-inverse"></i>
-                        </span><br />'.$stat;
+                        </span><br />'.$stat.'<br />'.$coord;
                 }
 
                 return $display;
             }else{
-                return 'No Picture';
+                return 'No Picture'.'<br />'.$coord;
             }
         }else{
-            return 'No Picture';
+            return 'No Picture'.'<br />'.$coord;
         }
     }
 
