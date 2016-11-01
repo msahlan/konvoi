@@ -1084,7 +1084,7 @@ class DeliveredController extends AdminController {
     {
         //$data = $data->toArray();
 
-        $coord = '<span class="badge">'.$data['latitude'].'</span><span class="badge">'.$data['longitude'].'</span>';
+        $coord = '<span class="label label-primary label-rounded">'.$data['latitude'].'</span><span class="label label-primary label-rounded">'.$data['longitude'].'</span>';
 
         $pics = Uploaded::where('parent_id','=', $data['transactionId'] )
                     //->whereIn('_id', $data['fileid'])
