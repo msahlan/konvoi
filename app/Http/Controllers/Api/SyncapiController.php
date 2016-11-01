@@ -1374,7 +1374,9 @@ class SyncapiController extends Controller {
                 if(isset($shipments[ $j['deliveryId'] ]))
                 {
                     $j['deliveryType'] = $shipments[ $j['deliveryId'] ]['programName'];
-                    $j['merchantTransId'] = $shipments[ $j['deliveryId'] ]['contractNumber'];
+                    $j['contractNumber'] = $shipments[ $j['deliveryId'] ]['contractNumber'];
+                    $j['creditor'] = $shipments[ $j['deliveryId'] ]['creditor'];
+                    $j['creditorName'] = $shipments[ $j['deliveryId'] ]['creditorName'];
                     //$j['fulfillmentCode'] = $shipments[ $j['deliveryId'] ]['fulfillment_code'];
                 }
 
