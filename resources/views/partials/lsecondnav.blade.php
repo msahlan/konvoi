@@ -294,6 +294,7 @@
                                Roles</a>
                             </li>
                             <li class="{{ sa('holiday') }}"><a href="{{ url('holiday') }}"><span class="fa fa-calendar"></span> Holidays</a></li>
+                            <li class="{{ sa('coverage') }}"><a href="{{ url('coverage') }}"><span class="fa fa-calendar"></span> Coverage</a></li>
                             <li class="{{ sa('option') }}">
                               <a href="{{ url('option') }}" class="{{ sa('option') }}" ><span class="fa fa-wrench"></span>
                                Options</a>

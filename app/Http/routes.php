@@ -207,6 +207,9 @@ Route::post('/route/locsearch', 'RouteController@postLocsearch');
 Route::post('/route/locsave', 'RouteController@postLocsave');
 Route::post('/route/saveseq', 'RouteController@postSaveseq');
 
+Route::get('/coverage', 'CoverageController@getIndex');
+Route::post('/coverage', 'CoverageController@postIndex');
+
 
 Route::group( [ 'prefix'=>'document', 'middlewareGroup'=>['web'] ] , function(){
 
