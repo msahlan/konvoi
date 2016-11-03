@@ -59,6 +59,11 @@
 
     <script type="text/javascript" src="{{ url('limitless')}}/assets/js/pages/form_multiselect.js"></script>
 
+    <script src="{{ url('../node_modules/vue/dist/vue.js') }}"></script>
+    <script src="{{ url('../node_modules/vue-resource/dist/vue-resource.js') }}"></script>
+    <script src="{{ url('../node_modules/vuefire/dist/vuefire.js') }}"></script>
+    <script src="{{ url('../node_modules/firebase/firebase.js') }}"></script>
+
     <!-- /core JS files -->
 
     @yield('page_js')

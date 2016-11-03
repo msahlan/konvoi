@@ -91,7 +91,7 @@
             position:relative;
         }
 
-        .del,.upload,.toggle{
+        .del,.upload,.toggle, .pointer{
             cursor:pointer;
             padding:4px;
         }

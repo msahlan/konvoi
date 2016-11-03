@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Models\Coverage;
 use App\Models\Uploaded;
 use App\Models\Role;
+use App\Models\Quota;
 
 use App\Helpers\Prefs;
 
@@ -76,6 +77,10 @@ class QuotaController extends AdminController {
 
         $this->place_action = 'first';
 
+        $this->additional_filter = View::make('quota.addfilter')->render();
+
+        $this->js_table_event = view('quota.js_table_event')->render();
+
         //$this->crumb->addCrumb('System',url( strtolower($this->controller_name) ));
 
         return parent::getIndex();
@@ -87,7 +92,7 @@ class QuotaController extends AdminController {
 
         $this->fields = array(
             array('province',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
-            array('provinceQuota',array('kind'=>'text' ,'query'=>'like','pos'=>'both','show'=>true)),
+            array('provinceQuota',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('city',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('cityQuota',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('district',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
@@ -177,9 +182,11 @@ class QuotaController extends AdminController {
                     $city = '';
                     $province = $rows[$i][3];
                     $rows[$i][3] = $rows[$i][3];
-                    $rows[$i][4] = '<a href="#" id="provinceQuota" data-type="text" data-pk="'.$rows[$i][4].'" data-title="Update Quota" class="provinceQuota editable editable-click" data-original-title="" title="">'.$rows[$i][4].'</a>';
+                    $rows[$i][4] = $this->provinceButton($province);
+                    //$rows[$i][4] = $rows[$i][4].'<span id="'.$province.'" data-type="text" data-province="'.$province.'" data-title="Update Quota" class="editProvinceQuota provinceQuota pointer label label-primary" data-original-title="" title="">Update</span>';
                 }else{
                     $rows[$i][3] = '';
+                    //$rows[$i][4] = $rows[$i][4].'<a href="#" id="provinceQuota" data-type="text" data-pk="'.$rows[$i][4].'" data-title="Update Quota" class="provinceQuota editable editable-click" data-original-title="" title="">Update</a>';
                     $rows[$i][4] = '';
                 }
 
@@ -242,6 +249,58 @@ class QuotaController extends AdminController {
         }
 
         return $toggle;
+    }
+
+    public function provinceButton($province)
+    {
+        $quota = Quota::where('province','=',$province)->where('scope','=','province')->first();
+        $devcap = '';
+        $devnum = '';
+        $provinceQuota = 0;
+        if($quota){
+            $provinceQuota = $quota->quota;
+            $devcap = $quota->devCap;
+            $devnum = $quota->devNum;
+        }
+
+        return $provinceQuota.'<span id="'.$province.'" data-type="text" data-province="'.$province.'" data-devcap="'.$devcap.'" data-devnum="'.$devnum.'" data-title="Update Quota" class="editProvinceQuota provinceQuota pointer label label-primary pull-right" data-original-title="" title="">Update</span>';
+    }
+
+    public function postSavequota()
+    {
+        $num = Request::input('devnum');
+        $cap = Request::input('devcap');
+        $dq = Request::input('province');
+
+        $quota = intval($num) * intval($cap);
+
+        $q = Quota::where('province','=',trim($dq))
+                ->where('scope','=','province')
+                ->first();
+        if($q){
+
+        }else{
+            $q = new Quota();
+        }
+
+        $q->province = trim($dq);
+        $q->quota = $quota;
+        $q->scope = 'province';
+        $q->devCap = $cap;
+        $q->devNum = $num;
+
+        $r = $q->save();
+
+        DB::collection('districts')->where('province', trim($dq) )
+                       ->update(['provinceQuota'=>$quota], ['multi' => true]);
+
+        if($r){
+            return Response::json( array('result'=>'OK', 'quota'=>$r ) );
+        }else{
+            return Response::json( array('result'=>'ERR', 'message'=>'Failed to save Quota' ) );
+        }
+
+
     }
 
     public function namePic($data)

@@ -413,6 +413,7 @@ Route::group( [ 'prefix'=>'pickup', 'middlewareGroup'=>['web'] ] , function(){
 
     Route::get('/quota', 'Pickup\QuotaController@getIndex');
     Route::post('/quota', 'Pickup\QuotaController@postIndex');
+    Route::post('/quota/savequota', 'Pickup\QuotaController@postSavequota');
 
     Route::get('/type', 'Pickup\TypeController@getIndex');
     Route::post('/type', 'Pickup\TypeController@postIndex');
