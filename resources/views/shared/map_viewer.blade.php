@@ -47,41 +47,6 @@ use App\Helpers\Prefs;
             }
         });
 
-        vm = new Vue({
-            data:{
-                devicecap:0,
-                devicenum:0
-            },
-            computed:{
-                provincequota: function(){
-                    return parseInt(this.devicecap) * parseInt(this.devicenum);
-                }
-            }
-        }).$mount('#update-quota-modal');
-
-        $('#do-update-quota').on('click',function(){
-
-            $.post('{{ URL::to('pickup/quota/savequota')}}',
-                {
-                    devnum : $('#device-num').val(),
-                    devcap : $('#device-cap').val(),
-                    province : $('#province-name').html(),
-                    quota : parseInt( $('#total-quota').val() )
-                },
-                function(data){
-                    if(data.result == 'OK'){
-                        oTable.draw();
-                        $('#update-quota-modal').modal('hide');
-                    }
-                }
-                ,'json');
-
-        });
-
-        $('#update-quota-modal').on('hidden.bs.modal',function(){
-            $('#total-quota').val(0);
-        });
-
         $('#refresh_filter').on('click',function(){
             oTable.draw();
         });
