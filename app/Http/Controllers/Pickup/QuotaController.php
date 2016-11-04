@@ -179,31 +179,33 @@ class QuotaController extends AdminController {
         $province = '';
         $city = '';
 
+        $prow = 2;
+        $crow = 4;
         //print_r($rows);
 
         if(count($rows) > 0){
 
             for($i = 0; $i < count($rows); $i++){
-                if($rows[$i][3] != $province){
+                if($rows[$i][$prow] != $province){
                     $city = '';
-                    $province = $rows[$i][3];
-                    $rows[$i][3] = $rows[$i][3];
-                    $rows[$i][4] = $this->provinceButton($province);
+                    $province = $rows[$i][$prow];
+                    $rows[$i][$prow] = $rows[$i][$prow];
+                    $rows[$i][$prow + 1] = $this->provinceButton($province);
                     //$rows[$i][4] = $rows[$i][4].'<span id="'.$province.'" data-type="text" data-province="'.$province.'" data-title="Update Quota" class="editProvinceQuota provinceQuota pointer label label-primary" data-original-title="" title="">Update</span>';
                 }else{
-                    $rows[$i][3] = '';
+                    $rows[$i][$prow] = '';
                     //$rows[$i][4] = $rows[$i][4].'<a href="#" id="provinceQuota" data-type="text" data-pk="'.$rows[$i][4].'" data-title="Update Quota" class="provinceQuota editable editable-click" data-original-title="" title="">Update</a>';
-                    $rows[$i][4] = '';
+                    $rows[$i][$prow + 1] = '';
                 }
 
 
-                if($rows[$i][5] != $city){
-                    $city = $rows[$i][5];
-                    $rows[$i][5] = $rows[$i][5];
-                    $rows[$i][6] = '<a href="#" id="cityQuota" data-type="text" data-pk="'.$rows[$i][6].'" data-title="Update Quota" class="cityQuota editable editable-click" data-original-title="" title="">'.$rows[$i][6].'</a>';
+                if($rows[$i][$crow] != $city){
+                    $city = $rows[$i][$crow];
+                    $rows[$i][$crow] = $rows[$i][$crow];
+                    $rows[$i][$crow + 1] = '<a href="#" id="cityQuota" data-type="text" data-pk="'.$rows[$i][$crow + 1].'" data-title="Update Quota" class="cityQuota editable editable-click" data-original-title="" title="">'.$rows[$i][$crow + 1].'</a>';
                 }else{
-                    $rows[$i][5] = '';
-                    $rows[$i][6] = '';
+                    $rows[$i][$crow] = '';
+                    $rows[$i][$crow + 1] = '';
                 }
 
             }
