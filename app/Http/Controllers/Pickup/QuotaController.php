@@ -75,6 +75,8 @@ class QuotaController extends AdminController {
 
         $this->can_add = false;
 
+        $this->can_import = false;
+
         $this->place_action = 'first';
 
         $this->additional_filter = View::make('quota.addfilter')->render();
@@ -148,13 +150,13 @@ class QuotaController extends AdminController {
     public function makeActions($data)
     {
 
-        $edit = '<a href="'.url('pickup/account/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
+        //$edit = '<a href="'.url('pickup/account/edit/'.$data['_id']).'"><i class="fa fa-edit"></i> Update</a>';
 
-        $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i> Del</span>';
+        //$delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i> Del</span>';
 
-        $actions = $edit.'<br />'.$delete;
+        //$actions = $edit.'<br />'.$delete;
 
-        $action = '';
+        $actions = '';
 
         return $actions;
     }
