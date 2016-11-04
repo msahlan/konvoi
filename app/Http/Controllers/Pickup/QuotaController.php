@@ -77,7 +77,7 @@ class QuotaController extends AdminController {
 
         $this->can_import = false;
 
-        $this->place_action = 'first';
+        $this->place_action = 'none';
 
         $this->additional_filter = View::make('quota.addfilter')->render();
 
@@ -103,6 +103,8 @@ class QuotaController extends AdminController {
             //array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
             //array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
         );
+
+        $this->place_action = 'none';
 
         return parent::postIndex();
     }
