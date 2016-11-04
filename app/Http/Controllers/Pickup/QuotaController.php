@@ -73,7 +73,7 @@ class QuotaController extends AdminController {
 
         $this->title = 'Accounts';
 
-        $this->can_add = true;
+        $this->can_add = false;
 
         $this->place_action = 'first';
 
@@ -153,6 +153,8 @@ class QuotaController extends AdminController {
         $delete = '<span class="del" id="'.$data['_id'].'" ><i class="fa fa-trash"></i> Del</span>';
 
         $actions = $edit.'<br />'.$delete;
+
+        $action = '';
 
         return $actions;
     }
