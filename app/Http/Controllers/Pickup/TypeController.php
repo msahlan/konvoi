@@ -65,7 +65,7 @@ class TypeController extends AdminController {
             array('Name Program Kredit',array('search'=>true,'sort'=>true)),
             array('Perusahaan Penyedia Kredit',array('search'=>true,'sort'=>true)),
             array('Komoditas / Jenis Barang',array('search'=>true,'sort'=>true)),
-            //array('Created',array('search'=>true,'sort'=>true,'date'=>true)),
+            array('Jenis Kartu',array('search'=>true,'sort'=>true,'date'=>true)),
             //array('Last Update',array('search'=>true,'sort'=>true,'date'=>true)),
         );
 
@@ -89,7 +89,7 @@ class TypeController extends AdminController {
             array('programName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('creditorName',array('kind'=>'text','query'=>'like','pos'=>'both','show'=>true)),
             array('Type',array('kind'=>'text', 'query'=>'like','pos'=>'both','show'=>true)),
-            //array('createdDate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
+            array('cardType',array('kind'=>'text','query'=>'like','callback'=>'cardList','pos'=>'both','show'=>true)),
             //array('lastUpdate',array('kind'=>'datetime','query'=>'like','pos'=>'both','show'=>true)),
         );
 
@@ -147,6 +147,19 @@ class TypeController extends AdminController {
 
         $actions = $edit.'<br />'.$delete;
         return $actions;
+    }
+
+    public function cardList($data)
+    {
+        if(isset($data['cardType'])){
+            if(is_array($data['cardType'])){
+                return implode('<br />', $data['cardType']);
+            }else{
+                return $data['cardType'];                
+            }
+        }else{
+            return 'No Card Set';
+        }
     }
 
     public function statusToggle($data)
