@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>JemputCicilan.com</title>
+    <title>JemputTagihan.com</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="{{URL('creative')}}/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -43,7 +43,7 @@
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top">Jemput Cicilan</a>
+                <a class="navbar-brand page-scroll" href="#page-top">Konvoi</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -53,10 +53,10 @@
                         <a class="page-scroll" href="{{ url('login') }}">Login</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="{{ url('member/register') }}">Register Member</a>
+                        <a class="page-scroll" href="{{ url('member/register') }}">Register Anggota</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="{{ url('creditor/register') }}">Register Creditor</a>
+                        <a class="page-scroll" href="{{ url('creditor/register') }}">Register Triper</a>
                     </li>
                     <li>
                         <a class="page-scroll" href="#contact">Help Center</a>
@@ -104,7 +104,7 @@
                     <div class="service-box">
                         <i class="fa fa-4x fa-diamond text-primary sr-icons"></i>
                         <h3>Keamanan Pembayaran</h3>
-                        <p class="text-muted">Pembayaran debitur langsung masuk ke rekening kreditur karena menggunakan mesin EDC kreditur atau yang memiliki fitur pembayaran cicilan anda. Kami tidak melayani pembayaran TUNAI</p>
+                        <p class="text-muted">Pembayaran debitur langsung masuk ke rekening kreditur karena menggunakan mesin EDC kreditur atau yang memiliki fitur pembayaran tagihan anda. Kami tidak melayani pembayaran TUNAI</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 text-center">
@@ -117,8 +117,8 @@
                 <div class="col-lg-3 col-md-6 text-center">
                     <div class="service-box">
                         <i class="fa fa-4x fa-newspaper-o text-primary sr-icons"></i>
-                        <h3>Berbagai Jenis Cicilan</h3>
-                        <p class="text-muted">Apapun cicilan anda asalkan tersedia dalam menu layanan akan dilayani. Hanya cicilan yang sudah lewat dan ada denda tidak kami layani</p>
+                        <h3>Berbagai Jenis Tagihan</h3>
+                        <p class="text-muted">Apapun tagihan anda asalkan tersedia dalam menu layanan akan dilayani. Hanya tagihan yang sudah lewat dan ada denda tidak kami layani</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-6 text-center">
@@ -232,7 +232,7 @@
     <aside class="bg-blue" style="background-color: blue;">
         <div class="container text-center">
             <div class="call-to-action">
-                <h2 style="color:white;">Jemputcicilan.com</h2>
+                <h2 style="color:white;">JemputTagihan.com</h2>
                 <a href="{{ url('member/register') }}" class="btn btn-default btn-xl sr-button">Daftar Sekarang!</a>
             </div>
         </div>

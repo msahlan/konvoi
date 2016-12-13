@@ -11,6 +11,8 @@ use App\Helpers\Prefs;
 |
 */
 
+
+
 Route::get('/', function(){
     if(Auth::check()){
         $role = strtolower( Prefs::getRoleById(Auth::user()->roleId ));
@@ -70,6 +72,14 @@ Route::post('/user/add', 'UserController@postAdd');
 Route::get('/user/edit/{id}', 'UserController@getEdit');
 Route::post('/user/edit/{id}', 'UserController@postEdit');
 Route::post('/user/del', 'UserController@postDel');
+
+Route::get('/trip','TripController@getIndex');
+Route::post('/trip','TripController@postIndex');
+Route::get('trip/add', 'TripController@getAdd');
+Route::post('trip/add', 'TripController@postAdd');
+Route::get('/trip/edit/{id}', 'TripController@getEdit');
+Route::post('/trip/edit/{id}', 'TripController@postEdit');
+Route::post('/trip/del', 'TripController@postDel');
 
 
 Route::get('/usergroup', 'UsergroupController@getIndex');
@@ -209,6 +219,7 @@ Route::post('/route/saveseq', 'RouteController@postSaveseq');
 
 Route::get('/coverage', 'CoverageController@getIndex');
 Route::post('/coverage', 'CoverageController@postIndex');
+
 
 
 Route::group( [ 'prefix'=>'document', 'middlewareGroup'=>['web'] ] , function(){

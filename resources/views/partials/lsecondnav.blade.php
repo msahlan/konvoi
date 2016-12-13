@@ -259,6 +259,12 @@
                             </ul>
                         </li>
 
+                        <li>
+                            <a href="{{url('trip')}}">
+                                <i class="icon-users position-left"></i> Touring 
+                            </a>
+                        </li>
+
 
                     @else
 

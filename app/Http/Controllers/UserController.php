@@ -116,13 +116,12 @@ class UserController extends AdminController {
             $avatar = '';
 
             if( isset($data['fileid'])){
-
+                
                 $avfile = Uploaded::find($data['fileid']);
                 if($avfile){
                     $avatar = $avfile->square_url;
                     $photo[] = $avfile->toArray();
                 }
-
             }
 
             $data['photo']= $photo;
