@@ -10,7 +10,9 @@ use App\Helpers\Prefs;
 | and give it the controller to call when that URI is requested.
 |
 */
-
+Route::get('test',function(){
+    return view('text');
+});
 
 
 Route::get('/', function(){
